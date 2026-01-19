@@ -1,0 +1,208 @@
+import { Color } from '@/store/usePaletteStore';
+import { X, Copy, Check, Download } from 'lucide-react';
+import { useState, useRef } from 'react';
+import clsx from 'clsx';
+
+interface ExportModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    colors: Color[];
+}
+
+type Format = 'css' | 'tailwind' | 'scss' | 'json' | 'image';
+
+export const ExportModal = ({ isOpen, onClose, colors }: ExportModalProps) => {
+    const [format, setFormat] = useState<Format>('css');
+    const [copied, setCopied] = useState(false);
+
+    if (!isOpen) return null;
+
+    const getCode = () => {
+        switch (format) {
+            case 'css':
+                return `:root {\n${colors.map((c, i) => `  --color-${i + 1}: ${c.hex};`).join('\n')}\n}`;
+            case 'tailwind':
+                return `module.exports = {\n  theme: {\n    extend: {\n      colors: {\n${colors.map((c, i) => `        'brand-${i + 1}': '${c.hex}',`).join('\n')}\n      }\n    }\n  }\n}`;
+            case 'scss':
+                return `${colors.map((c, i) => `$color-${i + 1}: ${c.hex};`).join('\n')}`;
+            case 'json':
+                return JSON.stringify(colors.map(c => c.hex), null, 2);
+            default:
+                return '';
+        }
+    };
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(getCode());
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleDownloadPng = () => {
+        // Create an in-memory canvas
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Could not get 2d context');
+            return;
+        }
+
+        // Reset canvas
+        const width = 1200;
+        const height = 630;
+        canvas.width = width;
+        canvas.height = height;
+
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+
+        // Title
+        ctx.font = 'bold 48px Inter, sans-serif';
+        ctx.fillStyle = '#111827';
+        ctx.fillText('Color Palette', 60, 80);
+
+        // Date
+        ctx.font = '24px Inter, sans-serif';
+        ctx.fillStyle = '#6B7280';
+        ctx.fillText(new Date().toLocaleDateString(), 60, 120);
+
+        // Draw Colors
+        const barWidth = (width - 120) / colors.length;
+        const startY = 160;
+        const barHeight = 350;
+
+        colors.forEach((color, i) => {
+            const x = 60 + (i * barWidth);
+
+            // Color Rect
+            ctx.fillStyle = color.hex;
+            ctx.fillRect(x, startY, barWidth, barHeight);
+
+            // Hex Code
+            ctx.font = 'bold 24px monospace';
+            ctx.fillStyle = '#111827';
+            ctx.textAlign = 'center';
+            ctx.fillText(color.hex, x + (barWidth / 2), startY + barHeight + 40);
+
+            // Name/Number
+            ctx.font = '16px Inter, sans-serif';
+            ctx.fillStyle = '#6B7280';
+            ctx.fillText(`Color ${i + 1}`, x + (barWidth / 2), startY + barHeight + 70);
+        });
+
+        // Branding
+        ctx.font = '20px Inter, sans-serif';
+        ctx.fillStyle = '#9CA3AF';
+        ctx.textAlign = 'right';
+        ctx.fillText('Made with PalettePro', width - 60, height - 40);
+
+        // Download using Blob
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                console.error('Canvas to Blob failed');
+                alert('Failed to generate image. Please try again.');
+                return;
+            }
+            console.log('Blob created:', blob.type, blob.size);
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `palette-pro-${new Date().getTime()}.png`;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Delay revocation to ensure download starts
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+                console.log('URL revoked');
+            }, 1000);
+        }, 'image/png');
+    };
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+
+            {/* Modal */}
+            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                    <h2 className="text-xl font-bold text-gray-900">Export Palette</h2>
+                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <X size={20} />
+                    </button>
+                </div>
+
+                <div className="flex border-b border-gray-100 px-6 overflow-x-auto">
+                    {(['css', 'tailwind', 'scss', 'json', 'image'] as Format[]).map((f) => (
+                        <button
+                            key={f}
+                            onClick={() => { setFormat(f); setCopied(false); }}
+                            className={clsx(
+                                "px-4 py-3 text-sm font-medium border-b-2 transition-colors capitalize",
+                                format === f ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700"
+                            )}
+                        >
+                            {f === 'image' ? 'Image (PNG)' : f}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="p-6 bg-gray-50">
+                    {format === 'image' ? (
+                        <div className="flex flex-col items-center gap-6">
+                            <div className="relative w-full aspect-[1.9] bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200">
+                                {/* HTML Preview */}
+                                <div className="absolute inset-0 flex flex-col p-6">
+                                    <div className="mb-4">
+                                        <h3 className="font-bold text-gray-900">Color Palette</h3>
+                                        <p className="text-sm text-gray-500">{new Date().toLocaleDateString()}</p>
+                                    </div>
+                                    <div className="flex-1 flex gap-0 rounded-lg overflow-hidden">
+                                        {colors.map(c => (
+                                            <div key={c.hex} className="flex-1 h-full" style={{ backgroundColor: c.hex }} />
+                                        ))}
+                                    </div>
+                                    <div className="flex mt-2">
+                                        {colors.map(c => (
+                                            <div key={c.hex} className="flex-1 text-center">
+                                                <span className="text-xs font-mono font-medium text-gray-600">{c.hex}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleDownloadPng}
+                                className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20 flex items-center gap-2"
+                            >
+                                <Download size={18} /> Download High-Res PNG
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="relative group">
+                                <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-sm overflow-x-auto max-h-[300px]">
+                                    {getCode()}
+                                </pre>
+                                <button
+                                    onClick={handleCopy}
+                                    className="absolute top-3 right-3 p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors backdrop-blur-md"
+                                >
+                                    {copied ? <Check size={18} /> : <Copy size={18} />}
+                                </button>
+                            </div>
+                            <p className="mt-4 text-xs text-center text-gray-500">
+                                The code is generated based on your current palette order.
+                            </p>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
