@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const errorParam = searchParams.get('error');
@@ -71,5 +71,17 @@ export default function AuthErrorPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function AuthErrorPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <Loader2 className="animate-spin text-gray-300" size={32} />
+            </div>
+        }>
+            <AuthErrorContent />
+        </Suspense>
     );
 }

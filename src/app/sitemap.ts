@@ -1,6 +1,5 @@
 import { MetadataRoute } from 'next';
 
-import { getAllPosts } from '@/lib/blog';
 
 import { getAllPosts } from '@/lib/blog';
 
