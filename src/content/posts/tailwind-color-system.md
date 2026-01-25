@@ -22,7 +22,7 @@ colors: {
 
 ### 2. Generating Scales
 
-Don't guess your shades. Use the **PalettePro Tailwind Generator** to create scientifically balanced scales from 50 to 950 based on your primary brand color.
+Don't guess your shades. Use the **Dopely Colors Tailwind Generator** to create scientifically balanced scales from 50 to 950 based on your primary brand color.
 
 ### 3. Dark Mode Strategy
 

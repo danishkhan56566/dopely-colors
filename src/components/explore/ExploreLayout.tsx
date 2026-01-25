@@ -1,37 +1,25 @@
 'use client';
 
 import { PaletteCard } from './PaletteCard';
-import { Search, Eye, Download } from 'lucide-react';
-import { useState, Suspense, useEffect, useMemo } from 'react';
-import chroma from 'chroma-js';
-import { usePaletteStore } from '@/store/usePaletteStore';
-import { ContextPreview } from '../ContextPreview';
-import { ExportModal } from '../ExportModal';
+import { Search } from 'lucide-react';
+import { useState, Suspense, useEffect, useRef } from 'react';
+
 import { DashboardLayout } from '../layout/DashboardLayout';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-// ---- MOCK DATA GENERATOR ----
-const generateMockPalettes = (count: number) => {
-    const TAGS = [
-        'saas', 'fintech', 'health', 'islamic', 'ecommerce', 'ai',
-        'pastel', 'vintage', 'warm', 'neon', 'dark'
-    ];
-    return Array.from({ length: count }, (_, i) => ({
-        id: `p-${i}`,
-        likes: Math.floor(Math.random() * 5000) + 100,
-        date: '2 days ago',
-        colors: chroma.scale([chroma.random(), chroma.random()]).mode('lch').colors(5),
-        tags: TAGS[Math.floor(Math.random() * TAGS.length)]
-    }));
-};
+import { fetchPalettesAction } from '@/app/explore/actions';
 
-const INITIAL_PALETTES = generateMockPalettes(50);
+interface ExploreLayoutProps {
+    initialCategories?: { id: string; label: string }[];
+}
 
-const ExploreContent = () => {
+const ExploreContent = ({ categories = [] }: { categories?: { id: string; label: string }[] }) => {
     // Modal States
-    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-    const [isExportOpen, setIsExportOpen] = useState(false);
-    const { colors } = usePaletteStore();
+
+
+    // Data State
+    const [palettes, setPalettes] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Search & Filter
     const searchParams = useSearchParams();
@@ -39,28 +27,75 @@ const ExploreContent = () => {
     const sort = searchParams.get('sort') || 'popular';
     const tag = searchParams.get('tag');
 
-    // Filter Logic
-    const filteredPalettes = useMemo(() => {
-        return [...INITIAL_PALETTES].filter(p => {
-            if (tag && tag !== 'all') return p.tags === tag;
-            return true;
-        }).sort((a, b) => {
-            if (sort === 'new') return Math.random() - 0.5; // Mock new
-            if (sort === 'random') return Math.random() - 0.5;
-            return b.likes - a.likes; // Default popular
-        });
+    // Pagination State
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const loadMoreRef = useRef<HTMLDivElement>(null);
+
+    const fetchPalettes = async (isLoadMore = false) => {
+        if (!isLoadMore) setIsLoading(true);
+
+        try {
+            const currentPage = isLoadMore ? page + 1 : 0;
+            const { palettes: newPalettes, hasMore: moreAvailable, error } = await fetchPalettesAction(
+                currentPage,
+                tag,
+                sort
+            );
+
+            if (error) {
+                console.error('Fetch error:', error);
+                return;
+            }
+
+            if (isLoadMore) {
+                setPalettes(prev => [...prev, ...newPalettes]);
+                setPage(prev => prev + 1);
+            } else {
+                setPalettes(newPalettes);
+                setPage(0);
+            }
+
+            setHasMore(moreAvailable);
+        } catch (err) {
+            console.error('Failed to fetch palettes:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Infinite Scroll Observer
+    useEffect(() => {
+        if (!hasMore || isLoading) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                fetchPalettes(true);
+            }
+        }, { threshold: 0.1 });
+
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [hasMore, isLoading, page, tag, sort]); // Refresh observer when dependencies change
+
+    // Reset and fetch on filter change
+    useEffect(() => {
+        setPage(0);
+        fetchPalettes(false);
     }, [tag, sort]);
 
-    const CATEGORIES = [
+    // Fallback categories if empty
+    const displayCategories = categories.length > 0 ? categories : [
         { id: 'all', label: 'All' },
-        { id: 'saas', label: 'SaaS' },
-        { id: 'ecommerce', label: 'E-commerce' },
-        { id: 'islamic', label: 'Islamic' },
-        { id: 'fintech', label: 'Fintech' },
-        { id: 'health', label: 'Health' },
-        { id: 'ai', label: 'AI' },
-        { id: 'vintage', label: 'Vintage' },
-        { id: 'neon', label: 'Neon' }
+        { id: 'SaaS', label: 'SaaS' },
+        { id: 'Nature', label: 'Nature' },
+        { id: 'Food', label: 'Food' },
+        { id: 'Tech', label: 'Tech' },
+        { id: 'Cyberpunk', label: 'Cyberpunk' },
+        { id: 'Minimal', label: 'Minimal' }
     ];
 
     return (
@@ -77,36 +112,15 @@ const ExploreContent = () => {
                         />
                     </div>
 
-                    {/* Navbar Action Buttons */}
+                    {/* Navbar Action Buttons - REMOVED */}
                     <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-                        <button
-                            onClick={() => setIsPreviewOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors"
-                            title="Visualize current palette"
-                        >
-                            <Eye size={18} />
-                            <span className="hidden sm:inline">Preview</span>
-                        </button>
-                        <button
-                            onClick={() => setIsExportOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors"
-                            title="Export current palette"
-                        >
-                            <Download size={18} />
-                            <span className="hidden sm:inline">Export</span>
-                        </button>
-
-                        <div className="w-px h-8 bg-gray-200 mx-2 hidden md:block" />
-
-                        <div className="hidden md:flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-400 to-blue-400 cursor-pointer hover:opacity-80 transition-opacity" />
-                        </div>
+                        {/* Buttons were here */}
                     </div>
                 </div>
 
                 {/* Categories Tab Bar */}
                 <div className="px-8 pb-0 overflow-x-auto flex gap-6 scrollbar-hide">
-                    {CATEGORIES.map(cat => {
+                    {displayCategories.map(cat => {
                         const isActive = (!tag && cat.id === 'all') || tag === cat.id;
                         return (
                             <button
@@ -122,43 +136,47 @@ const ExploreContent = () => {
             </div>
 
             {/* Modals */}
-            <ContextPreview
-                isOpen={isPreviewOpen}
-                onClose={() => setIsPreviewOpen(false)}
-                colors={colors}
-            />
-            <ExportModal
-                isOpen={isExportOpen}
-                onClose={() => setIsExportOpen(false)}
-                colors={colors}
-            />
+
 
             {/* Palette Grid */}
             <div className="p-6 md:p-10">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold capitalize">
-                        {tag ? `${tag} Palettes` : `Popular Palettes`}
+                        {tag && tag !== 'all' ? `${tag} Palettes` : `All Palettes`}
                     </h2>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 min-h-[50vh]">
-                    {filteredPalettes.length > 0 ? filteredPalettes.slice(0, 24).map((palette) => (
-                        <PaletteCard key={palette.id} {...palette} />
-                    )) : (
-                        <div className="col-span-full py-20 text-center text-gray-500">
-                            No palettes found for this category.
-                        </div>
-                    )}
-                </div>
+                {isLoading ? (
+                    <div className="py-20 text-center text-gray-500">Loading palettes...</div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 min-h-[50vh]">
+                        {palettes.length > 0 ? palettes.map((palette) => (
+                            <PaletteCard key={palette.id} {...palette} />
+                        )) : (
+                            <div className="col-span-full py-20 text-center text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                <p className="font-medium text-gray-900 mb-1">No palettes found</p>
+                                <p className="text-sm">Be the first to publish one in this category!</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+                {/* Infinite Scroll Sentinel */}
+                {hasMore && (
+                    <div ref={loadMoreRef} className="flex justify-center mt-12 pb-10">
+                        {isLoading && palettes.length > 0 && (
+                            <div className="w-8 h-8 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin" />
+                        )}
+                    </div>
+                )}
             </div>
         </>
     );
 };
 
-export const ExploreLayout = () => {
+export const ExploreLayout = ({ initialCategories }: ExploreLayoutProps) => {
     return (
         <DashboardLayout>
             <Suspense fallback={<div className="p-10 text-center">Loading feed...</div>}>
-                <ExploreContent />
+                <ExploreContent categories={initialCategories} />
             </Suspense>
         </DashboardLayout>
     );

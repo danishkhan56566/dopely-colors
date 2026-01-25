@@ -8,8 +8,13 @@ export const metadata = {
     description: 'Expert articles on UI design, color theory, accessibility, and Tailwind CSS. Learn how to build better digital products.',
 };
 
-export default function BlogIndex() {
-    const posts = getAllPosts();
+
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function BlogIndex() {
+    const posts = await getAllPosts();
 
     return (
         <DashboardLayout>
@@ -54,6 +59,8 @@ export default function BlogIndex() {
                                 ))}
                             </ul>
                         </div>
+
+
 
                         {/* Ad Placeholder (Sidebar) */}
                         <AdUnit slotId="sidebar-123" label="SIDEBAR AD" className="h-[300px]" />

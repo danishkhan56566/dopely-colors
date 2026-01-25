@@ -95,7 +95,7 @@ export const ExportModal = ({ isOpen, onClose, colors }: ExportModalProps) => {
         ctx.font = '20px Inter, sans-serif';
         ctx.fillStyle = '#9CA3AF';
         ctx.textAlign = 'right';
-        ctx.fillText('Made with PalettePro', width - 60, height - 40);
+        ctx.fillText('Made with Dopely Colors', width - 60, height - 40);
 
         // Download using Blob
         canvas.toBlob((blob) => {

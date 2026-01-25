@@ -1,38 +1,24 @@
 'use client';
 
-import { Algorithm, usePaletteStore } from '@/store/usePaletteStore';
+import { Algorithm, usePaletteStore, ALGORITHMS } from '@/store/usePaletteStore';
 import { ShareModal } from './ShareModal';
-import { Undo, Redo, ChevronDown, Eye, Download, Heart, Palette, Code, Share2 } from 'lucide-react';
+import { Undo, Redo, ChevronDown, Eye, Download, Heart, Palette, Code, Share2, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { UserButton } from './auth/UserButton';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useModeStore } from '@/store/useModeStore';
 
-const ALGORITHMS: { id: Algorithm; label: string }[] = [
-    { id: 'random', label: '🎲 True Random' },
-    { id: 'calm', label: '😌 Calm' },
-    { id: 'luxury', label: '💎 Luxury' },
-    { id: 'tech', label: '🤖 Tech' },
-    { id: 'islamic', label: '🕌 Islamic' },
-    { id: 'food', label: '🍔 Food' },
-    { id: 'finance', label: '💰 Finance' },
-    { id: 'kids', label: '🎈 Kids' },
-    { id: 'pastel', label: '🎨 Pastel' },
-    { id: 'neon', label: '⚡ Neon' },
-    { id: 'dark', label: '🌑 Dark Mode' },
-    { id: 'light', label: '☀️ Light Mode' },
-];
-
 interface TopBarProps {
     onOpenPreview: () => void;
     onOpenExport: () => void;
     onOpenSystem: () => void;
+    onOpenHelp: () => void;
     viewMode: 'columns' | 'visualize';
     onChangeViewMode: (mode: 'columns' | 'visualize') => void;
 }
 
-export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, viewMode, onChangeViewMode }: TopBarProps) => {
+export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, onOpenHelp, viewMode, onChangeViewMode }: TopBarProps) => {
     const { mode, setMode } = useModeStore();
     const {
         undo, redo, historyIndex, history,
@@ -53,15 +39,14 @@ export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, viewMode, on
     const isSaved = !!savedPalette;
 
     return (
-        <header className="w-full h-16 bg-white/90 backdrop-blur-md grid grid-cols-[1fr_auto_1fr] items-center px-4 md:px-6 z-30 border-b border-gray-100 shadow-sm relative gap-4">
-            {/* Left Section */}
-            <div className="flex items-center gap-2 md:gap-4 justify-start min-w-0">
-                {/* Mode Switcher */}
-                <div className="flex bg-gray-100 p-1 rounded-xl shrink-0">
+        <header className="w-full h-16 bg-white/90 backdrop-blur-md flex items-center gap-4 px-4 md:px-6 z-30 border-b border-gray-100 shadow-sm relative">
+            {/* Left Section: Mode Switcher */}
+            <div className="flex items-center shrink-0">
+                <div className="flex bg-gray-100/50 p-1 rounded-xl border border-gray-200/50">
                     <button
                         onClick={() => setMode('designer')}
                         className={clsx(
-                            "flex items-center gap-2 px-3 md:px-4 py-1.5 rounded-lg text-sm font-medium transition-all",
+                            "flex items-center gap-2 px-3 md:px-4 py-1.5 rounded-lg text-sm font-bold transition-all",
                             mode === 'designer' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-gray-700"
                         )}
                     >
@@ -71,7 +56,7 @@ export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, viewMode, on
                     <button
                         onClick={() => setMode('developer')}
                         className={clsx(
-                            "flex items-center gap-2 px-3 md:px-4 py-1.5 rounded-lg text-sm font-medium transition-all",
+                            "flex items-center gap-2 px-3 md:px-4 py-1.5 rounded-lg text-sm font-bold transition-all",
                             mode === 'developer' ? "bg-white shadow-sm text-black" : "text-gray-500 hover:text-gray-700"
                         )}
                     >
@@ -79,20 +64,19 @@ export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, viewMode, on
                         <span className="hidden lg:inline">Developer</span>
                     </button>
                 </div>
-
-                <div className="h-6 w-px bg-gray-200 mx-1 hidden sm:block" />
-
             </div>
 
-            {/* Center Section - View Switcher */}
-            <div className="flex items-center justify-center min-w-0">
-                <div className="flex items-center bg-gray-100 p-1 rounded-lg shadow-sm border border-gray-200/50 hidden md:flex">
+            {/* Center Section: View | Tokens | Algorithm */}
+            {/* Using flex-1 and justify-center to prevent overlap with Left/Right sections */}
+            <div className="flex-1 hidden xl:flex items-center justify-center min-w-0">
+                <div className="flex items-center bg-gray-100/50 p-1 rounded-xl border border-gray-200/50 shadow-sm max-w-full">
+                    {/* View Switcher */}
                     {mode === 'designer' ? (
-                        <div className="flex">
+                        <div className="flex shrink-0">
                             <button
                                 onClick={() => onChangeViewMode('columns')}
                                 className={clsx(
-                                    "px-3 lg:px-4 py-1.5 rounded-md text-sm font-medium transition-all whitespace-nowrap",
+                                    "px-4 py-1.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap",
                                     viewMode === 'columns' ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-900"
                                 )}
                             >
@@ -101,7 +85,7 @@ export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, viewMode, on
                             <button
                                 onClick={() => onChangeViewMode('visualize')}
                                 className={clsx(
-                                    "px-3 lg:px-4 py-1.5 rounded-md text-sm font-medium transition-all whitespace-nowrap",
+                                    "px-4 py-1.5 rounded-lg text-sm font-bold transition-all whitespace-nowrap",
                                     viewMode === 'visualize' ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-900"
                                 )}
                             >
@@ -109,25 +93,65 @@ export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, viewMode, on
                             </button>
                         </div>
                     ) : (
-                        <span className="px-4 py-1.5 text-sm font-medium text-gray-500">Developer Mode</span>
+                        <span className="px-4 py-1.5 text-sm font-medium text-gray-500 shrink-0">Developer Mode</span>
                     )}
 
-                    {/* Tokens Button (System) */}
-                    <div className="w-px h-4 bg-gray-300 mx-1" />
+                    {/* Divider */}
+                    <div className="w-px h-5 bg-gray-300 mx-2 shrink-0" />
+
+                    {/* Tokens */}
                     <button
                         onClick={onOpenSystem}
-                        className="px-3 lg:px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-gray-900 hover:bg-white/50"
-                        title="View Design Tokens & Scales"
+                        className="px-3 py-1.5 rounded-lg text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-white/50 transition-all flex items-center gap-2 shrink-0"
                     >
                         Tokens
                     </button>
+
+                    {/* Divider */}
+                    <div className="w-px h-5 bg-gray-300 mx-2 shrink-0" />
+
+                    {/* Algorithm Selector */}
+                    <div className="relative shrink-0">
+                        <button
+                            onClick={() => setIsAlgoMenuOpen(!isAlgoMenuOpen)}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/50 text-sm font-bold text-gray-700 transition-all min-w-[120px] justify-between"
+                        >
+                            <span className="truncate">{ALGORITHMS.find(a => a.id === algorithm)?.label}</span>
+                            <ChevronDown size={14} className="opacity-50 shrink-0" />
+                        </button>
+
+                        {isAlgoMenuOpen && (
+                            <>
+                                <div className="fixed inset-0 z-40" onClick={() => setIsAlgoMenuOpen(false)} />
+                                <div className="absolute top-full mt-2 left-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 flex flex-col gap-1 z-50 max-h-[300px] overflow-y-auto">
+                                    {ALGORITHMS.map((algo) => (
+                                        <button
+                                            key={algo.id}
+                                            className={clsx(
+                                                "text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors font-medium",
+                                                algorithm === algo.id ? "text-blue-600 font-bold bg-blue-50" : "text-gray-700"
+                                            )}
+                                            onClick={() => {
+                                                setAlgorithm(algo.id);
+                                                generatePalette();
+                                                setIsAlgoMenuOpen(false);
+                                            }}
+                                        >
+                                            {algo.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Right Section */}
-            <div className="flex items-center gap-2 md:gap-3 justify-end min-w-0">
-                {/* Mobile: Show View Switcher here instead of center */}
-                <div className="md:hidden flex bg-gray-100 p-1 rounded-lg">
+            {/* Right Section: Actions + User */}
+            {/* Added ml-auto ensure it pushes right if center section is hidden or shrunk */}
+            <div className="flex items-center justify-end gap-3 shrink-0 ml-auto xl:ml-0">
+                {/* Mobile View Switcher */}
+                <div className="xl:hidden flex bg-gray-100 p-1 rounded-lg">
                     <button
                         onClick={() => onChangeViewMode(viewMode === 'columns' ? 'visualize' : 'columns')}
                         className="p-1.5"
@@ -136,89 +160,51 @@ export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, viewMode, on
                     </button>
                 </div>
 
-                {/* Algo Selector */}
-                <div className="relative hidden xl:block">
-                    <button
-                        onClick={() => setIsAlgoMenuOpen(!isAlgoMenuOpen)}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-100 text-sm font-medium transition-colors border border-transparent hover:border-gray-200"
-                    >
-                        {ALGORITHMS.find(a => a.id === algorithm)?.label}
-                        <ChevronDown size={14} />
-                    </button>
-
-                    {isAlgoMenuOpen && (
-                        <div className="absolute top-full mt-2 right-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 flex flex-col gap-1 z-50 max-h-[400px] overflow-y-auto">
-                            {ALGORITHMS.map((algo) => (
-                                <button
-                                    key={algo.id}
-                                    className={clsx(
-                                        "text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors",
-                                        algorithm === algo.id ? "text-blue-600 font-semibold" : "text-gray-700"
-                                    )}
-                                    onClick={() => {
-                                        setAlgorithm(algo.id);
-                                        generatePalette();
-                                        setIsAlgoMenuOpen(false);
-                                    }}
-                                >
-                                    {algo.label}
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <div className="w-px h-6 bg-gray-200 mx-1 hidden xl:block" />
-
-                {/* Save / Favorite */}
+                {/* Save/Favorite */}
                 <button
                     onClick={() => toggleFavorite()}
                     className={clsx(
-                        "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap",
-                        isSaved ? "bg-red-50 text-red-500 hover:bg-red-100" : "hover:bg-primary/5 hover:text-primary text-gray-700"
+                        "p-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 border",
+                        isSaved ? "bg-red-50 border-red-100 text-red-500" : "bg-transparent border-transparent text-gray-400 hover:text-gray-600 hover:bg-gray-50"
                     )}
                     title={isSaved ? "Remove from Favorites" : "Save to Favorites"}
                 >
-                    <Heart size={18} className={clsx(isSaved && "fill-current")} />
-                    <span className="hidden 2xl:inline">{isSaved ? 'Saved' : 'Save'}</span>
+                    <Heart size={20} className={clsx(isSaved && "fill-current")} />
                 </button>
 
+                {/* Export */}
                 <button
                     onClick={onOpenExport}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-primary/5 hover:text-primary text-gray-700 text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap"
+                    className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-200 hover:scale-105 active:scale-95"
                     title="Export Palette"
                 >
-                    <Download size={18} />
-                    <span className="hidden 2xl:inline">Export</span>
+                    <Download size={20} />
                 </button>
 
-                <div className="h-6 w-px bg-gray-200 mx-1 hidden sm:block" />
+                {/* Help Pill - Hidden on mobile */}
+                <button
+                    onClick={onOpenHelp}
+                    className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-100 hover:border-gray-300 transition-all font-bold text-xs uppercase tracking-wide"
+                >
+                    <HelpCircle size={16} />
+                    <span className="hidden lg:inline">How it Works</span>
+                </button>
 
-                {/* History Controls */}
-                <div className="hidden sm:flex gap-1">
-                    <button
-                        onClick={undo}
-                        disabled={!canUndo}
-                        className="p-2 rounded-full hover:bg-primary/10 hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400 text-gray-600 transition-all duration-200 hover:scale-110 active:scale-90"
-                        title="Undo (Ctrl+Z)"
-                    >
-                        <Undo size={18} />
-                    </button>
-                    <button
-                        onClick={redo}
-                        disabled={!canRedo}
-                        className="p-2 rounded-full hover:bg-primary/10 hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400 text-gray-600 transition-all duration-200 hover:scale-110 active:scale-90"
-                        title="Redo (Ctrl+Shift+Z)"
-                    >
-                        <Redo size={18} />
-                    </button>
+                {/* Separator */}
+                <div className="w-px h-8 bg-gray-200 mx-1 hidden md:block" />
+
+                {/* History */}
+                <div className="hidden lg:flex gap-1">
+                    <button onClick={undo} disabled={!canUndo} className="p-2 text-gray-400 hover:text-gray-700 disabled:opacity-20"><Undo size={18} /></button>
+                    <button onClick={redo} disabled={!canRedo} className="p-2 text-gray-400 hover:text-gray-700 disabled:opacity-20"><Redo size={18} /></button>
                 </div>
 
-                {/* User Auth - Fixed Alignment */}
-                <div className="flex items-center pl-3 ml-2 border-l border-slate-200 h-8">
+                {/* User */}
+                <div className="pl-1 md:pl-2 hidden md:block">
                     <UserButton />
                 </div>
             </div>
+
             {savedPalette && (
                 <ShareModal
                     isOpen={shareOpen}

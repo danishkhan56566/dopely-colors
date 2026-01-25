@@ -70,7 +70,7 @@ export const VisualizerToolbar = ({
     return (
         <div className={clsx(
             "left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 p-2 bg-white/95 backdrop-blur-xl border border-gray-200/50 shadow-2xl rounded-2xl max-w-[95%] overflow-x-auto [&::-webkit-scrollbar]:hidden",
-            isEmbedded ? "absolute bottom-6 scale-90 origin-bottom" : "fixed bottom-20"
+            isEmbedded ? "absolute bottom-6 scale-90 origin-bottom" : "absolute top-6"
         )} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
 
             {/* Color Roles Section */}

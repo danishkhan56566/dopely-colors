@@ -63,6 +63,11 @@
   .border-rainbow {
     border-image: var(--image-rainbow) 1;
   }
+
+  .animate-gradient {
+    background-size: 200% auto;
+    animation: gradient-flow 3s linear infinite;
+  }
 }
 
 /*
@@ -88,7 +93,7 @@ body {
 }
 
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth;  <-- REMOVED: Conflicts with Next.js router scroll restoration */
 }
 
 @keyframes fade-in {

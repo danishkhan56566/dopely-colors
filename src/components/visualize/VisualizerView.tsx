@@ -79,7 +79,7 @@ export const VisualizerView = ({
 
     return (
         <div
-            className="absolute inset-0 z-10 w-full h-full bg-gray-50 flex items-center justify-center overflow-hidden"
+            className="relative z-10 w-full min-h-[85vh] bg-gray-50 flex items-center justify-center overflow-hidden py-12"
             style={{
                 fontFamily: currentFont,
                 filter: simulationMode !== 'normal' ? `url('#${simulationMode}')` : 'none'

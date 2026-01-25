@@ -7,7 +7,17 @@ import {
     Settings,
     LogOut,
     ExternalLink,
-    Palette
+    PlusSquare,
+    Folder,
+    Heart,
+    Eye,
+    Star,
+    Palette,
+    Shield,
+    Globe,
+    UploadCloud,
+    Mail,
+    Layers
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -15,10 +25,21 @@ import clsx from 'clsx';
 
 const ADMIN_LINKS = [
     { label: 'Overview', href: '/admin', icon: LayoutDashboard },
+    { label: 'Palettes', href: '/admin/palettes', icon: Palette },
+    { label: 'Bulk Upload', href: '/admin/palettes/bulk', icon: UploadCloud },
+    { label: 'Gradients', href: '/admin/gradients', icon: Layers }, // New Link
+    { label: 'Colors', href: '/admin/colors', icon: Palette }, // New Link
+    { label: 'Inbox', href: '/admin/messages', icon: Mail },
+    { label: 'Daily Generator', href: '/admin/daily', icon: FileText }, // New Link
+    { label: 'Add Palette', href: '/admin/palettes/create', icon: PlusSquare },
+    { label: 'Categories', href: '/admin/categories', icon: Folder },
+    { label: 'Favorites Analytics', href: '/admin/favorites', icon: Heart },
+    { label: 'Views Analytics', href: '/admin/analytics', icon: Eye },
+    { label: 'Featured Palettes', href: '/admin/featured', icon: Star },
     { label: 'Users', href: '/admin/users', icon: Users },
-    { label: 'Palettes', href: '/admin/palettes/generate', icon: Palette },
-    { label: 'Content', href: '/admin/content', icon: FileText },
-    { label: 'Settings', href: '/admin/settings', icon: Settings },
+    { label: 'Blog Manager', href: '/admin/blog', icon: FileText },
+    { label: 'Site Settings', href: '/admin/settings', icon: Globe },
+    { label: 'Admin Settings', href: '/admin/settings/admin', icon: Shield },
 ];
 
 export const AdminSidebar = () => {
@@ -70,7 +91,12 @@ export const AdminSidebar = () => {
                     Open Live Site
                 </Link>
                 <button
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all text-sm font-medium"
+                    onClick={async () => {
+                        const { supabase } = await import('@/lib/supabase');
+                        await supabase.auth.signOut();
+                        window.location.href = '/login';
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all text-sm font-medium text-left"
                 >
                     <LogOut size={18} />
                     Admin Logout

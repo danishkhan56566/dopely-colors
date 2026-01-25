@@ -11,7 +11,7 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-    const posts = getAllPosts();
+    const posts = await getAllPosts();
     return posts.map((post) => ({
         slug: post.slug,
     }));
@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps) {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const post = await getPostBySlug(slug);
 
     if (!post) {
         return {
@@ -33,9 +33,14 @@ export async function generateMetadata({ params }: PageProps) {
     };
 }
 
+
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function BlogPost({ params }: PageProps) {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const post = await getPostBySlug(slug);
 
     if (!post) {
         notFound();
@@ -53,6 +58,15 @@ export default async function BlogPost({ params }: PageProps) {
                     </Link>
 
                     <header className="mb-12">
+                        {post.featured_image && (
+                            <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-8 shadow-sm border border-gray-100">
+                                <img
+                                    src={post.featured_image}
+                                    alt={post.title}
+                                    className="object-cover w-full h-full"
+                                />
+                            </div>
+                        )}
                         <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
                             <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full font-medium text-xs uppercase tracking-wide">
                                 {post.category}

@@ -6,9 +6,17 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { formatDistanceToNow } from 'date-fns';
 import { Trash2, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import { FavoritesGuide } from '@/components/content/PageGuides';
+import { FavoritesFAQ } from '@/components/content/PageFAQs';
+
+import { useEffect } from 'react';
 
 export default function Favorites() {
-    const { savedPalettes, removeFavorite } = usePaletteStore();
+    const { savedPalettes, removeFavorite, fetchFavorites } = usePaletteStore();
+
+    useEffect(() => {
+        fetchFavorites();
+    }, []);
 
     if (savedPalettes.length === 0) {
         return (
@@ -46,9 +54,9 @@ export default function Favorites() {
                     {savedPalettes.map((palette) => (
                         <div key={palette.id} className="relative group">
                             <PaletteCard
+                                id={palette.id}
                                 colors={palette.colors}
                                 likes={palette.likes}
-                                date={formatDistanceToNow(palette.date, { addSuffix: true })}
                             />
                             {/* Delete Action Overlay - Customized for Favorites view */}
                             <button
@@ -64,6 +72,9 @@ export default function Favorites() {
                         </div>
                     ))}
                 </div>
+
+                <FavoritesGuide />
+                <FavoritesFAQ />
             </div>
         </DashboardLayout>
     );

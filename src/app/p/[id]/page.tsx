@@ -17,12 +17,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
     if (!palette) {
         return {
-            title: 'Palette Not Found - PalettePro',
+            title: 'Palette Not Found - Dopely Colors',
         };
     }
 
     return {
-        title: `${palette.name || 'Shared Palette'} - PalettePro`,
+        title: `${palette.name || 'Shared Palette'} - Dopely Colors`,
         description: `Check out this color palette: ${palette.colors.join(', ')}`,
         openGraph: {
             images: [`/api/og?colors=${palette.colors.join(',')}`], // Future optimization

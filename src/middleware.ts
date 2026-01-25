@@ -2,14 +2,23 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+    // canonical redirect
+    const hostname = request.headers.get('host')
+    if (process.env.NODE_ENV === 'production' && hostname === 'dopley-colors.vercel.app') {
+        const newUrl = new URL(request.url)
+        newUrl.host = 'dopelycolors.com'
+        newUrl.protocol = 'https'
+        return NextResponse.redirect(newUrl, { status: 301 })
+    }
+
     let response = NextResponse.next({
         request: {
             headers: request.headers,
         },
     })
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseUrl = 'https://cafwmpzdgatxpavuwnvh.supabase.co';
+    const supabaseKey = 'sb_publishable_S5cNoYZ_FXWt9nHOwWGHjg_N1mVxbvV';
 
     if (!supabaseUrl || !supabaseKey) {
         // Run in limited mode if keys are missing
@@ -37,7 +46,9 @@ export async function middleware(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
 
     // Protected Routes
-    if (request.nextUrl.pathname.startsWith('/profile') || request.nextUrl.pathname.startsWith('/settings')) {
+    if (request.nextUrl.pathname.startsWith('/profile') ||
+        request.nextUrl.pathname.startsWith('/settings')) {
+        // Removed /admin check to allow full localhost access as requested
         if (!user) {
             return NextResponse.redirect(new URL('/login', request.url))
         }

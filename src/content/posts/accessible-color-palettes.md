@@ -17,7 +17,7 @@ Text must have sufficient contrast against its background.
 
 ## Tools to Help
 
-Using tools like **PalettePro's Contrast Checker**, you can instantly validate your color choices. Our tools simulate:
+Using tools like **Dopely Colors' Contrast Checker**, you can instantly validate your color choices. Our tools simulate:
 1. **Protanopia** (Red-blind)
 2. **Deuteranopia** (Green-blind)
 3. **Tritanopia** (Blue-blind)

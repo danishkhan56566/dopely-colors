@@ -28,7 +28,6 @@ export default function ProfilePage() {
                     id: p.id,
                     colors: p.colors,
                     likes: 0, // Mock for now or fetch
-                    date: new Date(p.created_at).toLocaleDateString(),
                 }));
                 setPalettes(mapped);
             }

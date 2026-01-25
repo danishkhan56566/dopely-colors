@@ -55,11 +55,11 @@ export const Hero = () => {
 
                 <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 text-balance">
                     Build smarter <br />
-                    <span className="text-rainbow">color palettes</span> for real products
+                    <span className="text-rainbow">color systems</span> instantly
                 </h1>
 
                 <p className="text-xl text-gray-500 mb-10 max-w-2xl text-balance">
-                    Generate, preview, and export production-ready color systems for designers and developers — <span className="text-gray-900 font-medium">powered by AI</span>.
+                    Dopely Colors is a professional color and design toolkit for designers and developers. Generate palettes, gradients, Tailwind colors, and design systems instantly.
                 </p>
 
                 {/* AI Input Box */}

@@ -1,10 +1,10 @@
-import { Users, CreditCard, Palette, TrendingUp } from 'lucide-react';
+import { Users, Heart, Palette, UserPlus } from 'lucide-react';
 
 const STATS = [
-    { label: 'Total Revenue', value: '$24,500', change: '+12%', icon: CreditCard, color: 'bg-green-500' },
-    { label: 'Active Users', value: '1,240', change: '+18%', icon: Users, color: 'bg-blue-500' },
-    { label: 'Palettes Created', value: '85,432', change: '+5%', icon: Palette, color: 'bg-purple-500' },
-    { label: 'Conversion Rate', value: '3.2%', change: '+0.4%', icon: TrendingUp, color: 'bg-orange-500' },
+    { label: 'Total Palettes', value: '12,450', change: '+12%', icon: Palette, color: 'bg-indigo-500' },
+    { label: 'Total Favorites', value: '45,200', change: '+24%', icon: Heart, color: 'bg-pink-500' },
+    { label: 'Total Users', value: '8,340', change: '+5%', icon: Users, color: 'bg-blue-500' },
+    { label: "Today's Palettes", value: '142', change: '+18%', icon: UserPlus, color: 'bg-green-500' },
 ];
 
 export const metadata = {
@@ -17,7 +17,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-                    <p className="text-gray-500 text-sm mt-1">Welcome back, Admin.</p>
+                    <p className="text-gray-500 text-sm mt-1">Platform health at a glance.</p>
                 </div>
                 <div className="px-4 py-2 bg-white rounded-lg border border-gray-200 text-sm font-medium text-gray-600 shadow-sm">
                     Last updated: Just now
@@ -40,6 +40,18 @@ export default function AdminDashboard() {
                 ))}
             </div>
 
+            {/* Charts Section (Stubbed) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-80 flex flex-col items-center justify-center text-gray-400">
+                    <Heart size={48} className="mb-4 opacity-20" />
+                    <p>Favorites Growth Chart (Coming Soon)</p>
+                </div>
+                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-80 flex flex-col items-center justify-center text-gray-400">
+                    <Palette size={48} className="mb-4 opacity-20" />
+                    <p>Techniques Popularity Chart (Coming Soon)</p>
+                </div>
+            </div>
+
             {/* Recent Activity Mockup */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-6">Recent Activity</h2>
@@ -50,10 +62,10 @@ export default function AdminDashboard() {
                                 U{i}
                             </div>
                             <div className="flex-1">
-                                <p className="text-sm font-medium text-gray-900">User_{i} started a Pro subscription</p>
+                                <p className="text-sm font-medium text-gray-900">User_{i} created a new palette "Ocean Vibes"</p>
                                 <p className="text-xs text-gray-400">2 minutes ago</p>
                             </div>
-                            <div className="text-sm font-bold text-green-600">+$12.00</div>
+                            <div className="text-sm font-bold text-blue-600">New Palette</div>
                         </div>
                     ))}
                 </div>

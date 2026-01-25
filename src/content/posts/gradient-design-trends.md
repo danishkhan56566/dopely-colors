@@ -19,4 +19,4 @@ Iridescent colors (Cyans, Magentas, Silvers) are trending for "Web3" and "AI" pr
 
 ## How to Create Them
 
-Visit the **PalettePro Gradient Studio** to layer multiple stops and create complex, code-ready CSS gradients.
+Visit the **Dopely Colors Gradient Studio** to layer multiple stops and create complex, code-ready CSS gradients.

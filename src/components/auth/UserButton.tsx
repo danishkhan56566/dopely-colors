@@ -17,33 +17,44 @@ export const UserButton = () => {
 
     useEffect(() => {
         const getUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setUser(session?.user ?? null);
+            try {
+                const { data: { session } } = await import('@/lib/supabase').then(m => m.safeGetSession());
+                setUser(session?.user ?? null);
 
-            if (session?.user) {
-                const { data } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-                setProfile(data);
+                if (session?.user) {
+                    const { data } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .single();
+                    setProfile(data);
+                }
+            } catch (error: any) {
+                if (error.name === 'AbortError') return;
+                console.error('UserButton init error:', error);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         getUser();
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-            setUser(session?.user ?? null);
-            if (session?.user) {
-                const { data } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-                setProfile(data);
-            } else {
-                setProfile(null);
+            try {
+                setUser(session?.user ?? null);
+                if (session?.user) {
+                    const { data } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .single();
+                    setProfile(data);
+                } else {
+                    setProfile(null);
+                }
+            } catch (error: any) {
+                if (error.name === 'AbortError') return;
+                console.error('AuthStateChange error:', error);
             }
         });
 
@@ -61,7 +72,7 @@ export const UserButton = () => {
         return (
             <Link
                 href="/login"
-                className="px-5 py-2 rounded-xl bg-black text-white font-bold text-sm hover:bg-gray-800 transition-all shadow-sm hover:shadow-md hover:scale-105 active:scale-95"
+                className="px-3 md:px-5 py-1.5 md:py-2 rounded-xl bg-black text-white font-bold text-xs md:text-sm hover:bg-gray-800 transition-colors whitespace-nowrap"
             >
                 Log In
             </Link>

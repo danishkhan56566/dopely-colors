@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, safeGetSession } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Mail, Lock, Loader2, ArrowLeft, Github, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
 
 export default function LoginPage() {
     const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -34,9 +35,28 @@ export default function LoginPage() {
 
         try {
             if (mode === 'signup') {
+                // Fetch Country & Traffic Source for Analytics
+                let country = 'Unknown';
+                try {
+                    const res = await fetch('https://ipapi.co/json/');
+                    const data = await res.json();
+                    if (data.country_name) country = data.country_name;
+                } catch (e) {
+                    // Ignore ipapi errors, fallback to Unknown
+                }
+
+                // Traffic Source (Referrer or Direct)
+                const trafficSource = document.referrer ? new URL(document.referrer).hostname : 'Direct';
+
                 const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        data: {
+                            country,
+                            traffic_source: trafficSource
+                        }
+                    }
                 });
                 if (error) throw error;
 
@@ -79,10 +99,26 @@ export default function LoginPage() {
         }
 
         try {
+            // Determine redirect URL
+            // Determine redirect URL
+            let redirectUrl = `${window.location.origin}/auth/callback`;
+
+            // Explicitly handle localhost for development clarity
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                redirectUrl = 'http://localhost:3000/auth/callback';
+            }
+            // Production override
+            else if (window.location.hostname === 'dopelycolors.com') {
+                redirectUrl = 'https://dopelycolors.com/auth/callback';
+            }
+
+            console.log('OAuth Redirect:', redirectUrl);
+
+
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/auth/callback`,
+                    redirectTo: redirectUrl,
                 },
             });
             if (error) throw error;
@@ -101,8 +137,14 @@ export default function LoginPage() {
 
                 <div className="bg-white rounded-[32px] shadow-xl p-8 border border-gray-100">
                     <div className="text-center mb-8">
-                        <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
-                            P
+                        <div className="w-20 h-20 mx-auto mb-4 relative">
+                            <Image
+                                src="/brand-logo.png"
+                                alt="Dopely Colors Logo"
+                                fill
+                                className="object-contain"
+                                priority
+                            />
                         </div>
                         <h1 className="text-2xl font-bold text-gray-900">
                             {mode === 'login' ? 'Welcome back' : 'Create an account'}

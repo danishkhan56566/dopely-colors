@@ -12,7 +12,7 @@ In 2026, color tools have evolved far beyond simple hex code pickers. Modern des
 
 ### Why AI Matters in Color Selection
 
-Traditional color theory is timeless, but AI helps bridge the gap between "correct" theory and "contextual" application. Tools like **PalettePro** use heuristic algorithms to understand the *mood* of your project—whether it's "Luxury," "Tech," or "Calm"—and generate palettes that fit that specific vibe instantly.
+Traditional color theory is timeless, but AI helps bridge the gap between "correct" theory and "contextual" application. Tools like **Dopely Colors** use heuristic algorithms to understand the *mood* of your project—whether it's "Luxury," "Tech," or "Calm"—and generate palettes that fit that specific vibe instantly.
 
 ## Top Features to Look For
 

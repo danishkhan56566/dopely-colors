@@ -132,9 +132,9 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
                         {/* Info Row (Circles + Codes) */}
                         <div className="px-8 py-8">
                             <div className="grid grid-cols-4 md:grid-cols-5 gap-4">
-                                {colors.map((color) => (
+                                {colors.map((color, i) => (
                                     <button
-                                        key={color}
+                                        key={`${color}-${i}`}
                                         onClick={() => copyToClipboard(color)}
                                         className="flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
                                     >

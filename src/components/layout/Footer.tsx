@@ -8,18 +8,20 @@ const FOOTER_LINKS = {
             { label: "Generate Palettes", href: "/generate" },
             { label: "Explore Popular", href: "/explore?sort=popular" },
             { label: "Extract from Image", href: "/image" },
-            { label: "AI Palette Generator", href: "/" },
+            { label: "AI Palette Generator", href: "/ai" },
             { label: "Contrast Checker", href: "/contrast" },
             { label: "Preview on Designs", href: "/generate?view=visualize" },
             { label: "Color Picker", href: "/picker" },
-            { label: "Gradient Generator", href: "/generate" },
-            { label: "Tailwind Colors", href: "/generate" },
-            { label: "Design System Builder", href: "/generate" },
+            { label: "Gradient Generator", href: "/explore" },
+            { label: "Tailwind Colors", href: "/tailwind" },
+            { label: "Design System Builder", href: "/design-system" },
         ]
     },
     discover: {
         title: "Discover",
         links: [
+            { label: "Blog & Articles", href: "/blog" },
+            { label: "Guides & Tutorials", href: "/guides" },
             { label: "List of Colors", href: "/explore" },
             { label: "Browse Gradients", href: "/explore" },
             { label: "Industry Palettes", href: "/explore?tag=saas" },
@@ -42,11 +44,13 @@ const FOOTER_LINKS = {
     company: {
         title: "Company",
         links: [
+            { label: "About Us", href: "/about" },
             { label: "Pricing", href: "/pricing" },
             { label: "License", href: "/license" },
-            { label: "Terms of Service", href: "/terms" },
-            { label: "Privacy Policy", href: "/privacy" },
-            { label: "Cookie Policy", href: "/cookies" },
+            { label: "Terms of Service", href: "/terms-of-service" },
+            { label: "Privacy Policy", href: "/privacy-policy" },
+            { label: "Cookie Policy", href: "/cookie-policy" },
+            { label: "Disclaimer", href: "/disclaimer" },
             { label: "Help Center", href: "/help" },
             { label: "Feature Requests", href: "/requests" },
             { label: "Contact", href: "/contact" },
@@ -83,14 +87,17 @@ export const Footer = () => {
                     <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center text-white text-xs font-bold bg-rainbow">D</div>
                         <span className="text-gray-900 font-bold">Dopely Colors</span>
-                        <span className="text-gray-400 text-sm ml-2">© 2026 — Let's build better color systems. Made by Danish Khan.</span>
+                        <div className="flex flex-col ml-2">
+                            <span className="text-gray-400 text-sm">© 2026 — Let's build better color systems. Made by Danish Khan.</span>
+                            <span className="text-gray-300 text-[10px] mt-1">This website uses Google AdSense, a service for displaying advertisements. Google may use cookies to show relevant ads to users.</span>
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <Link href="#" className="text-gray-400 hover:text-gray-900 transition-colors"><Twitter size={20} /></Link>
-                        <Link href="#" className="text-gray-400 hover:text-gray-900 transition-colors"><Github size={20} /></Link>
-                        <Link href="#" className="text-gray-400 hover:text-gray-900 transition-colors"><Dribbble size={20} /></Link>
-                        <Link href="#" className="text-gray-400 hover:text-gray-900 transition-colors"><Instagram size={20} /></Link>
+                        <Link href="#" aria-label="Twitter" className="text-gray-400 hover:text-gray-900 transition-colors"><Twitter size={20} /></Link>
+                        <Link href="#" aria-label="Github" className="text-gray-400 hover:text-gray-900 transition-colors"><Github size={20} /></Link>
+                        <Link href="#" aria-label="Dribbble" className="text-gray-400 hover:text-gray-900 transition-colors"><Dribbble size={20} /></Link>
+                        <Link href="#" aria-label="Instagram" className="text-gray-400 hover:text-gray-900 transition-colors"><Instagram size={20} /></Link>
                     </div>
                 </div>
             </div>

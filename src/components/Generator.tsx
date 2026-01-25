@@ -9,10 +9,13 @@ import { TopBar } from '@/components/TopBar';
 import { ContrastBadge } from '@/components/ContrastBadge';
 import { ExportModal } from '@/components/ExportModal';
 import { ContextPreview } from '@/components/ContextPreview';
+import { HowItWorksModal } from '@/components/HowItWorksModal';
 import { RefreshCcw } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PaletteDetailsFAQ } from '@/components/content/PageFAQs';
 
+import clsx from 'clsx';
 import { VisualizerView } from '@/components/visualize/VisualizerView';
 import { SystemBuilder } from '@/components/system/SystemBuilder';
 
@@ -26,13 +29,10 @@ export default function Generator() {
     const [isExportOpen, setIsExportOpen] = useState(false);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
     const [isSystemOpen, setIsSystemOpen] = useState(false);
+    const [isHelpOpen, setIsHelpOpen] = useState(false);
     const [viewMode, setViewMode] = useState<'columns' | 'visualize'>(() => {
         return searchParams.get('view') === 'visualize' ? 'visualize' : 'columns';
     });
-
-    // ... (rest of useEffects - keep them)
-    // We don't prefer useRouter for replaceState to avoid server roundtrips/suspense boundaries if possible, 
-    // but let's stick to window.history for purely client-side feeling updates if we are already mounted.
 
     // Hydrate from URL on mount
     useEffect(() => {
@@ -55,7 +55,7 @@ export default function Generator() {
         if (!initialized.current || !isHydrated) return;
 
         const hexString = colors.map(c => c.hex.replace('#', '')).join('-');
-        const newPath = `/generate/${hexString}`; // Note: This drops query params if not carefully handled?
+        const newPath = `/generate/${hexString}`;
 
         // Preserve query params (like ?view=visualize)
         const currentSearch = window.location.search;
@@ -89,12 +89,14 @@ export default function Generator() {
     }, [handleKeyDown]);
 
     return (
-        <DashboardLayout>
-            <div className="flex flex-col h-[calc(100vh-64px)] md:h-screen relative">
+        <DashboardLayout showUserInfo={false}>
+            {/* Main Tool Container - Fixed height to fill viewport */}
+            <div className="flex flex-col h-[calc(100vh-64px)] md:h-screen relative bg-white">
                 <TopBar
                     onOpenPreview={() => setIsPreviewOpen(true)}
                     onOpenExport={() => setIsExportOpen(true)}
                     onOpenSystem={() => setIsSystemOpen(true)}
+                    onOpenHelp={() => setIsHelpOpen(true)}
                     viewMode={viewMode}
                     onChangeViewMode={setViewMode}
                 />
@@ -111,7 +113,11 @@ export default function Generator() {
                     colors={colors}
                 />
 
-                {/* Legacy Modal Preview - Keeping just in case or we can remove since we have Visualize Mode */}
+                <HowItWorksModal
+                    isOpen={isHelpOpen}
+                    onClose={() => setIsHelpOpen(false)}
+                />
+
                 <ContextPreview
                     isOpen={isPreviewOpen}
                     onClose={() => setIsPreviewOpen(false)}
@@ -188,7 +194,21 @@ export default function Generator() {
                         </>
                     )}
 
+
+                    {/* Desktop Hint */}
+                    {viewMode === 'columns' && !isSystemOpen && !isPreviewOpen && (
+                        <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+                            <span className="bg-white/90 backdrop-blur-sm text-gray-500 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm border border-gray-200/50">
+                                Press Spacebar to Generate
+                            </span>
+                        </div>
+                    )}
                 </div>
+            </div>
+
+            {/* Content Area - Scrolls below the tool */}
+            <div className="bg-white border-t border-gray-100 relative z-20">
+                <PaletteDetailsFAQ />
             </div>
         </DashboardLayout>
     );

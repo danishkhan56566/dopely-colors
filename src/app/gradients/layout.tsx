@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'CSS Gradient Generator | PalettePro',
+    title: 'CSS Gradient Generator | Dopely Colors',
     description: 'Create advanced linear, radial, and conic gradients. Export to CSS and Tailwind class names instantly.',
 };
 

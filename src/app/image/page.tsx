@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { Upload, Image as ImageIcon, X, Download, ArrowRight, Wand2 } from 'lucide-react';
+import { Upload, Image as ImageIcon, X, Download, ArrowRight, Wand2, Sparkles, Loader2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { extractColors } from 'extract-colors';
 import chroma from 'chroma-js';
@@ -9,6 +9,8 @@ import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import { usePaletteStore } from '@/store/usePaletteStore';
 import { ExportModal } from '@/components/ExportModal';
+import { ImageGuide } from '@/components/content/PageGuides';
+import { ImageFAQ, ImageHowTo } from '@/components/content/PageFAQs';
 
 interface ExtractedColor {
     hex: string;
@@ -107,149 +109,187 @@ export default function ImageExtractorPage() {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-6">
-
-                {/* Header */}
-                <ExportModal
-                    isOpen={isExportOpen}
-                    onClose={() => setIsExportOpen(false)}
-                    colors={getExportableColors()}
-                />
-                <div className="text-center max-w-2xl mb-12">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-100 text-blue-600 mb-4">
-                        <ImageIcon size={24} />
-                    </div>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">Image to Palette</h1>
-                    <p className="text-gray-500 text-lg">
-                        Upload any photo, screenshot, or logo. our AI will extract a balanced, production-ready color system instantly.
-                    </p>
+            <div className="min-h-screen bg-gray-50 flex flex-col items-center relative overflow-hidden">
+                {/* Immersive Background */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-200/40 rounded-full blur-[120px] mix-blend-multiply opacity-70 animate-blob" />
+                    <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-200/40 rounded-full blur-[120px] mix-blend-multiply opacity-70 animate-blob animation-delay-4000" />
                 </div>
 
-                {/* Main Workspace */}
-                <div className="w-full max-w-5xl bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row min-h-[600px]">
+                <div className="w-full max-w-7xl px-4 py-16 sm:px-6 relative z-10">
+                    <ExportModal
+                        isOpen={isExportOpen}
+                        onClose={() => setIsExportOpen(false)}
+                        colors={getExportableColors()}
+                    />
 
-                    {/* Left: Upload / Image Preview */}
-                    <div className="flex-1 bg-gray-100/50 relative border-r border-gray-100 flex flex-col">
-                        {imagePreview ? (
-                            <div className="relative w-full h-full flex items-center justify-center bg-[#F4F4F5] p-8">
-                                <img
-                                    src={imagePreview}
-                                    alt="Uploaded"
-                                    className="max-w-full max-h-[500px] object-contain shadow-lg rounded-lg"
-                                />
-                                <button
-                                    onClick={() => { setImagePreview(null); setExtractedPalette([]); }}
-                                    className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur rounded-full text-gray-500 hover:text-red-500 shadow-sm transition-colors"
-                                >
-                                    <X size={20} />
-                                </button>
-                            </div>
-                        ) : (
-                            <div
-                                onDrop={handleDrop}
-                                onDragOver={e => e.preventDefault()}
-                                className="flex-1 flex flex-col items-center justify-center p-12 text-center cursor-pointer hover:bg-gray-100 transition-colors border-2 border-dashed border-gray-300 m-8 rounded-2xl"
-                                onClick={() => fileInputRef.current?.click()}
-                            >
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={handleFileSelect}
-                                />
-                                <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 mb-6">
-                                    <Upload size={32} />
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">Click or drop image here</h3>
-                                <p className="text-gray-400">Supports JPG, PNG, WEBP, SVG</p>
-                            </div>
-                        )}
+                    {/* Premium Header */}
+                    <div className="text-center space-y-6 mb-16">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/60 backdrop-blur-md border border-white/40 shadow-sm rounded-full ring-1 ring-black/5 animate-in fade-in slide-in-from-bottom-2 duration-700">
+                            <ImageIcon size={14} className="text-blue-600" />
+                            <span className="text-xs font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                                Image Intelligence V2.0
+                            </span>
+                        </div>
+
+                        <h1 className="text-5xl md:text-7xl font-black text-gray-900 tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-100">
+                            Capture Colors from <br className="hidden md:block" />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 saturate-150 drop-shadow-lg">
+                                Any Image
+                            </span>
+                        </h1>
+
+                        <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 font-medium">
+                            Upload photos, screenshots, or art. <br className="hidden sm:block" />
+                            Our AI instantly extracts the <span className="text-gray-900 font-bold">perfect palette</span> for you.
+                        </p>
                     </div>
 
-                    {/* Right: Palette Analysis */}
-                    <div className="flex-1 p-8 flex flex-col">
-                        {!extractedPalette.length ? (
-                            <div className="flex-1 flex flex-col items-center justify-center text-gray-400 text-center">
-                                <Wand2 size={48} className="mb-4 opacity-20" />
-                                <p>Upload an image to see the magic happen</p>
-                            </div>
-                        ) : (
-                            <div className="flex-1 flex flex-col">
-                                <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-6 flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                                    Smart Analysis Results
-                                </h3>
+                    {/* Main Workspace Card */}
+                    <div className="w-full bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-blue-900/5 border border-white/50 overflow-hidden ring-1 ring-black/5 flex flex-col lg:flex-row min-h-[700px] animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
 
-                                {/* Dominant Colors Grid */}
-                                <div className="grid grid-cols-2 gap-4 mb-8">
-                                    {extractedPalette.slice(0, 4).map((color, i) => (
-                                        <div key={i} className="flex flex-col gap-2 group cursor-pointer">
-                                            <div
-                                                className="h-24 rounded-xl shadow-sm border border-black/5 relative group-hover:scale-[1.02] transition-transform"
-                                                style={{ backgroundColor: color.hex }}
-                                            >
-                                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <span className={clsx("font-mono text-sm font-bold bg-white/20 backdrop-blur px-2 py-1 rounded",
-                                                        chroma(color.hex).luminance() > 0.5 ? 'text-black' : 'text-white'
-                                                    )}>
-                                                        {color.hex}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="flex justify-between items-center px-1">
-                                                <span className="text-xs font-bold text-gray-500 uppercase">
-                                                    {i === 0 ? 'Dominant' : i === 1 ? 'Primary' : 'Accent'}
-                                                </span>
-                                                <span className="text-xs text-gray-400">{(color.area * 100).toFixed(0)}%</span>
-                                            </div>
-                                        </div>
-                                    ))}
+                        {/* Left: Upload / Image Preview */}
+                        <div className="flex-1 bg-gray-50/50 relative border-b lg:border-b-0 lg:border-r border-gray-100 flex flex-col group/upload">
+                            {imagePreview ? (
+                                <div className="relative w-full h-full flex items-center justify-center p-8 lg:p-12 overflow-hidden">
+                                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+                                    <img
+                                        src={imagePreview}
+                                        alt="Uploaded"
+                                        className="relative z-10 max-w-full max-h-[500px] object-contain shadow-2xl rounded-2xl ring-1 ring-black/5 transform transition-transform duration-700 hover:scale-[1.02]"
+                                    />
+                                    <button
+                                        onClick={() => { setImagePreview(null); setExtractedPalette([]); }}
+                                        className="absolute top-6 right-6 p-3 bg-white/90 backdrop-blur-md rounded-full text-gray-500 hover:text-red-500 hover:bg-red-50 shadow-lg border border-white/50 transition-all z-20 group-hover/upload:opacity-100 opacity-0 transform translate-y-2 group-hover/upload:translate-y-0 duration-300"
+                                    >
+                                        <X size={20} />
+                                    </button>
                                 </div>
+                            ) : (
+                                <div
+                                    onDrop={handleDrop}
+                                    onDragOver={e => e.preventDefault()}
+                                    className="flex-1 flex flex-col items-center justify-center p-12 text-center cursor-pointer hover:bg-white/50 transition-all m-8 rounded-[2rem] border-4 border-dashed border-gray-200 hover:border-blue-400 group hover:shadow-lg hover:shadow-blue-500/5"
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleFileSelect}
+                                    />
+                                    <div className="w-24 h-24 bg-white shadow-xl shadow-blue-100/50 rounded-[2rem] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-lg">
+                                            <Upload size={28} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-black text-gray-900 mb-3">Drop your image here</h3>
+                                    <p className="text-lg text-gray-500 font-medium">Supports JPG, PNG, WEBP (Max 10MB)</p>
+                                </div>
+                            )}
+                        </div>
 
-                                {/* Secondary Colors Strip */}
-                                <div className="mb-auto">
-                                    <h4 className="text-xs font-bold text-gray-400 mb-3">SECONDARY & NEUTRAL</h4>
-                                    <div className="flex gap-2">
-                                        {extractedPalette.slice(4, 9).map((color, i) => (
-                                            <div
-                                                key={i}
-                                                className="h-12 w-12 rounded-lg border border-black/5 hover:scale-110 transition-transform cursor-pointer"
-                                                style={{ backgroundColor: color.hex }}
-                                                title={color.hex}
-                                            />
-                                        ))}
+                        {/* Right: Palette Analysis */}
+                        <div className="flex-1 p-8 lg:p-12 flex flex-col bg-white/40">
+                            {!extractedPalette.length ? (
+                                <div className="flex-1 flex flex-col items-center justify-center text-gray-400 text-center space-y-6">
+                                    <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-2">
+                                        <Wand2 size={40} className="text-gray-300" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xl font-bold text-gray-900 mb-2">Waiting for Magic</p>
+                                        <p className="max-w-xs mx-auto">Upload an image to see the AI extract colors instantly.</p>
                                     </div>
                                 </div>
+                            ) : (
+                                <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-4 duration-700">
+                                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-8 flex items-center gap-3">
+                                        <span className="relative flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                                        </span>
+                                        Analysis Complete
+                                    </h3>
 
-                                {/* Actions */}
-                                <div className="mt-8 pt-8 border-t border-gray-100 flex flex-col gap-3">
-                                    <button
-                                        onClick={openGenerator}
-                                        className="w-full py-4 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-lg"
-                                    >
-                                        Open in Generator <ArrowRight size={18} />
-                                    </button>
-                                    <button
-                                        onClick={handleExport}
-                                        className="w-full py-4 bg-gray-100 text-gray-700 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors"
-                                    >
-                                        <Download size={18} /> Export Palette
-                                    </button>
-                                </div>
-                            </div>
-                        )}
+                                    {/* Dominant Colors Grid */}
+                                    <div className="grid grid-cols-2 gap-6 mb-12">
+                                        {extractedPalette.slice(0, 4).map((color, i) => (
+                                            <div key={i} className="flex flex-col gap-3 group cursor-pointer">
+                                                <div
+                                                    className="h-32 rounded-2xl shadow-sm border border-black/5 relative group-hover:scale-[1.03] group-hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                                    style={{ backgroundColor: color.hex }}
+                                                >
+                                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10 backdrop-blur-[2px]">
+                                                        <span className="font-mono text-xs font-bold bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg shadow-lg text-gray-900 transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                                                            {color.hex}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex justify-between items-center px-1">
+                                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider group-hover:text-blue-600 transition-colors">
+                                                        {i === 0 ? 'Dominant' : i === 1 ? 'Primary' : 'Accent'}
+                                                    </span>
+                                                    <span className="text-xs font-bold text-gray-900">{(color.area * 100).toFixed(0)}%</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
 
-                        {isAnalyzing && (
-                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-20">
-                                <div className="flex flex-col items-center gap-3">
-                                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                                    <span className="font-bold text-gray-900">Analyzing colors...</span>
+                                    {/* Secondary Colors Strip */}
+                                    <div className="mb-auto">
+                                        <h4 className="text-xs font-bold text-gray-400 mb-4 uppercase tracking-wider">Secondary Matches</h4>
+                                        <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
+                                            {extractedPalette.slice(4, 9).map((color, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="h-16 w-16 min-w-[4rem] rounded-xl border border-black/5 hover:scale-110 hover:shadow-lg transition-all cursor-pointer relative group"
+                                                    style={{ backgroundColor: color.hex }}
+                                                    title={color.hex}
+                                                >
+                                                    <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        {color.hex}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="mt-12 pt-8 border-t border-gray-100/50 flex flex-col gap-4">
+                                        <button
+                                            onClick={openGenerator}
+                                            className="w-full py-5 bg-gray-900 text-white rounded-2xl text-lg font-bold flex items-center justify-center gap-3 hover:bg-black hover:shadow-xl hover:shadow-blue-500/20 transition-all group"
+                                        >
+                                            <Sparkles size={20} className="text-blue-400 group-hover:rotate-12 transition-transform" />
+                                            Edit in Generator
+                                            <ArrowRight size={20} className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                                        </button>
+                                        <button
+                                            onClick={handleExport}
+                                            className="w-full py-5 bg-white border border-gray-200 text-gray-700 rounded-2xl text-lg font-bold flex items-center justify-center gap-3 hover:border-gray-300 hover:bg-gray-50 transition-all shadow-sm hover:shadow-md"
+                                        >
+                                            <Download size={20} /> Export Palette
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+
+                            {isAnalyzing && (
+                                <div className="absolute inset-0 bg-white/80 backdrop-blur-md flex items-center justify-center z-20 rounded-[2.5rem]">
+                                    <div className="flex flex-col items-center gap-4">
+                                        <Loader2 size={48} className="animate-spin text-blue-600" />
+                                        <span className="font-bold text-xl text-gray-900 animate-pulse">Extracting magic...</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
+
+                <ImageGuide />
+                <ImageFAQ />
+                <ImageHowTo />
             </div>
         </DashboardLayout>
     );

@@ -30,6 +30,13 @@ export const FloatingToolbar = ({ colors, onGenerate, onToggleLock, onUpdateColo
             <div className="w-px h-10 bg-gray-200 flex-shrink-0" />
 
             {/* Generator Button */}
+            <button
+                onClick={onGenerate}
+                className="p-4 bg-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 active:scale-95 transition-all flex-shrink-0"
+                title="Generate New Palette (Space)"
+            >
+                <RefreshCcw size={20} />
+            </button>
 
             {/* Color Circles */}
             <div className="flex items-center gap-2 md:gap-4">

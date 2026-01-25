@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Image to Palette Generator | PalettePro',
+    title: 'Image to Palette Generator | Dopely Colors',
     description: 'Upload an image and extract leading colors instantly. Create harmonious palettes from photos or logos.',
 };
 

@@ -1,67 +1,83 @@
 import { Color } from '@/store/usePaletteStore';
-import { Lock, Unlock, Edit2 } from 'lucide-react';
+import { Lock, Unlock, Copy, Check } from 'lucide-react';
 import chroma from 'chroma-js';
 import clsx from 'clsx';
-import { useRef } from 'react';
+import { useState } from 'react';
 
 interface ColorColumnProps {
     color: Color;
     onLock: (id: string) => void;
     onChange: (id: string, newHex: string) => void;
+    label?: string;
 }
 
-export const ColorColumn = ({ color, onLock, onChange, label }: ColorColumnProps & { label?: string }) => {
+export const ColorColumn = ({ color, onLock, onChange, label }: ColorColumnProps) => {
     // Determine text color based on background luminance for accessibility
     const textColor = chroma(color.hex).luminance() > 0.5 ? 'black' : 'white';
-    const inputRef = useRef<HTMLInputElement>(null);
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(color.hex);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 1000);
+    };
 
     return (
         <div
-            className="h-full flex flex-col items-center justify-center relative group transition-all duration-100 ease-linear"
+            className="h-full w-full flex flex-col items-center justify-center relative group transition-all duration-100 ease-linear"
             style={{ backgroundColor: color.hex, color: textColor }}
         >
-            {/* Role Label */}
+            {/* Role Label - Top Positioned */}
             {label && (
-                <span className="absolute top-8 md:top-12 text-xs md:text-sm font-semibold uppercase tracking-widest opacity-50">
+                <span className="hidden md:block absolute top-[15%] text-sm font-bold uppercase tracking-[0.2em] opacity-40">
                     {label}
                 </span>
             )}
 
-            {/* Hidden Color Input */}
-            <input
-                ref={inputRef}
-                type="color"
-                value={color.hex}
-                onChange={(e) => onChange(color.id, e.target.value)}
-                className="absolute opacity-0 pointer-events-none"
-            />
-
-            <div className="flex flex-col items-center gap-4 group/item">
+            {/* Main Hex Code - Centered */}
+            <div className="relative z-10 flex flex-col items-center gap-4">
                 <button
-                    onClick={() => inputRef.current?.click()}
-                    className="flex items-center gap-2 group/text focus:outline-none"
-                    title="Click to edit color"
+                    onClick={handleCopy}
+                    className="group/text focus:outline-none flex flex-col items-center gap-2"
+                    title="Click to copy"
                 >
-                    <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-widest cursor-pointer group-hover/text:scale-105 transition-transform">
+                    <h2 className={clsx(
+                        "text-3xl md:text-5xl font-black uppercase tracking-wider transition-transform duration-200",
+                        "hover:scale-110 active:scale-95 cursor-pointer"
+                    )}>
                         {color.hex.replace('#', '')}
                     </h2>
-                    <Edit2 size={16} className="opacity-0 group-hover/text:opacity-50 transition-opacity" />
-                </button>
 
+                    {/* Hover Copy Indicator */}
+                    <span className="text-xs font-bold uppercase tracking-widest opacity-0 group-hover/text:opacity-60 transition-opacity">
+                        {isCopied ? 'Copied!' : 'Copy Hex'}
+                    </span>
+                </button>
+            </div>
+
+            {/* Action Buttons - Bottom Positioned */}
+            <div className="absolute bottom-[15%] flex flex-col items-center gap-6 z-20">
                 <button
                     onClick={(e) => {
                         e.preventDefault();
                         onLock(color.id);
                     }}
                     className={clsx(
-                        "p-2 rounded-full transition-all duration-200 hover:bg-black/10 hover:scale-110 active:scale-95",
-                        color.isLocked ? "opacity-100" : "opacity-0 group-hover:opacity-100 focus:opacity-100"
+                        "p-3 rounded-xl transition-all duration-300 hover:scale-110 active:scale-90 border-2",
+                        color.isLocked
+                            ? "bg-white text-black border-white shadow-lg"
+                            : "bg-transparent border-current opacity-40 hover:opacity-100 hover:bg-black/5"
                     )}
                     aria-label={color.isLocked ? "Unlock color" : "Lock color"}
                 >
-                    {color.isLocked ? <Lock size={24} /> : <Unlock size={24} />}
+                    {color.isLocked ? <Lock size={20} /> : <Unlock size={20} />}
                 </button>
             </div>
+
+            {/* Mobile: Show Label nicely on mobile too */}
+            <span className="md:hidden absolute top-4 left-4 text-xs font-bold uppercase tracking-widest opacity-40">
+                {label}
+            </span>
         </div>
     );
 };

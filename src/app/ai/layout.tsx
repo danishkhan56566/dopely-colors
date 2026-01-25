@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'AI Color Palette Generator | PalettePro',
+    title: 'AI Color Palette Generator | Dopely Colors',
     description: 'Generate stunning color palettes from text prompts, images, or base colors using artificial intelligence.',
 };
 

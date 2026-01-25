@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Log In | PalettePro',
+    title: 'Log In | Dopely Colors',
     description: 'Sign in to access your saved palettes, favorites, and design systems across devices.',
 };
 

@@ -3,15 +3,18 @@ import { MetadataRoute } from 'next';
 
 import { getAllPosts } from '@/lib/blog';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://dopelycolors.com';
 
     // 1. Core Pages
     const coreRoutes = [
+        // ... (omitted similar lines for brevity, wait, replace_file_content needs exact match. I should use multi_replace for targeted edits)
+
         { url: '/', priority: 1.0 },
-        { url: '/about', priority: 0.6 }, // Needs rewrite to /company
-        { url: '/privacy-policy', priority: 0.5 }, // Needs rewrite to /legal/privacy
-        { url: '/terms-of-service', priority: 0.5 }, // Needs rewrite to /legal/terms
+        { url: '/license', priority: 0.5 },
+        { url: '/terms-of-service', priority: 0.5 },
+        { url: '/privacy-policy', priority: 0.5 },
+        { url: '/cookie-policy', priority: 0.5 },
     ];
 
     // 2. Tools (Rewrites needed for most)
@@ -40,11 +43,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: '/discover/community-palettes', priority: 0.9 }, // Rewrite to /explore
     ];
 
+    // 4. Guides
+    const guideRoutes = [
+        { url: '/guides', priority: 0.8 },
+        { url: '/guides/image-to-palette', priority: 0.7 },
+        { url: '/guides/ai-palette-generator', priority: 0.7 },
+        { url: '/guides/contrast-checker', priority: 0.7 },
+        { url: '/guides/preview-on-designs', priority: 0.7 },
+        { url: '/guides/color-picker', priority: 0.7 },
+        { url: '/guides/gradient-generator', priority: 0.7 },
+        { url: '/guides/tailwind-colors', priority: 0.7 },
+        { url: '/guides/design-system-builder', priority: 0.7 },
+        { url: '/guides/color-theory', priority: 0.7 },
+    ];
+
     // 4. Blog
     const blogIndex = [{ url: '/blog', priority: 0.8 }];
 
     // 5. Blog Posts
-    const posts = getAllPosts();
+    const posts = await getAllPosts();
     const blogPosts = posts.map((post) => ({
         url: `/blog/${post.slug}`,
         priority: 0.7, // As requested in XML snippet? Not explicitly there but implies standard blog priority
@@ -55,6 +72,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ...coreRoutes,
         ...toolRoutes,
         ...discoverRoutes,
+        ...guideRoutes,
         ...blogIndex,
     ].map(route => ({
         url: `${baseUrl}${route.url}`,

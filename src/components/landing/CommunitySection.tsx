@@ -4,10 +4,10 @@ import chroma from 'chroma-js';
 
 // Mock popular palettes for the landing page
 const POPULAR_PALETTES = [
-    { id: '1', likes: 2450, date: '1d ago', colors: ['#2E2E3A', '#EB5E28', '#F25F4C', '#E53170', '#FF8906'], tags: 'dark' },
-    { id: '2', likes: 1832, date: '3d ago', colors: ['#0047AB', '#407BA7', '#FFFFFF', '#D9D9D9', '#000814'], tags: 'tech' },
-    { id: '3', likes: 1540, date: '5h ago', colors: ['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'], tags: 'finance' },
-    { id: '4', likes: 1200, date: '2d ago', colors: ['#264653', '#2A9D8F', '#E9C46A', '#F4A261', '#E76F51'], tags: 'retro' },
+    { id: '1', likes: 2450, colors: ['#2E2E3A', '#EB5E28', '#F25F4C', '#E53170', '#FF8906'] },
+    { id: '2', likes: 1832, colors: ['#0047AB', '#407BA7', '#FFFFFF', '#D9D9D9', '#000814'] },
+    { id: '3', likes: 1540, colors: ['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'] },
+    { id: '4', likes: 1200, colors: ['#264653', '#2A9D8F', '#E9C46A', '#F4A261', '#E76F51'] },
 ];
 
 export const CommunitySection = () => {

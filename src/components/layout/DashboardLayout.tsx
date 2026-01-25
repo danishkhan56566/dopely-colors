@@ -1,8 +1,9 @@
 'use client';
 
-import { Search, Menu, X, Plus, TrendingUp, Clock, Shuffle, Heart, Wand2, Image, Contrast, Pipette, Smartphone, FileCode, Sparkles, Layers, Layout, Palette } from 'lucide-react';
+import { Search, Menu, X, Plus, TrendingUp, Clock, Shuffle, Heart, Wand2, Image, Contrast, Pipette, Smartphone, FileCode, Sparkles, Layers, Layout, Palette, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useState, ReactNode, Suspense } from 'react';
 import Link from 'next/link';
+import NextImage from 'next/image';
 import clsx from 'clsx';
 import { useSearchParams } from 'next/navigation';
 import { UserButton } from '@/components/auth/UserButton';
@@ -90,17 +91,30 @@ const SidebarContent = () => {
     );
 };
 
-export const DashboardLayout = ({ children }: { children: ReactNode }) => {
+export const DashboardLayout = ({ children, showUserInfo = true }: { children: ReactNode; showUserInfo?: boolean }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     return (
         <div className="min-h-screen bg-[#FBFBFB] flex text-slate-800">
             {/* Sidebar (Desktop) */}
-            <aside className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 border-r border-gray-100 bg-white z-40">
-                <div className="h-20 flex items-center px-6 border-b border-gray-50">
-                    <Link href="/" className="flex items-center w-full">
-                        <img src="/dopely-logo.png" alt="Dopely Colors" className="w-full h-auto object-contain" />
+            <aside
+                className={clsx(
+                    "hidden md:flex w-64 flex-col fixed inset-y-0 left-0 border-r border-gray-100 bg-white z-40 transition-transform duration-300 ease-in-out",
+                    !isSidebarOpen && "-translate-x-full"
+                )}
+            >
+                <div className="h-20 flex items-center px-6 border-b border-gray-50 justify-between">
+                    <Link href="/" className="flex items-center">
+                        <NextImage src="/dopely-logo.png" alt="Dopely Colors" width={168} height={56} className="h-14 w-auto object-contain" priority />
                     </Link>
+                    <button
+                        onClick={() => setIsSidebarOpen(false)}
+                        className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 transition-colors"
+                        title="Close Sidebar"
+                    >
+                        <PanelLeftClose size={18} />
+                    </button>
                 </div>
 
                 <Suspense fallback={<div className="p-6">Loading nav...</div>}>
@@ -122,7 +136,7 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
             {/* Mobile Header */}
             <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b z-50 flex items-center justify-between px-4">
                 <Link href="/" className="flex items-center">
-                    <img src="/dopely-logo.png" alt="Dopely Colors" className="h-10 object-contain" />
+                    <NextImage src="/dopely-logo.png" alt="Dopely Colors" width={120} height={40} className="h-10 w-auto object-contain" priority />
                 </Link>
                 <div className="flex items-center gap-3">
                     <UserButton />
@@ -133,11 +147,29 @@ export const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </header>
 
             {/* Main Content Wrapper */}
-            <main className="flex-1 md:ml-64 pt-16 md:pt-0 animate-fade-in relative">
+            <main
+                className={clsx(
+                    "flex-1 pt-16 md:pt-0 animate-fade-in relative transition-all duration-300 ease-in-out w-full min-w-0 overflow-x-hidden",
+                    isSidebarOpen ? "md:ml-64" : "md:ml-0"
+                )}
+            >
+                {/* Desktop Toggle Button (Visible when sidebar is closed) */}
+                {!isSidebarOpen && (
+                    <button
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="hidden md:flex fixed top-6 left-6 z-50 p-2 bg-white border border-gray-200 shadow-sm rounded-lg text-gray-500 hover:text-gray-900 transition-all hover:scale-105"
+                        title="Open Sidebar"
+                    >
+                        <PanelLeftOpen size={20} />
+                    </button>
+                )}
+
                 {/* Top Right Login Button (Desktop only, typically for landing page) */}
-                <div className="hidden md:flex absolute top-6 right-8 z-50">
-                    <UserButton />
-                </div>
+                {showUserInfo && (
+                    <div className="hidden md:flex absolute top-6 right-8 z-50">
+                        <UserButton />
+                    </div>
+                )}
 
                 {children}
             </main>
