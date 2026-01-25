@@ -2,7 +2,7 @@ import chroma from 'chroma-js';
 
 // --- Datasets ---
 
-const COLOR_NAMES: Record<string, string> = {
+export const COLOR_NAMES: Record<string, string> = {
     '#AB274F': 'Cherry Rose',
     '#F2F0E6': 'Alabaster',
     '#F0F8FF': 'Alice Blue',
