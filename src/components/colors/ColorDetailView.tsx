@@ -7,6 +7,7 @@ import {
     Palette, Layers, Zap, Eye, Check, AlertTriangle, Sparkles, Heart, Download
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import {
@@ -111,12 +112,22 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                         style={{ backgroundColor: hex }}
                     />
 
-                    <div className="relative z-10 w-full max-w-[1920px] mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        className="relative z-10 w-full max-w-[1920px] mx-auto"
+                    >
                         <div className="flex flex-col md:flex-row justify-between items-end gap-12">
                             <div className="space-y-4">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-xs font-bold uppercase tracking-widest text-white shadow-sm">
+                                <motion.div
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-xs font-bold uppercase tracking-widest text-white shadow-sm"
+                                >
                                     <Sparkles size={12} /> Premium Color
-                                </div>
+                                </motion.div>
                                 <h1
                                     className="text-7xl md:text-[180px] font-black tracking-tighter leading-[0.85] select-text"
                                     style={{ color: 'white', textShadow: '0 10px 30px rgba(0,0,0,0.15)' }}
@@ -153,14 +164,19 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Main Content Grid */}
                 <div className="max-w-[1920px] mx-auto px-8 md:px-16 py-24 space-y-32">
 
                     {/* Conversions Ribbon */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4"
+                    >
                         {Object.entries(conversions).map(([key, value]) => (
                             <div
                                 key={key}
@@ -171,7 +187,7 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                                 <div className="text-sm font-mono truncate text-neutral-900">{value}</div>
                             </div>
                         ))}
-                    </div>
+                    </motion.div>
 
                     {/* Psychology & Meaning - Bento Grid */}
                     <section className="space-y-12">
@@ -180,7 +196,13 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                             <h3 className="text-xl font-medium tracking-tight text-neutral-400 uppercase">The Logic</h3>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-[600px]">
+                        <motion.div
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.8, ease: "circOut" }}
+                            className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto md:h-[600px]"
+                        >
                             {/* Main Description */}
                             <div className="md:col-span-2 bg-white rounded-[3rem] p-12 flex flex-col justify-between border border-neutral-100 shadow-xl shadow-neutral-100/50 relative overflow-hidden group">
                                 <div
@@ -218,7 +240,7 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                                     Download Palette
                                 </button>
                             </div>
-                        </div>
+                        </motion.div>
                     </section>
 
                     {/* Interactive Variations Stream */}
@@ -409,7 +431,8 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                         </div>
                     </div>
                 </div>
+
             </div>
-        </DashboardLayout>
+        </DashboardLayout >
     );
 }
