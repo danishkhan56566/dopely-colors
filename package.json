@@ -19,6 +19,7 @@
     "@vercel/analytics": "^1.6.1",
     "chroma-js": "^3.2.0",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "extract-colors": "^4.2.1",
     "framer-motion": "^12.28.1",

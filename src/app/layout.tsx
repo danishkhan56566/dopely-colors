@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter, Outfit, JetBrains_Mono } from "next/font/goog
 import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/react";
 
+import { CommandPalette } from "@/components/CommandPalette";
 import { ErrorSuppressorScript } from '@/components/ErrorSuppressorScript';
 import Script from "next/script";
 import "./globals.css";
@@ -72,6 +73,7 @@ export default function RootLayout({
       >
         <ErrorSuppressorScript />
         {children}
+        <CommandPalette />
         <Toaster position="top-center" richColors />
         <Analytics />
       </body>
