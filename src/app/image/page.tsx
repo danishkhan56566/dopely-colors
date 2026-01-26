@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { Upload, Image as ImageIcon, X, Download, ArrowRight, Wand2, Sparkles, Loader2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { extractColors } from 'extract-colors';
+import { extractPalette } from '@/lib/image-extraction';
 import chroma from 'chroma-js';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
@@ -38,25 +38,9 @@ export default function ImageExtractorPage() {
         setImagePreview(objectUrl);
 
         try {
-            // Extract colors using the library
-            const colors = await extractColors(objectUrl, {
-                pixels: 40000,
-                distance: 0.22,
-            });
-
-            // Map and sort by area (dominance)
-            const mappedColors = colors
-                .map(c => ({
-                    hex: c.hex,
-                    area: c.area,
-                    hue: c.hue,
-                    saturation: c.saturation,
-                    lightness: c.lightness,
-                    intensity: c.intensity
-                }))
-                .sort((a, b) => b.area - a.area);
-
-            setExtractedPalette(mappedColors.slice(0, 10)); // Keep top 10 candidates
+            // Extract colors using custom high-perf extractor
+            const colors = await extractPalette(objectUrl);
+            setExtractedPalette(colors); // Extractor already sorts and filters
         } catch (error) {
             console.error("Extraction failed", error);
         } finally {
