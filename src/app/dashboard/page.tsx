@@ -7,14 +7,33 @@ import {
 import Link from 'next/link';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+
 export default function DashboardHome() {
+    const [user, setUser] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+            setLoading(false);
+        };
+        getUser();
+    }, []);
+
+    const displayName = user?.email?.split('@')[0] || 'Designer';
+
     return (
         <DashboardLayout>
             <div className="max-w-6xl mx-auto space-y-8">
 
                 {/* Welcome Section */}
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Welcome back, Designer</h1>
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        {loading ? 'Welcome back...' : `Welcome back, ${displayName}`}
+                    </h1>
                     <p className="text-gray-500 mt-1">Here's what's happening with your palettes today.</p>
                 </div>
 

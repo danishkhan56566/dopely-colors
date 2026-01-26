@@ -47,7 +47,8 @@ export async function middleware(request: NextRequest) {
 
     // Protected Routes
     if (request.nextUrl.pathname.startsWith('/profile') ||
-        request.nextUrl.pathname.startsWith('/settings')) {
+        request.nextUrl.pathname.startsWith('/settings') ||
+        request.nextUrl.pathname.startsWith('/dashboard')) {
         // Removed /admin check to allow full localhost access as requested
         if (!user) {
             return NextResponse.redirect(new URL('/login', request.url))

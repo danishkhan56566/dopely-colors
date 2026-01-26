@@ -18,7 +18,7 @@ export const UserButton = () => {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const { data: { session } } = await import('@/lib/supabase').then(m => m.safeGetSession());
+                const { data: { session } } = await supabase.auth.getSession();
                 setUser(session?.user ?? null);
 
                 if (session?.user) {
