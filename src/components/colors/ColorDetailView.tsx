@@ -15,6 +15,7 @@ import {
     getSimilarColors, getLibraryMatches, getNearestColorName, type ColorPsychology
 } from '@/lib/color-utils';
 import { supabase } from '@/lib/supabase';
+import { SaveColorButton } from '@/components/colors/SaveColorButton';
 
 // Helper for contrast text color
 const getContrastColor = (hex: string) => {
@@ -144,6 +145,7 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                                     >
                                         <Copy size={24} className="text-white" />
                                     </button>
+                                    <SaveColorButton hex={hex} name={dbColor?.name || colorName} className="bg-white/20 text-white hover:bg-white/30 border border-white/20 w-12 h-12" />
                                 </div>
                             </div>
 
