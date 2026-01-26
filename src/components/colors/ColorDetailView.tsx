@@ -16,6 +16,7 @@ import {
 } from '@/lib/color-utils';
 import { supabase } from '@/lib/supabase';
 import { SaveColorButton } from '@/components/colors/SaveColorButton';
+import { ExportModal } from '@/components/ExportModal';
 
 // Helper for contrast text color
 const getContrastColor = (hex: string) => {
@@ -43,6 +44,7 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
 
     const [mounted, setMounted] = useState(false);
     const [dbColor, setDbColor] = useState(initialDbColor);
+    const [isExportOpen, setIsExportOpen] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -101,10 +103,31 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
         toast.success(`Copied ${text}`);
     };
 
+    const exportColors = useMemo(() => {
+        // Create a rich palette for export: Main + Analogous + Complementary
+        const palette = [
+            hex,
+            ...harmonies.analogous.slice(0, 2),
+            ...harmonies.complementary.slice(0, 1),
+            ...harmonies.triadic.slice(0, 1)
+        ].slice(0, 5); // Ensure max 5
+
+        return palette.map(h => ({
+            id: h,
+            hex: h,
+            isLocked: false
+        }));
+    }, [hex, harmonies]);
+
     if (!mounted) return null;
 
     return (
         <DashboardLayout>
+            <ExportModal
+                isOpen={isExportOpen}
+                onClose={() => setIsExportOpen(false)}
+                colors={exportColors}
+            />
             <div className="min-h-screen bg-neutral-50 text-neutral-900 selection:bg-indigo-100">
                 {/* Immersive Hero */}
                 <div className="relative w-full h-[85vh] overflow-hidden flex flex-col justify-end p-8 md:p-16">
@@ -238,7 +261,10 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                                         </div>
                                     ))}
                                 </div>
-                                <button className="w-full py-4 rounded-2xl bg-neutral-900 text-white font-bold hover:bg-neutral-800 transition-colors shadow-lg shadow-neutral-900/20">
+                                <button
+                                    onClick={() => setIsExportOpen(true)}
+                                    className="w-full py-4 rounded-2xl bg-neutral-900 text-white font-bold hover:bg-neutral-800 transition-colors shadow-lg shadow-neutral-900/20"
+                                >
                                     Download Palette
                                 </button>
                             </div>

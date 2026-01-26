@@ -7,7 +7,6 @@ import NextImage from 'next/image';
 import clsx from 'clsx';
 import { useSearchParams } from 'next/navigation';
 import { UserButton } from '@/components/auth/UserButton';
-import { ThemeToggle } from '@/components/ThemeToggle';
 
 const SIDEBAR_LINKS = [
     { icon: Clock, label: 'New', href: '/explore?sort=new' },
@@ -124,10 +123,6 @@ export const DashboardLayout = ({ children, showUserInfo = true }: { children: R
 
                 {/* Create Button in Sidebar */}
                 <div className="p-6 border-t border-gray-50 flex flex-col gap-4">
-                    <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-gray-400">Theme</span>
-                        <ThemeToggle />
-                    </div>
                     <Link
                         href="/generate"
                         className="flex items-center justify-center gap-2 w-full py-4 bg-rainbow text-white rounded-xl font-bold hover:brightness-110 hover:shadow-lg hover:shadow-purple-500/20 transition-all active:scale-95"
