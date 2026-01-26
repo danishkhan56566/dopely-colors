@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/react";
 
 import { CommandPalette } from "@/components/CommandPalette";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { ErrorSuppressorScript } from '@/components/ErrorSuppressorScript';
 import Script from "next/script";
@@ -79,14 +80,21 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${outfit.variable} ${jetbrainsMono.variable} antialiased`}
         suppressHydrationWarning
+
       >
-        <ErrorSuppressorScript />
-        {children}
-        <CommandPalette />
-        <Toaster position="top-center" richColors />
-        <Toaster position="top-center" richColors />
-        <Analytics />
-        <ServiceWorkerRegister />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ErrorSuppressorScript />
+          {children}
+          <CommandPalette />
+          <Toaster position="top-center" richColors />
+          <Analytics />
+          <ServiceWorkerRegister />
+        </ThemeProvider>
       </body>
     </html>
   );
