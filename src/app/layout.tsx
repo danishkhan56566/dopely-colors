@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/react";
@@ -50,6 +50,14 @@ export const metadata: Metadata = {
   verification: {
     google: "YraEoUZQurKF6RDK8P0qEqhcRl6JfVfSVUebXJDdeck",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
