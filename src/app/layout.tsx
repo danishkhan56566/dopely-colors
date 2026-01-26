@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/react";
 
 import { CommandPalette } from "@/components/CommandPalette";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { ErrorSuppressorScript } from '@/components/ErrorSuppressorScript';
 import Script from "next/script";
 import "./globals.css";
@@ -83,7 +84,9 @@ export default function RootLayout({
         {children}
         <CommandPalette />
         <Toaster position="top-center" richColors />
+        <Toaster position="top-center" richColors />
         <Analytics />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
