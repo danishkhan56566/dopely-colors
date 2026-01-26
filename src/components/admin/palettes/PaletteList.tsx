@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { cleanupDuplicates } from '@/app/admin/daily/actions'; // Import server action
 
+import PaletteImportModal from './PaletteImportModal';
+
 interface PaletteListProps {
     initialPalettes: any[];
     totalCount: number;
@@ -18,6 +20,7 @@ export default function PaletteList({ initialPalettes, totalCount }: PaletteList
     const [search, setSearch] = useState('');
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [isCleaning, setIsCleaning] = useState(false);
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
     // Editable Metrics State
     const [editingMetric, setEditingMetric] = useState<{ id: string, field: 'favorites_count' | 'views_count' } | null>(null);
@@ -140,13 +143,13 @@ export default function PaletteList({ initialPalettes, totalCount }: PaletteList
                         <RefreshCw size={18} className={isCleaning ? 'animate-spin' : ''} />
                         Cleanup Duplicates
                     </button>
-                    <Link
-                        href="/admin/palettes/create"
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition"
+                    <button
+                        onClick={() => setIsImportModalOpen(true)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition shadow-lg shadow-blue-500/30"
                     >
                         <Plus size={18} />
-                        New
-                    </Link>
+                        Add Palette
+                    </button>
                 </div>
             </div>
 
@@ -324,6 +327,12 @@ export default function PaletteList({ initialPalettes, totalCount }: PaletteList
                     </tbody>
                 </table>
             </div>
+
+            <PaletteImportModal
+                isOpen={isImportModalOpen}
+                onClose={() => setIsImportModalOpen(false)}
+                onSuccess={() => window.location.reload()}
+            />
         </div>
     );
 }

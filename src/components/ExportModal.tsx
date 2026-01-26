@@ -1,19 +1,27 @@
 import { Color } from '@/store/usePaletteStore';
 import { X, Copy, Check, Download } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 
 interface ExportModalProps {
     isOpen: boolean;
     onClose: () => void;
     colors: Color[];
+    initialFormat?: Format;
 }
 
-type Format = 'css' | 'tailwind' | 'scss' | 'json' | 'image';
+export type Format = 'css' | 'tailwind' | 'scss' | 'json' | 'image';
 
-export const ExportModal = ({ isOpen, onClose, colors }: ExportModalProps) => {
-    const [format, setFormat] = useState<Format>('css');
+export const ExportModal = ({ isOpen, onClose, colors, initialFormat = 'css' }: ExportModalProps) => {
+    const [format, setFormat] = useState<Format>(initialFormat);
     const [copied, setCopied] = useState(false);
+
+    // Reset format when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setFormat(initialFormat);
+        }
+    }, [isOpen, initialFormat]);
 
     if (!isOpen) return null;
 
