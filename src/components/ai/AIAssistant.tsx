@@ -273,7 +273,7 @@ export default function AIAssistant() {
                 }));
 
                 try {
-                    const response = await fetch('http://localhost:8000/generate/text-to-palette', {
+                    const response = await fetch('/api/generate/text-to-palette', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ prompt: newContext.appDescription || 'Modern app', count: 5 })
@@ -369,7 +369,8 @@ export default function AIAssistant() {
                 // Get User ID from LocalStorage logic (which we initialized in useEffect)
                 const storedUserId = localStorage.getItem('dopely_user_id') || 'guest';
 
-                const chatResponse = await fetch('http://localhost:8000/chat', {
+                // Use relative path '/api/chat' which works in Prod (Vercel) and Dev (Next.js Rewrite)
+                const chatResponse = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -531,7 +532,7 @@ export default function AIAssistant() {
                     let seedColor = '';
 
                     try {
-                        const response = await fetch('http://localhost:8000/generate/image-to-palette', {
+                        const response = await fetch('/api/generate/image-to-palette', {
                             method: 'POST',
                             body: formData,
                         });
