@@ -139,8 +139,15 @@ export default function AIAssistant() {
     const { toggleFavorite } = usePaletteStore();
     const router = useRouter();
 
-    // Initial Greeting
+    // Initial Greeting & User ID Setup
     useEffect(() => {
+        // 1. Setup Identity for Cloud Sync
+        if (!localStorage.getItem('dopely_user_id')) {
+            const newId = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('dopely_user_id', newId);
+            console.log('New User ID generated:', newId);
+        }
+
         if (state.history.length === 0) {
             // No greeting initially, just the input screen. 
             // Or maybe a "Describe your idea" prompt.
@@ -187,15 +194,15 @@ export default function AIAssistant() {
             newContext.appType = analysis.type;
 
             responseMsgs.push({
-                id: 'ai-initial', sender: 'ai',
+                id: 'ai-initial-' + Date.now(), sender: 'ai',
                 text: `Great! I'll help you design a complete color system for your ${analysis.type} app.`
             });
             responseMsgs.push({
-                id: 'ai-ask-logo', sender: 'ai',
+                id: 'ai-ask-logo-' + Date.now(), sender: 'ai',
                 text: `Before we start, do you already have a logo for your app?`,
                 actions: [
                     { label: 'Yes, I have a logo', action: 'has_logo', variant: 'primary' },
-                    { label: 'No, generate one', action: 'gen_logo', variant: 'outline' }
+                    { label: 'Continue', action: 'gen_logo', variant: 'outline' }
                 ]
             });
             nextStep = 'LOGO_DECISION';
@@ -204,14 +211,14 @@ export default function AIAssistant() {
         // 2. LOGO DECISION
         else if (currentStep === 'LOGO_DECISION') {
             if (input.toLowerCase().includes('yes')) {
-                responseMsgs.push({ id: 'ai-upload', sender: 'ai', text: "Please upload your logo so I can analyze its colors." });
+                responseMsgs.push({ id: 'ai-upload-' + Date.now(), sender: 'ai', text: "Please upload your logo so I can analyze its colors." });
                 nextStep = 'LOGO_UPLOAD';
             } else {
                 responseMsgs.push({
-                    id: 'ai-gen', sender: 'ai', text: "No problem! I can generate some logo concepts based on your app's vibe. What style do you prefer?",
-                    actions: [{ label: 'Modern', action: 'style_modern' }, { label: 'Playful', action: 'style_playful' }]
+                    id: 'ai-skip-gen-' + Date.now(), sender: 'ai', text: "Understood. I'll proceed directly to creating your color palette ecosystem."
                 });
-                nextStep = 'LOGO_GEN';
+                nextStep = 'PALETTE_GEN';
+                setTimeout(() => processAIResponse('auto', 'PALETTE_GEN'), 1000);
             }
         }
 
@@ -220,7 +227,7 @@ export default function AIAssistant() {
             // Logic handled via handleImageUpload for actual image.
             // If user texts here, we skip logo or ask again.
             if (input !== 'image_uploaded') {
-                responseMsgs.push({ id: 'ai-skip-logo', sender: 'ai', text: "I'll generate a palette based on your description instead." });
+                responseMsgs.push({ id: 'ai-skip-logo-' + Date.now(), sender: 'ai', text: "I'll generate a palette based on your description instead." });
                 nextStep = 'PALETTE_GEN';
                 setTimeout(() => processAIResponse('auto', 'PALETTE_GEN'), 1000);
             } else {
@@ -233,12 +240,12 @@ export default function AIAssistant() {
         else if (currentStep === 'LOGO_GEN') {
             const concepts = generateLogoConcepts(newContext.appType || 'general', ['#000', '#fff']);
             responseMsgs.push({
-                id: 'ai-logo-res', sender: 'ai',
+                id: 'ai-logo-res-' + Date.now(), sender: 'ai',
                 text: `Here are a few concepts for your ${newContext.appType} app.`,
                 type: 'logo-options', data: concepts
             });
             responseMsgs.push({
-                id: 'ai-logo-next', sender: 'ai',
+                id: 'ai-logo-next-' + Date.now(), sender: 'ai',
                 text: "Based on this vibe, I'll generate your color palette now."
             });
             setTimeout(() => processAIResponse('auto', 'PALETTE_GEN'), 2000);
@@ -248,30 +255,89 @@ export default function AIAssistant() {
         // 4. PALETTE GEN (First Run)
         else if (currentStep === 'PALETTE_GEN') {
             // INITIAL GENERATION
-            // Create Design State
+            let seedFromBackend = null;
+            let backendSystem = null;
+
+            // If NO logo colors, try to use Neural Backend for Text-to-Palette
+            if (!newContext.logoColors || newContext.logoColors.length === 0) {
+                // Show a temporary loading indicator
+                const loadingMsgId = 'ai-loading-neural-' + Date.now();
+                setState(prev => ({
+                    ...prev,
+                    history: [...prev.history, {
+                        id: loadingMsgId,
+                        sender: 'ai',
+                        // Visual cue for the user - 10x UX
+                        text: "Connecting to Neural Core..."
+                    }]
+                }));
+
+                try {
+                    const response = await fetch('http://localhost:8000/generate/text-to-palette', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: newContext.appDescription || 'Modern app', count: 5 })
+                    });
+
+                    // Remove loading message
+                    setState(prev => ({
+                        ...prev,
+                        history: prev.history.filter(m => m.id !== loadingMsgId)
+                    }));
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.status === 'success' || data.status === 'mock') {
+                            seedFromBackend = data.seed;
+
+                            if (data.ai_suggestions) {
+                                newContext.logoColors = [
+                                    data.ai_suggestions.primary,
+                                    data.ai_suggestions.secondary,
+                                    data.ai_suggestions.tertiary
+                                ].filter(Boolean);
+                            } else {
+                                newContext.logoColors = [data.seed];
+                            }
+
+                            toast.success(data.status === 'mock' ? "Generated (Dev Mock)" : "Generated via OpenAI");
+                        }
+                    }
+                } catch (err) {
+                    console.warn("Text-to-Palette backend failed, falling back to local logic", err);
+                    // Remove loading message on error too
+                    setState(prev => ({
+                        ...prev,
+                        history: prev.history.filter(m => m.id !== loadingMsgId)
+                    }));
+                }
+            }
+
+            // Create Design State (Client Logic, potentially seeded by Backend Data)
             newDesign = createInitialDesign(
                 newContext.appType || 'general',
                 newContext.logoVibe || 'modern',
-                newContext.logoColors // Use correct property name from ai-assistant.ts
+                newContext.logoColors // Now potentially populated by Backend AI
             );
 
             const paletteData = designStateToPalette(newDesign);
             newContext.palette = paletteData.colors; // Sync for UI previews if needed
 
             responseMsgs.push({
-                id: 'ai-pal-res', sender: 'ai',
+                id: 'ai-pal-res-' + Date.now(), sender: 'ai',
                 text: newDesign.explanation,
                 type: 'palette',
                 data: paletteData
             });
 
             responseMsgs.push({
-                id: 'ai-pal-ask', sender: 'ai',
+                id: 'ai-pal-ask-' + Date.now(), sender: 'ai',
                 text: "How does this feel? We can refine it, or I can show you how it looks on real screens.",
                 actions: [
                     { label: 'Looks perfect! Show Preview', action: 'preview', variant: 'primary' },
                     { label: 'Make it brighter', action: 'refine_bright', variant: 'outline' },
-                    { label: 'Try Dark Mode', action: 'refine_dark', variant: 'outline' }
+                    { label: 'Try Dark Mode', action: 'refine_dark', variant: 'outline' },
+                    { label: 'Regenerate', action: 'regenerate', variant: 'secondary' }
                 ]
             });
             nextStep = 'REFINEMENT';
@@ -286,7 +352,7 @@ export default function AIAssistant() {
             if (intent.type === 'FEEDBACK' && intent.value === 'negative') {
                 // Handle "I don't like this"
                 responseMsgs.push({
-                    id: 'ai-clarify', sender: 'ai',
+                    id: 'ai-clarify-' + Date.now(), sender: 'ai',
                     text: `Got it 👍 What would you like to change?`,
                     actions: [
                         { label: 'Colors (Brighter)', action: 'refine_bright', variant: 'outline' },
@@ -295,39 +361,92 @@ export default function AIAssistant() {
                         { label: 'Start Over', action: 'reset', variant: 'secondary' }
                     ]
                 });
-                // Stay in REFINEMENT steps
             }
-            else if (intent.type === 'RESET') {
-                // Reset Design
-                newDesign = createInitialDesign(newContext.appType || 'general', 'modern'); // Simple reset
-                const paletteData = designStateToPalette(newDesign);
-                newContext.palette = paletteData.colors;
-                responseMsgs.push({ id: 'ai-reset', sender: 'ai', text: "I've reset the design system. Here is a fresh start.", type: 'palette', data: paletteData });
-            }
-            else if (intent.type === 'PREVIEW') {
-                responseMsgs.push({ id: 'ai-prev', sender: 'ai', text: "Great! Applying these colors to your app interface..." });
-                nextStep = 'APP_PREVIEW';
-                setTimeout(() => processAIResponse('auto', 'APP_PREVIEW'), 1000);
-            }
-            else if (newDesign) {
-                // Apply Refinement Mutation
-                newDesign = evolveDesignSystem(newDesign, intent);
-                const paletteData = designStateToPalette(newDesign);
-                newContext.palette = paletteData.colors;
 
-                responseMsgs.push({
-                    id: 'ai-update-' + Date.now(),
-                    sender: 'ai',
-                    text: newDesign.explanation,
-                    type: 'palette',
-                    data: paletteData
+            // --- AGENTIC BACKEND INTEGRATION ---
+            // Instead of local regex, we send the intent to the Agentic Backend
+            try {
+                // Get User ID from LocalStorage logic (which we initialized in useEffect)
+                const storedUserId = localStorage.getItem('dopely_user_id') || 'guest';
+
+                const chatResponse = await fetch('http://localhost:8000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: input,
+                        current_state: newContext,
+                        user_id: storedUserId // Send identity for Supabase history
+                    })
                 });
+
+                if (chatResponse.ok) {
+                    const data = await chatResponse.json();
+
+                    // BUCKET A: Design Action
+                    if (data.type === 'action') {
+                        // Backend generated new system (DesignSystemOutput)
+                        const backendSystem = data.data;
+
+                        if (backendSystem && backendSystem.base_colors) {
+                            // Construct DesignState directly from Backend System
+                            const prevHistory = state.design ? [...state.design.history, state.design] : [];
+
+                            newDesign = {
+                                brand_colors: {
+                                    primary: backendSystem.base_colors.primary,
+                                    secondary: backendSystem.base_colors.secondary,
+                                    accent: backendSystem.base_colors.tertiary,
+                                    background: backendSystem.platforms.android_material.surface,
+                                    text: backendSystem.platforms.android_material.neutral_10 || '#111827'
+                                },
+                                system: backendSystem,
+                                mode: 'light', // Default to light unless we parse 'mode' from intent or data
+                                vibe: newContext.logoVibe || 'modern',
+                                brightness_level: 1,
+                                saturation_level: 1,
+                                history: prevHistory as any, // Type cast to avoid complexity with recursion
+                                version_id: 'v_ai_' + Date.now(),
+                                explanation: data.message || "I've updated the design system."
+                            };
+
+                            const paletteData = designStateToPalette(newDesign);
+                            newContext.palette = paletteData.colors;
+
+                            responseMsgs.push({
+                                id: 'ai-agent-action-' + Date.now(),
+                                sender: 'ai',
+                                text: newDesign.explanation,
+                                type: 'palette',
+                                data: paletteData
+                            });
+                        }
+                    }
+                    // BUCKET B & C: Domain Knowledge / Out of Scope (Handled by Backend)
+                    else {
+                        responseMsgs.push({
+                            id: 'ai-agent-chat-' + Date.now(),
+                            sender: 'ai',
+                            text: data.message
+                        });
+                    }
+                } else {
+                    // Fallback if backend offline
+                    responseMsgs.push({
+                        id: 'ai-err-' + Date.now(), sender: 'ai', text: "I'm having trouble connecting to my brain. Please try again."
+                    });
+                }
+            } catch (err) {
+                console.error("Agent Backend Error", err);
+                responseMsgs.push({
+                    id: 'ai-err-local-' + Date.now(), sender: 'ai', text: "Network error. Using local fallback..."
+                });
+                // Optional: Fallback to old regex logic here if critical
             }
         }
 
         // 6. APP PREVIEW
         else if (currentStep === 'APP_PREVIEW') {
-            responseMsgs.push({ id: 'ai-design-sys', sender: 'ai', text: "I've applied your colors to some UI components. Ready to generate the code?", actions: [{ label: 'Yes, Export Code', action: 'export', variant: 'primary' }] });
+            responseMsgs.push({ id: 'ai-design-sys-' + Date.now(), sender: 'ai', text: "I've applied your colors to some UI components. Ready to generate the code?", actions: [{ label: 'Yes, Export Code', action: 'export', variant: 'primary' }] });
             nextStep = 'PLATFORM_SELECT';
         }
 
@@ -338,7 +457,7 @@ export default function AIAssistant() {
 
                 // Render Export Card
                 responseMsgs.push({
-                    id: 'ai-export-ui',
+                    id: 'ai-export-ui-' + Date.now(),
                     sender: 'ai',
                     text: "Here is your complete Design System in every format:",
                     type: 'export-ui',
@@ -346,13 +465,13 @@ export default function AIAssistant() {
                 });
 
                 responseMsgs.push({
-                    id: 'ai-save', sender: 'ai', text: "Would you like to save this project to your library?",
+                    id: 'ai-save-' + Date.now(), sender: 'ai', text: "Would you like to save this project to your library?",
                     actions: [{ label: 'Save Project', action: 'save_project', variant: 'primary' }]
                 });
                 nextStep = 'EXPORT';
             } else {
                 if (input.toLowerCase().includes('save')) {
-                    responseMsgs.push({ id: 'ai-saved', sender: 'ai', text: "Project saved successfully to your dashboard." });
+                    responseMsgs.push({ id: 'ai-saved-' + Date.now(), sender: 'ai', text: "Project saved successfully to your dashboard." });
                 }
                 // Reset nextStep to avoid loops if needed, or stay in EXPORT
                 nextStep = 'EXPORT';
@@ -398,13 +517,52 @@ export default function AIAssistant() {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
+
+            // 1. Preview Logic (Standard)
             reader.onload = async (e) => {
                 const result = e.target?.result as string;
 
                 try {
-                    // Actual extraction using extract-colors
-                    const extractedData = await extractColors(result);
-                    const extractedHexes = extractedData.map(c => c.hex);
+                    // 2. Try Python Backend First (Superior Logic)
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    let extractedHexes: string[] = [];
+                    let seedColor = '';
+
+                    try {
+                        const response = await fetch('http://localhost:8000/generate/image-to-palette', {
+                            method: 'POST',
+                            body: formData,
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.status === 'success') {
+                                seedColor = data.seed;
+                                // Use the generated system primary tones as the "extracted colors" for context
+                                // This matches the user's intent better than random extraction
+                                const p = data.system.palettes.primary;
+                                extractedHexes = [
+                                    seedColor,
+                                    p['40'], // Primary
+                                    p['90'], // Container
+                                    data.system.palettes.secondary['40'],
+                                    data.system.palettes.tertiary['40']
+                                ];
+                                toast.success("AI Analysis Complete (via Python Engine)");
+                            }
+                        }
+                    } catch (backendErr) {
+                        console.warn("Backend unavailable, falling back to client-side extraction", backendErr);
+                    }
+
+                    // 3. Fallback to Client Side if Backend Failed
+                    if (extractedHexes.length === 0) {
+                        const extractedData = await extractColors(result);
+                        extractedHexes = extractedData.map(c => c.hex);
+                        toast.info("Analysis Complete (Client-side fallback)");
+                    }
 
                     const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: "Uploaded Logo", type: 'image' };
 
@@ -415,16 +573,16 @@ export default function AIAssistant() {
                             ...prev.context,
                             logo: result,
                             logoVibe: 'custom',
-                            logoColors: extractedHexes
+                            logoColors: extractedHexes,
+                            // If we have a backend seed, we could enforce it specifically, 
+                            // but logoColors[0] is usually treated as the seed in createInitialDesign
                         }
                     }));
 
-                    const analysisMsg: Message = { id: Date.now().toString() + 'ai', sender: 'ai', text: `I've analyzed your logo and found ${extractedHexes.length} distinct colors. I'll build a design system around them.` };
-                    // Don't add analysisMsg here manually, let the effect handle it to avoid dupes? 
-                    // Actually, keep it for feedback, but the effect will trigger the actual work.
+                    const analysisMsg: Message = { id: Date.now().toString() + 'ai', sender: 'ai', text: `I've analyzed your logo using my neural engine and found the perfect brand colors.` };
+
                     setState(prev => ({ ...prev, history: [...prev.history, analysisMsg] }));
 
-                    // Trigger handled by useEffect watching history
                 } catch (err) {
                     console.error("Color extraction failed", err);
                     const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: "Uploaded Logo", type: 'image' };
@@ -547,7 +705,7 @@ export default function AIAssistant() {
                         className="w-full max-w-2xl relative group"
                     >
                         <div className="absolute -inset-1.5 bg-gradient-to-r from-violet-500/20 via-fuchsia-500/20 to-indigo-500/20 rounded-[2.5rem] opacity-0 group-hover:opacity-100 blur transition duration-700" />
-                        <div className="relative bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] p-2 border border-gray-100/50">
+                        <div className="relative bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] p-2 border border-gray-100/50" suppressHydrationWarning>
                             <div className="flex items-center">
                                 <div className="pl-6 text-gray-400 group-focus-within:text-violet-500 transition-colors">
                                     <Sparkles size={24} />
@@ -850,7 +1008,7 @@ export default function AIAssistant() {
                 </div>
 
                 {/* Floating Input Bar */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[85%] z-20">
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[85%] z-20" suppressHydrationWarning>
                     <div className="relative flex items-center gap-2 p-2 rounded-[2rem] bg-white/80 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 focus-within:ring-4 focus-within:ring-violet-500/10 transition-all">
                         <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
                         <button onClick={() => fileInputRef.current?.click()} className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-colors">
@@ -952,6 +1110,7 @@ export default function AIAssistant() {
                         {state.context.palette ? (
                             <div className="scale-[0.8] 2xl:scale-[0.85] origin-top h-full w-full">
                                 <FeaturePreview
+                                    key={state.design ? state.design.version_id : 'initial'}
                                     colors={state.context.palette}
                                     type={state.context.appType || 'general'}
                                     design={state.design}

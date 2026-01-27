@@ -69,10 +69,14 @@ export class DesignSystemGenerator {
 
     private seedArgb: number;
     private seedHex: string;
+    private secondaryHex?: string;
+    private tertiaryHex?: string;
 
-    constructor(seedHex: string) {
+    constructor(seedHex: string, secondaryHex?: string, tertiaryHex?: string) {
         this.seedHex = seedHex;
         this.seedArgb = argbFromHex(seedHex);
+        this.secondaryHex = secondaryHex;
+        this.tertiaryHex = tertiaryHex;
     }
 
     /**
@@ -85,11 +89,23 @@ export class DesignSystemGenerator {
         const sourceColorHct = Hct.fromInt(this.seedArgb);
         const scheme = new SchemeTonalSpot(sourceColorHct, false, 0.0);
 
-        // Extract key colors
+        // Extract key colors - prioritize overrides if they exist
+        const primary = this.seedHex; // STRICT: Use exact seed
+
+        let secondary = getHex(scheme.secondaryPalette.keyColor.toInt());
+        if (this.secondaryHex) {
+            secondary = this.secondaryHex;
+        }
+
+        let tertiary = getHex(scheme.tertiaryPalette.keyColor.toInt());
+        if (this.tertiaryHex) {
+            tertiary = this.tertiaryHex;
+        }
+
         return {
-            primary: getHex(scheme.primaryPalette.keyColor.toInt()),
-            secondary: getHex(scheme.secondaryPalette.keyColor.toInt()),
-            tertiary: getHex(scheme.tertiaryPalette.keyColor.toInt()),
+            primary,
+            secondary,
+            tertiary,
             neutral: getHex(scheme.neutralPalette.keyColor.toInt()),
             neutralVariant: getHex(scheme.neutralVariantPalette.keyColor.toInt()),
             error: getHex(scheme.errorPalette.keyColor.toInt()),
@@ -119,9 +135,24 @@ export class DesignSystemGenerator {
             });
         };
 
-        mapPalette('primary', scheme.primaryPalette);
-        mapPalette('secondary', scheme.secondaryPalette);
-        mapPalette('tertiary', scheme.tertiaryPalette);
+        // STRICT: Create Primary Palette directly from Seed to avoid shifts
+        mapPalette('primary', TonalPalette.fromInt(this.seedArgb));
+
+        // Handle Secondary Override
+        if (this.secondaryHex) {
+            const secondaryPal = TonalPalette.fromInt(argbFromHex(this.secondaryHex));
+            mapPalette('secondary', secondaryPal);
+        } else {
+            mapPalette('secondary', scheme.secondaryPalette);
+        }
+
+        // Handle Tertiary Override
+        if (this.tertiaryHex) {
+            const tertiaryPal = TonalPalette.fromInt(argbFromHex(this.tertiaryHex));
+            mapPalette('tertiary', tertiaryPal);
+        } else {
+            mapPalette('tertiary', scheme.tertiaryPalette);
+        }
         mapPalette('neutral', scheme.neutralPalette);
         mapPalette('neutral_variant', scheme.neutralVariantPalette);
         mapPalette('error', scheme.errorPalette);
@@ -211,8 +242,8 @@ export class DesignSystemGenerator {
 
         const keyColors = {
             primary: scheme.primaryPalette,
-            secondary: scheme.secondaryPalette,
-            tertiary: scheme.tertiaryPalette,
+            secondary: this.secondaryHex ? TonalPalette.fromInt(argbFromHex(this.secondaryHex)) : scheme.secondaryPalette,
+            tertiary: this.tertiaryHex ? TonalPalette.fromInt(argbFromHex(this.tertiaryHex)) : scheme.tertiaryPalette,
             neutral: scheme.neutralPalette,
             error: scheme.errorPalette
         };

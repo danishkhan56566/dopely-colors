@@ -33,7 +33,7 @@ export interface DesignState {
 }
 
 export interface UserIntent {
-    type: 'ADJUST' | 'MODE' | 'PREVIEW' | 'FEEDBACK' | 'RESET' | 'UNKNOWN';
+    type: 'ADJUST' | 'MODE' | 'PREVIEW' | 'FEEDBACK' | 'RESET' | 'UNKNOWN' | 'REGENERATE';
     target?: 'brightness' | 'contrast' | 'saturation' | 'hue' | 'palette';
     value?: string | number; // "+10%", "dark", "blue"
     specific_color?: string; // "primary", "background"
@@ -126,6 +126,11 @@ export const parseUserIntent = (text: string): UserIntent => {
         return { type: 'RESET', raw_text: text };
     }
 
+    // REGENERATE
+    if (t.includes('regenerate') || t.includes('try again') || t.includes('roll again')) {
+        return { type: 'REGENERATE', raw_text: text };
+    }
+
     return { type: 'UNKNOWN', raw_text: text };
 };
 
@@ -133,30 +138,111 @@ export const parseUserIntent = (text: string): UserIntent => {
 // --- 3. MUTATION ENGINE (The Hands) ---
 
 // Initial Generator (Entry Point)
-export const createInitialDesign = (type: string, vibe: string, logoColors?: string[]): DesignState => {
+export const createInitialDesign = (type: string, vibe: string, logoColors?: string[], randomize: boolean = false): DesignState => {
 
     let seedColor = '#3B82F6'; // Default Blue
 
     // 1. If Logo exists, STRICTLY use it
+    // EXCEPTION: If the "Logo" is just a single generic seed from the Mock Backend (e.g. Purple/Blue),
+    // and we have a specific Industry detected (e.g. Weather), we should PRIORITIZE the Industry Color.
+    const genericSeeds = ['#6200EA', '#3B82F6', '#4285F4', '#000000'];
+    const hasSpecializedType = ['food', 'finance', 'islamic', 'weather', 'medical', 'construction', 'fashion', 'gaming', 'education', 'realestate'].includes(type);
+
+    let useLogo = false;
     if (logoColors && logoColors.length > 0) {
-        seedColor = logoColors[0];
-    }
-    // 2. Else use Vibe Preset to pick a SEED
-    else {
-        switch (type) {
-            case 'food': seedColor = '#FF4D4D'; break;
-            case 'finance': seedColor = '#0057FF'; break;
-            case 'islamic': seedColor = '#047857'; break;
-            case 'tech': seedColor = '#6366f1'; break;
-            case 'health': seedColor = '#00CEC9'; break;
-            case 'gaming': seedColor = '#E84393'; break;
-            case 'fashion': seedColor = '#2D3436'; break;
-            default: seedColor = '#3B82F6'; break;
+        useLogo = true;
+        // If it's a single color that looks generic, and we have a better industry match -> Ignore the "logo" (which is likely just a backend seed)
+        if (logoColors.length === 1 && !randomize && hasSpecializedType && genericSeeds.includes(logoColors[0].toUpperCase())) {
+            useLogo = false;
         }
     }
 
+    if (useLogo && logoColors) {
+        if (randomize) {
+            // If regenerating with a logo, try to find a distinct variation
+            if (logoColors.length > 1) {
+                // Pick a random color from the logo that ISN'T the first one if possible (or just random)
+                // Let's just pick any random color from the extracted set to explore the brand's palette
+                seedColor = logoColors[Math.floor(Math.random() * logoColors.length)];
+            } else {
+                // Single color logo? Shift hue significantly (e.g. Triadic or Split Complementary) to offer variety
+                seedColor = chroma(logoColors[0]).set('hsl.h', chroma(logoColors[0]).get('hsl.h') + (Math.random() > 0.5 ? 120 : -120)).hex();
+            }
+        } else {
+            seedColor = logoColors[0];
+        }
+    }
+    // 2. Else use Vibe Preset to pick a SEED
+    else {
+        if (randomize) {
+            // Completely random vibrant color for fresh inspiration
+            seedColor = chroma.hsl(Math.random() * 360, 0.6 + Math.random() * 0.4, 0.4 + Math.random() * 0.2).hex();
+        } else {
+            switch (type) {
+                case 'food': seedColor = '#FF4D4D'; break;
+                case 'finance': seedColor = '#0057FF'; break;
+                case 'islamic': seedColor = '#047857'; break;
+                case 'tech': seedColor = '#6366f1'; break;
+                case 'health': seedColor = '#00CEC9'; break;
+                case 'medical': seedColor = '#0EA5E9'; break;
+                case 'gaming': seedColor = '#E84393'; break;
+                case 'fashion': seedColor = '#2D3436'; break;
+                case 'weather': seedColor = '#38BDF8'; break; // Sky Blue
+                case 'construction': seedColor = '#F59E0B'; break; // Amber
+                case 'education': seedColor = '#4F46E5'; break; // Indigo
+                case 'realestate': seedColor = '#0F172A'; break; // Slate
+                default: seedColor = '#3B82F6'; break;
+            }
+        }
+    }
+
+    let overrideSecondary: string | undefined;
+    let overrideTertiary: string | undefined;
+
+    // 0. Extract Overrides from Logo (STRICT MODE)
+    // If we have a logo, we want to use its colors directly, not just the seed.
+    if (logoColors && logoColors.length > 1 && !randomize) {
+        // Filter out the seed/primary to find distinct others
+        const unique = logoColors.filter(c => c.toLowerCase() !== seedColor.toLowerCase());
+        if (unique.length > 0) overrideSecondary = unique[0];
+        if (unique.length > 1) overrideTertiary = unique[1];
+    }
+
     // GENERATE SYSTEM
-    const generator = new DesignSystemGenerator(seedColor);
+    // If Randomizing, let's also shake up the Secondary/Tertiary relationships
+    // Material Design TonalSpot defaults are safe but often monotonous. 
+    // Regeneration implies a desire for something different.
+    if (randomize) {
+        const root = chroma(seedColor);
+        const shift = Math.random();
+
+        if (logoColors && logoColors.length > 1) {
+            // If we have distinct logo colors, use them!
+            // Try to find one that isn't the seed
+            const others = logoColors.filter(c => c !== seedColor);
+            if (others.length > 0) overrideSecondary = others[Math.floor(Math.random() * others.length)];
+            if (others.length > 1) overrideTertiary = others.filter(c => c !== overrideSecondary)[0];
+        }
+
+        // If no logo colors for secondary/tertiary, generate harmonic variations
+        if (!overrideSecondary) {
+            if (shift < 0.3) {
+                // Vibrant Analogous
+                overrideSecondary = root.set('hsl.h', root.get('hsl.h') + 35).hex();
+                overrideTertiary = root.set('hsl.h', root.get('hsl.h') - 35).hex();
+            } else if (shift < 0.6) {
+                // Triadic Pop
+                overrideSecondary = root.set('hsl.h', root.get('hsl.h') + 120).hex();
+                overrideTertiary = root.set('hsl.h', root.get('hsl.h') + 240).hex();
+            } else {
+                // Split Complementary
+                overrideSecondary = root.set('hsl.h', root.get('hsl.h') + 150).hex();
+                overrideTertiary = root.set('hsl.h', root.get('hsl.h') + 210).hex();
+            }
+        }
+    }
+
+    const generator = new DesignSystemGenerator(seedColor, overrideSecondary, overrideTertiary);
     const system = generator.generateAll(type);
 
     // Map to Legacy UI Props
@@ -285,10 +371,18 @@ export const designStateToPalette = (state: DesignState): AIPalette => {
 
 export const analyzeText = (text: string): { type: string; vibe: string } => {
     const t = text.toLowerCase();
-    if (t.includes('food') || t.includes('cook')) return { type: 'food', vibe: 'warm' };
-    if (t.includes('finance') || t.includes('bank')) return { type: 'finance', vibe: 'trust' };
-    if (t.includes('islamic') || t.includes('muslim')) return { type: 'islamic', vibe: 'peaceful' };
-    if (t.includes('tech') || t.includes('app')) return { type: 'tech', vibe: 'modern' };
+    if (t.includes('food') || t.includes('cook') || t.includes('restaurant')) return { type: 'food', vibe: 'warm' };
+    if (t.includes('finance') || t.includes('bank') || t.includes('wallet')) return { type: 'finance', vibe: 'trust' };
+    if (t.includes('islamic') || t.includes('muslim') || t.includes('prayer')) return { type: 'islamic', vibe: 'peaceful' };
+    if (t.includes('weather') || t.includes('forecast')) return { type: 'weather', vibe: 'clean' };
+    if (t.includes('medical') || t.includes('health') || t.includes('doctor')) return { type: 'medical', vibe: 'sterile' };
+    if (t.includes('construction') || t.includes('build') || t.includes('contractor')) return { type: 'construction', vibe: 'industrial' };
+    if (t.includes('game') || t.includes('gaming')) return { type: 'gaming', vibe: 'energetic' };
+    if (t.includes('fashion') || t.includes('style') || t.includes('wear')) return { type: 'fashion', vibe: 'elegant' };
+    if (t.includes('real estate') || t.includes('property') || t.includes('home')) return { type: 'realestate', vibe: 'professional' };
+    if (t.includes('education') || t.includes('school') || t.includes('learn')) return { type: 'education', vibe: 'friendly' };
+
+    if (t.includes('tech') || t.includes('app') || t.includes('startup')) return { type: 'tech', vibe: 'modern' };
     return { type: 'general', vibe: 'modern' };
 };
 

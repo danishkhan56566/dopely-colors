@@ -1,7 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ShoppingCart, User, Bell, Search, LayoutGrid, Heart, Star, MapPin, Smartphone, Monitor, Store } from 'lucide-react';
+import {
+    ShoppingCart, User, Bell, Search, LayoutGrid, Heart, Star, MapPin, Smartphone, Monitor, Store,
+    ShoppingBag, Cloud, Users, Upload, Folder, Settings, Camera, FileText, Video, Mic, Image as ImageIcon, Music, MoreHorizontal, Plus
+} from 'lucide-react';
 
 import { DesignState } from '@/lib/ai-assistant';
 
@@ -174,129 +177,129 @@ const HighFidelityAndroid = ({ design, type }: { design?: DesignState | null, ty
 
 const HighFidelityIOS = ({ design, type }: { design?: DesignState | null, type?: string }) => {
     const ios = design?.system?.platforms.ios_hig;
-    const sysBlue = ios?.systemPrimary.light || '#007AFF';
-    const bg = ios?.systemGroupedBackground.light || '#F2F2F7';
+    const primary = design?.brand_colors.primary || '#007AFF';
+    const secondary = design?.brand_colors.secondary || '#5856D6';
+    const tertiary = design?.system?.base_colors.tertiary || '#FF2D55';
+    const surface = ios?.systemGroupedBackground.light || '#F2F2F7';
 
-    // Content Switcher
-    const isFood = type === 'food' || type === 'restaurant';
-    const isTech = type === 'tech' || type === 'finance' || type === 'modern';
-
-    const settingsTitle = isFood ? 'My Profile' : isTech ? 'Account' : 'Settings';
-    const group1 = isFood ? ['Order History', 'Payment Methods', 'Addresses'] : isTech ? ['Security', 'Limits', 'Statements'] : ['General', 'Accessibility', 'Privacy'];
+    // Content Switcher - defaulting to a Shopping/General App structure as per reference
+    const isFood = type === 'food';
 
     return (
         <div className="relative mx-auto">
-            {/* iPhone 15 Pro Frame - Outer */}
+            {/* iPhone 15 Pro Frame */}
             <div className="w-[340px] h-[700px] bg-[#2a2a2a] rounded-[3.5rem] p-[10px] shadow-2xl relative mx-auto border-[6px] border-[#1a1a1a] ring-1 ring-[#000]">
-
-                {/* Side Buttons */}
+                {/* Buttons */}
                 <div className="absolute left-[-8px] top-28 w-1 h-8 bg-[#2a2a2a] rounded-l-md"></div>
                 <div className="absolute left-[-8px] top-40 w-1 h-16 bg-[#2a2a2a] rounded-l-md"></div>
-                <div className="absolute left-[-8px] top-60 w-1 h-16 bg-[#2a2a2a] rounded-l-md"></div>
                 <div className="absolute right-[-8px] top-40 w-1 h-24 bg-[#2a2a2a] rounded-r-md"></div>
 
-                {/* Inner Bezel & Screen */}
+                {/* Screen */}
                 <div className="w-full h-full bg-black rounded-[3rem] overflow-hidden relative border-[6px] border-black">
+                    <div className="w-full h-full bg-gray-50 flex flex-col relative" style={{ backgroundColor: '#fff' }}>
 
-                    {/* Screen Content */}
-                    <div className="w-full h-full bg-gray-50 rounded-[2rem] overflow-hidden flex flex-col relative" style={{ backgroundColor: bg }}>
-
-                        {/* Dynamic Island */}
-                        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[120px] h-[35px] bg-black rounded-full z-50 flex items-center justify-between px-3 transition-all hover:w-[200px] cursor-pointer group">
-                            <div className="w-8 h-8 rounded-full bg-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                        {/* Dynamic Island Area */}
+                        <div className="h-14 w-full flex justify-center items-end pb-2 px-6">
+                            <div className="w-[120px] h-[35px] bg-black rounded-full absolute top-2 left-1/2 -translate-x-1/2 z-50"></div>
+                            <div className="w-full flex justify-between items-center text-xs font-bold pt-2">
+                                <span>9:41</span>
+                                <div className="flex gap-1.5 items-center">
+                                    <div className="w-4 h-2.5 bg-black rounded-[2px]" />
+                                    <div className="w-3 h-3 bg-black rounded-full" />
+                                </div>
                             </div>
-                            <div className="w-10 h-1 rounded-full bg-gray-800/50"></div>
                         </div>
 
-                        {/* Large Title Header */}
-                        <div className="pt-16 pb-2 px-6 bg-white/80 backdrop-blur-xl sticky top-0 z-40 border-b border-gray-200/50">
-                            <div className="flex justify-between items-center mb-6">
-                                <span className="text-blue-500 text-lg" style={{ color: sysBlue }}>Edit</span>
-                                <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
-                                    {/* User Avatar Placeholder */}
-                                </div>
-                            </div>
-                            <h1 className="text-4xl font-bold tracking-tight text-gray-900">{settingsTitle}</h1>
+                        {/* App Header */}
+                        <div className="px-6 py-2 flex items-center justify-between">
+                            <div className="p-2 bg-gray-100 rounded-full"><LayoutGrid size={20} /></div>
+                            <div className="p-2 bg-gray-100 rounded-full"><ShoppingCart size={20} /></div>
                         </div>
 
-                        {/* Content - Inset Grouped */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                        {/* Search Bar */}
+                        <div className="px-6 mb-6">
+                            <div className="bg-gray-100 h-12 rounded-2xl flex items-center px-4 gap-3 text-gray-400">
+                                <Search size={20} />
+                                <span className="text-sm font-medium">Search products...</span>
+                            </div>
+                        </div>
 
-                            {/* Hero Card like Apple ID */}
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white shadow-sm">
-                                <div className="w-16 h-16 rounded-full bg-gray-200 relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-gray-300 to-gray-100"></div>
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-xl text-gray-900">John User</h3>
-                                    <p className="text-sm text-gray-500">Apple ID, iCloud, Media</p>
+                        {/* Scroll Content */}
+                        <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
+
+                            {/* Promo Banner (Pink/Purple gradient reference) */}
+                            <div className="px-6 mb-8">
+                                <div className="w-full h-40 rounded-[2rem] relative overflow-hidden flex items-center p-6 text-white shadow-lg"
+                                    style={{ background: `linear-gradient(135deg, ${secondary} 0%, ${tertiary} 100%)` }}>
+                                    <div className="relative z-10">
+                                        <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-lg backdrop-blur-md">Special Offer!</span>
+                                        <h2 className="text-3xl font-black mt-2">45% <span className="text-lg font-bold">OFF</span></h2>
+                                        <button className="mt-3 bg-white text-black px-4 py-2 rounded-xl text-xs font-bold shadow-sm">Redeem</button>
+                                    </div>
+                                    <div className="absolute right-[-20px] bottom-[-20px] w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
                                 </div>
                             </div>
 
-                            {/* Group 1 */}
-                            <div className="bg-white rounded-2xl overflow-hidden shadow-sm divide-y divide-gray-100">
-                                {group1.map((item, i) => (
-                                    <div key={item} className="p-3.5 flex items-center justify-between active:bg-gray-50 transition-colors cursor-pointer">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm`} style={{ backgroundColor: i === 0 ? 'gray' : i === 1 ? sysBlue : '#3b82f6' }}>
-                                                <div className="w-4 h-4 bg-white/20 rounded-sm"></div>
-                                            </div>
-                                            <span className="font-medium text-[15px]">{item}</span>
+                            {/* Section Title */}
+                            <div className="px-6 flex justify-between items-end mb-4">
+                                <h3 className="text-xl font-bold text-gray-900">Best Selling</h3>
+                                <span className="text-xs font-bold text-gray-400">See All</span>
+                            </div>
+
+                            {/* Horizontal Cards */}
+                            <div className="pl-6 flex gap-4 overflow-x-auto no-scrollbar mb-8">
+                                {[1, 2].map(i => (
+                                    <div key={i} className="min-w-[160px] p-3 bg-white rounded-3xl shadow-[0_5px_20px_rgba(0,0,0,0.05)] border border-gray-50">
+                                        <div className="w-full h-32 rounded-2xl bg-gray-100 mb-3 relative overflow-hidden group">
+                                            <div className="absolute inset-0 bg-gray-200" style={{ backgroundColor: i === 1 ? `${secondary}20` : `${primary}20` }}></div>
+                                            <div className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm"><Heart size={12} color={tertiary} /></div>
                                         </div>
-                                        <span className="text-gray-300">›</span>
+                                        <h4 className="font-bold text-gray-900 text-sm mb-1">Item Name</h4>
+                                        <div className="flex justify-between items-center">
+                                            <span className="font-bold text-lg" style={{ color: primary }}>$95.50</span>
+                                            <div className="w-6 h-6 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs">+</div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
 
-                            {/* Group 2 - Toggles */}
-                            <div className="bg-white rounded-2xl overflow-hidden shadow-sm divide-y divide-gray-100">
-                                <div className="p-3.5 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center text-white" style={{ backgroundColor: '#34c759' }}>
-                                            W
+                            {/* Vertical List */}
+                            <div className="px-6 space-y-4">
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">Explore</h3>
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} className="flex gap-4 items-center p-3 bg-white rounded-2xl shadow-sm border border-gray-50">
+                                        <div className="w-16 h-16 rounded-xl bg-gray-100" style={{ backgroundColor: i === 1 ? `${primary}20` : `${tertiary}20` }}></div>
+                                        <div className="flex-1">
+                                            <h4 className="font-bold text-sm">Minimal Chair</h4>
+                                            <p className="text-xs text-gray-400">Furniture</p>
                                         </div>
-                                        <span className="font-medium text-[15px]">Wi-Fi</span>
+                                        <span className="font-bold text-sm">$45.00</span>
                                     </div>
-                                    <span className="text-gray-400 text-sm">Home Network</span>
-                                </div>
-                                <div className="p-3.5 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center text-white" style={{ backgroundColor: sysBlue }}>
-                                            B
-                                        </div>
-                                        <span className="font-medium text-[15px]">Bluetooth</span>
-                                    </div>
-                                    <div className="w-12 h-7 bg-green-500 rounded-full relative shadow-inner" style={{ backgroundColor: '#34c759' }}>
-                                        <div className="absolute right-0.5 top-0.5 w-6 h-6 bg-white rounded-full shadow-md"></div>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Tab Bar */}
-                        <div className="h-20 bg-white/80 backdrop-blur-xl border-t border-gray-200 flex justify-around items-start pt-3 shrink-0">
-                            <div className="flex flex-col items-center gap-1">
-                                <div className="w-6 h-6 rounded bg-current" style={{ color: sysBlue }}></div>
-                                <span className="text-[10px] font-medium" style={{ color: sysBlue }}>{isFood ? 'Home' : 'Settings'}</span>
+                        {/* Bottom Tab Bar */}
+                        <div className="absolute bottom-0 w-full bg-white h-20 rounded-t-[2rem] shadow-[0_-5px_30px_rgba(0,0,0,0.05)] flex justify-between items-center px-8 pb-4">
+                            <div style={{ color: primary }}><LayoutGrid size={24} fill="currentColor" className="opacity-20" /></div>
+                            <div className="text-gray-300"><Heart size={24} /></div>
+                            <div className="w-14 h-14 bg-gray-900 rounded-full text-white flex items-center justify-center -mt-8 shadow-xl shadow-gray-900/30"
+                                style={{ backgroundColor: primary }}>
+                                <ShoppingBag size={24} />
                             </div>
-                            <div className="flex flex-col items-center gap-1 opacity-40">
-                                <div className="w-6 h-6 rounded bg-current"></div>
-                                <span className="text-[10px] font-medium">Search</span>
-                            </div>
+                            <div className="text-gray-300"><Bell size={24} /></div>
+                            <div className="text-gray-300"><User size={24} /></div>
                         </div>
 
                         {/* Home Indicator */}
-                        <div className="absolute bottom-1 left-0 right-0 h-1 flex justify-center">
-                            <div className="w-32 h-1 rounded-full bg-black"></div>
-                        </div>
-
+                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 rounded-full bg-gray-200"></div>
                     </div>
                 </div>
             </div>
         </div>
     );
 };
+
 
 const WebPreviewMockup = ({ design }: { design?: DesignState | null }) => {
     const web = design?.system?.platforms.web;
@@ -575,125 +578,186 @@ export const IslamicAppPreview = ({ colors, type }: PreviewProps) => {
 
 const HighFidelityDashboard = ({ design, type }: { design?: DesignState | null, type?: string }) => {
     const web = design?.system?.platforms.web;
-    // Default blue for web
-    const primary = web?.['primary-600'] || '#2563EB';
+    const primary = design?.brand_colors.primary || '#2563EB';
+    const secondary = design?.brand_colors.secondary || '#4F46E5';
+    const tertiary = design?.system?.base_colors.tertiary || '#EC4899';
+    const neutral = design?.system?.base_colors.neutral || '#64748B';
 
-    // Gradient computation for 10x look
-    const primaryLight = web?.['primary-400'] || '#60a5fa';
-
-    // Content
-    const isFood = type === 'food' || type === 'restaurant';
-    const isTech = type === 'tech' || type === 'finance' || type === 'modern';
-
-    const dashboardTitle = isFood ? 'Restaurant Admin' : isTech ? 'SaaS Overview' : 'Dashboard';
-    const stat1 = isFood ? 'Orders' : 'Total Revenue';
-    const menuItems = isFood ? ['Orders', 'Menu', 'Customers'] : ['Overview', 'Analytics', 'Customers'];
+    // Menu Items per reference
+    const sidebarItems = [
+        { icon: Cloud, label: 'My cloud', active: true },
+        { icon: Users, label: 'Shared files' },
+        { icon: Star, label: 'Favorites' },
+        { icon: Upload, label: 'Upload files' }
+    ];
 
     return (
-        <div className="w-full h-[600px] bg-white rounded-xl shadow-2xl relative border border-gray-200/50 flex flex-col overflow-hidden ring-1 ring-black/5 mx-auto max-w-[800px]">
-
+        <div className="w-[1024px] h-[768px] bg-white rounded-xl shadow-2xl relative border border-gray-200/50 flex flex-col overflow-hidden ring-1 ring-black/5 mx-auto font-sans">
             {/* MacOS Title Bar */}
-            <div className="h-9 bg-[#f3f3f5] border-b border-[#e5e5e5] flex items-center px-4 justify-between shrink-0">
+            <div className="h-10 bg-[#f3f3f5] border-b border-[#e5e5e5] flex items-center px-4 justify-between shrink-0">
                 <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#fa605c] border border-[#d6413d] hover:brightness-110"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#fdbc2d] border border-[#d8a023] hover:brightness-110"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#27ca40] border border-[#23ab36] hover:brightness-110"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#fa605c] border border-[#d6413d]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#fdbc2d] border border-[#d8a023]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#27ca40] border border-[#23ab36]"></div>
                 </div>
-
-                {/* Fake Address Bar */}
-                <div className="flex-1 max-w-sm mx-4 bg-white border border-[#e5e5e5] h-6 rounded flex items-center justify-center text-[10px] text-gray-500 font-medium shadow-sm">
-                    <div className="w-3 h-3 mr-1 opacity-50"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
-                    app.dopely.ai/dashboard
-                </div>
-
+                <div className="text-xs text-gray-500 font-medium">Cloud Dashboard</div>
                 <div className="w-16"></div>
             </div>
 
             <div className="flex-1 flex overflow-hidden">
-                {/* Sidebar (Dark Mode) */}
-                <div className="w-64 border-r border-gray-800 bg-[#0B0C15] flex flex-col p-4 shrink-0">
-                    <div className="h-8 w-24 bg-white/10 rounded mb-8"></div>
+                {/* 1. Sidebar (Dark Blue Material) */}
+                <div className="w-56 flex flex-col py-6 px-4 shrink-0" style={{ backgroundColor: '#0F172A', color: 'white' }}>
+                    <div className="flex items-center gap-3 mb-10 px-2">
+                        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden border-2 border-white/20">
+                            {/* User Avatar */}
+                        </div>
+                    </div>
+
                     <div className="space-y-1">
-                        {menuItems.map((item, i) => (
-                            <div key={item}
-                                className={`px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-3 transition-all cursor-pointer ${i === 0 ? 'bg-gradient-to-r from-gray-800 to-transparent text-white border-l-2' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}`}
-                                style={i === 0 ? { borderColor: primary } : {}}
-                            >
-                                <div className="w-4 h-4 rounded bg-current opacity-50"></div>
-                                {item}
+                        <div className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 px-2">Categories</div>
+                        {sidebarItems.map((item, i) => (
+                            <div key={item.label}
+                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer ${item.active ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}>
+                                <item.icon size={18} />
+                                {item.label}
                             </div>
                         ))}
                     </div>
 
-                    <div className="mt-auto p-4 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700">
-                        <div className="w-8 h-8 rounded-lg mb-3 flex items-center justify-center text-white" style={{ backgroundColor: primary }}>⚡</div>
-                        <p className="text-xs text-gray-400 mb-2">Upgrade to Pro</p>
-                        <div className="h-1.5 w-full bg-gray-700 rounded-full overflow-hidden">
-                            <div className="h-full w-2/3 rounded-full" style={{ backgroundColor: primary }}></div>
-                        </div>
+                    <div className="mt-8 space-y-1">
+                        <div className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 px-2">Files</div>
+                        {['Work', 'Personal', 'School', 'Archive'].map(f => (
+                            <div key={f} className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer">
+                                <div className="w-4 h-4 rounded bg-white/10 flex items-center justify-center opacity-50"><Folder size={10} /></div>
+                                {f}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-auto flex items-center gap-2 text-xs text-gray-500 px-2">
+                        <Settings size={14} /> Settings
                     </div>
                 </div>
 
-                {/* Main Content */}
-                <div className="flex-1 bg-white relative overflow-hidden flex flex-col">
-
-                    {/* Top Bar */}
-                    <div className="h-16 border-b border-gray-100 flex items-center justify-between px-8 bg-white/80 backdrop-blur z-20 sticky top-0">
-                        <div className="text-xl font-bold text-gray-900">{dashboardTitle}</div>
-                        <div className="flex items-center gap-4">
-                            <div className="px-3 py-1.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">v2.4.0</div>
-                            <div className="w-8 h-8 rounded-full bg-gray-900 border-2 border-white shadow-sm"></div>
+                {/* 2. Main Content (Light) */}
+                <div className="flex-1 bg-gray-50 p-8 overflow-y-auto no-scrollbar relative">
+                    <div className="max-w-3xl mx-auto">
+                        {/* Search */}
+                        <div className="bg-white rounded-2xl p-4 shadow-sm mb-8 flex items-center justify-between">
+                            <div className="flex items-center gap-3 text-gray-400">
+                                <Search size={20} />
+                                <span className="text-sm">Search</span>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Dashboard Body */}
-                    <div className="p-8 overflow-y-auto z-10 space-y-8 no-scrollbar bg-gray-50/50 h-full">
-
-                        {/* Stats Row */}
-                        <div className="grid grid-cols-3 gap-6">
-                            {[
-                                { label: stat1, val: isFood ? '1,240' : '$48,290', grow: '+12%', color: primary },
-                                { label: 'Active Users', val: '2,400', grow: '+8%', color: '#10b981' },
-                                { label: 'Bounce Rate', val: '14.2%', grow: '-2%', color: '#f59e0b' }
-                            ].map(stat => (
-                                <div key={stat.label} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                    <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">{stat.label}</p>
-                                    <div className="flex items-end justify-between">
-                                        <h3 className="text-3xl font-black text-gray-900">{stat.val}</h3>
-                                        <span className="text-xs font-bold px-2 py-1 rounded bg-gray-50" style={{ color: stat.color }}>{stat.grow}</span>
+                        {/* Recent Categories Widgets */}
+                        <div className="mb-6">
+                            <h3 className="font-bold text-gray-800 mb-4">Categories</h3>
+                            <div className="grid grid-cols-4 gap-4">
+                                {/* Pictures - Purple */}
+                                <div className="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center gap-3 hover:-translate-y-1 transition-transform cursor-pointer">
+                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: primary }}>
+                                        <Camera size={20} />
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="font-bold text-sm text-gray-900">Pictures</div>
+                                        <div className="text-[10px] text-gray-400">480 files</div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-
-                        {/* Chart Area */}
-                        <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
-                            <div className="flex justify-between mb-8">
-                                <h3 className="font-bold text-lg">Performance</h3>
-                                <div className="flex gap-2">
-                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: primary }}></div>
-                                    <div className="w-3 h-3 rounded-full bg-gray-200"></div>
+                                {/* Documents - Teal */}
+                                <div className="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center gap-3 hover:-translate-y-1 transition-transform cursor-pointer">
+                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: secondary }}>
+                                        <FileText size={20} />
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="font-bold text-sm text-gray-900">Docs</div>
+                                        <div className="text-[10px] text-gray-400">190 files</div>
+                                    </div>
+                                </div>
+                                {/* Videos - Pink */}
+                                <div className="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center gap-3 hover:-translate-y-1 transition-transform cursor-pointer">
+                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: tertiary }}>
+                                        <Video size={20} />
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="font-bold text-sm text-gray-900">Videos</div>
+                                        <div className="text-[10px] text-gray-400">30 files</div>
+                                    </div>
+                                </div>
+                                {/* Audio - Blue */}
+                                <div className="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center gap-3 hover:-translate-y-1 transition-transform cursor-pointer">
+                                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: '#0EA5E9' }}>
+                                        <Mic size={20} />
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="font-bold text-sm text-gray-900">Audio</div>
+                                        <div className="text-[10px] text-gray-400">80 files</div>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            {/* CSS Line Chart simulation */}
-                            <div className="h-48 w-full flex items-end gap-4 relative">
-                                {/* Grid lines */}
-                                <div className="absolute inset-0 flex flex-col justify-between opacity-10 pointer-events-none">
-                                    {[1, 2, 3, 4].map(i => <div key={i} className="w-full h-px bg-gray-900"></div>)}
-                                </div>
-
-                                {/* Bars */}
-                                {[40, 65, 45, 80, 55, 90, 70, 85].map((h, i) => (
-                                    <div key={i} className="flex-1 rounded-t-lg opacity-80 hover:opacity-100 transition-all hover:scale-105 origin-bottom relative group" style={{ height: `${h}%`, backgroundColor: i % 2 === 0 ? primary : primaryLight }}>
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                            ${h}k
+                        {/* Recent Files List */}
+                        <div>
+                            <h3 className="font-bold text-gray-800 mb-4">Recent files</h3>
+                            <div className="bg-white rounded-3xl p-2 shadow-sm space-y-2">
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-2xl transition-colors group cursor-pointer">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center">
+                                                {i === 1 ? <ImageIcon size={18} /> : i === 2 ? <Video size={18} /> : <Music size={18} />}
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-sm text-gray-900">IMG_100{i}.png</div>
+                                                <div className="text-[10px] text-gray-400">PNG file • 5 MB</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="px-2 py-1 bg-gray-100 rounded text-[10px] font-bold text-gray-500">{i === 1 ? 'Work' : 'Personal'}</div>
+                                            <MoreHorizontal size={16} className="text-gray-300" />
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
+                    </div>
+                </div>
 
+                {/* 3. Right Panel (Storage) */}
+                <div className="w-64 bg-white border-l border-gray-100 p-6 flex flex-col shrink-0">
+                    <div className="w-full aspect-square bg-gray-50 rounded-3xl mb-8 flex items-center justify-center relative">
+                        <div className="text-center relative z-10">
+                            <div className="text-3xl font-black text-gray-900">75<span className="text-sm align-top">%</span></div>
+                            <div className="text-xs text-gray-400 font-bold uppercase">Used</div>
+                        </div>
+                        <svg className="absolute inset-0 w-full h-full -rotate-90 p-4" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" strokeWidth="8" />
+                            <circle cx="50" cy="50" r="40" fill="none" stroke={primary} strokeWidth="8" strokeDasharray="251" strokeDashoffset="60" strokeLinecap="round" />
+                        </svg>
+
+                        <div className="absolute bottom-4 text-[10px] font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">25% Left</div>
+                    </div>
+
+                    <h4 className="font-bold text-sm text-gray-900 mb-4">Storage Details</h4>
+                    <div className="space-y-3 mb-8">
+                        <div className="flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-2 text-gray-500"><div className="w-2 h-2 rounded-full bg-blue-500" style={{ backgroundColor: primary }} /> Documents</div>
+                            <span className="font-bold">128 GB</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-2 text-gray-500"><div className="w-2 h-2 rounded-full bg-indigo-500" style={{ backgroundColor: secondary }} /> Media</div>
+                            <span className="font-bold">96 GB</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-2 text-gray-500"><div className="w-2 h-2 rounded-full bg-gray-300" /> Other</div>
+                            <span className="font-bold">42 GB</span>
+                        </div>
+                    </div>
+
+                    <div className="mt-auto bg-gray-50 rounded-2xl p-4 text-center">
+                        <div className="w-10 h-10 bg-white shadow-sm rounded-xl mx-auto flex items-center justify-center mb-2" style={{ color: primary }}><Plus size={20} /></div>
+                        <div className="text-xs font-bold text-gray-900">Add New Files</div>
+                        <div className="text-[10px] text-gray-400">Drag and drop here</div>
                     </div>
                 </div>
             </div>
@@ -818,11 +882,32 @@ export const FeaturePreview = (props: PreviewProps & { activeTab?: string, onTab
                 })}
             </div>
 
-            <div className="w-full transition-all duration-500">
-                {/* Animate opacity for transition effect if feasible, or just switch */}
-                {activeView === 'android' && <HighFidelityAndroid design={props.design} type={type} />}
-                {activeView === 'ios' && <HighFidelityIOS design={props.design} type={type} />}
-                {activeView === 'web' && <HighFidelityDashboard design={props.design} type={type} />}
+            <div className="w-full transition-all duration-500 flex justify-center">
+                {/* Android Stage */}
+                {activeView === 'android' && (
+                    <div className="transform scale-90 origin-top">
+                        <HighFidelityAndroid design={props.design} type={type} />
+                    </div>
+                )}
+
+                {/* iOS Stage */}
+                {activeView === 'ios' && (
+                    <div className="transform scale-90 origin-top">
+                        <HighFidelityIOS design={props.design} type={type} />
+                    </div>
+                )}
+
+                {/* Web Dashboard Stage - Scaled Down for "Professional Preview" look */}
+                {activeView === 'web' && (
+                    <div className="relative w-full h-[500px] bg-gray-100 rounded-3xl overflow-hidden flex items-center justify-center border border-gray-200 shadow-inner group">
+                        {/* Background Decor */}
+                        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
+
+                        <div className="transform scale-[0.6] group-hover:scale-[0.62] transition-transform duration-500 ease-out shadow-2xl rounded-xl">
+                            <HighFidelityDashboard design={props.design} type={type} />
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="mt-8 text-center flex flex-col items-center gap-4">
