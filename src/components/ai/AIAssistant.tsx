@@ -763,7 +763,7 @@ export default function AIAssistant() {
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="p-8 rounded-[2.5rem] bg-gray-900 text-white shadow-2xl text-left flex flex-col gap-6 relative overflow-hidden group"
+                            className="p-8 rounded-[2.5rem] bg-gradient-to-r from-violet-600 via-fuchsia-600 to-indigo-600 animate-gradient text-white shadow-2xl text-left flex flex-col gap-6 relative overflow-hidden group"
                         >
                             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-150 transition-transform duration-1000">
                                 <Sparkles size={120} />

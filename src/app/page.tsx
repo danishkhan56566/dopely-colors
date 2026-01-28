@@ -55,12 +55,25 @@ const DEFAULT_DESIGN: DesignState = {
   text: '#0f172a',
   background: '#ffffff',
   primary: '#6366f1',
-  secondary: '#0f172a',
+  secondary: '#ffffff',
   accent: '#10b981',
 };
 
+const TRENDING_PALETTES = [
+  { name: 'Sunset Vibes', colors: ['#f97316', '#fb923c', '#fdba74', '#fed7aa', '#fff7ed'] },
+  { name: 'Ocean Mist', colors: ['#0ea5e9', '#38bdf8', '#7dd3fc', '#bae6fd', '#e0f2fe'] },
+  { name: 'Forest Deep', colors: ['#14532d', '#166534', '#15803d', '#22c55e', '#86efac'] },
+  { name: 'Berry Smoothie', colors: ['#831843', '#9d174d', '#be185d', '#db2777', '#f472b6'] },
+  { name: 'Slate Minimal', colors: ['#0f172a', '#1e293b', '#334155', '#475569', '#64748b'] },
+  { name: 'Sunny Day', colors: ['#f59e0b', '#fbbf24', '#fcd34d', '#fde68a', '#fef3c7'] },
+  { name: 'Lavender Dream', colors: ['#5b21b6', '#6d28d9', '#7c3aed', '#8b5cf6', '#a78bfa'] },
+  { name: 'Cherry Blossom', colors: ['#9f1239', '#be123c', '#e11d48', '#f43f5e', '#fb7185'] },
+  { name: 'Midnight Neon', colors: ['#312e81', '#4338ca', '#6366f1', '#818cf8', '#a5b4fc'] },
+  { name: 'Earth & Clay', colors: ['#451a03', '#78350f', '#92400e', '#b45309', '#d97706'] },
+];
+
 export default function LandingPage() {
-  const [activePreview, setActivePreview] = useState<'dashboard' | 'mobile' | 'marketing'>('dashboard');
+  const [activePreview, setActivePreview] = useState<'dashboard' | 'mobile' | 'marketing'>('mobile');
   const [design, setDesign] = useState<DesignState>(DEFAULT_DESIGN);
   const [activePicker, setActivePicker] = useState<keyof DesignState | null>(null);
 
@@ -81,73 +94,133 @@ export default function LandingPage() {
 
         {/* Hero Section */}
         {/* Hero Section */}
-        <div className="relative pt-24 pb-16 px-4 text-center max-w-5xl mx-auto z-10 w-full overflow-hidden">
-          <div className="inline-flex items-center gap-2 px-6 py-2 bg-rainbow shadow-sm rounded-full mb-8 animate-in fade-in slide-in-from-bottom-2 duration-700 max-w-full">
-            <Sparkles size={16} className="text-white shrink-0" />
-            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white truncate">
-              AI-Powered Color Engine
-            </span>
-          </div>
+        <div className="relative pt-24 pb-16 px-4 text-center w-full z-10 overflow-hidden">
 
-          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 tracking-tight leading-[1.1] mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100 px-2 text-balance break-words">
-            Build smarter<br className="hidden md:block" />
-            <span className="md:hidden"> </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">color</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-emerald-400 to-teal-500 animate-gradient">systems</span> instantly
-          </h1>
 
-          <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 font-medium px-4 text-balance">
-            Dopely Colors is the world's most intelligent color toolkit. Stop guessing and start building production-ready palettes, gradients, and design systems in seconds.
-          </p>
+          {/* --- SECTION 2: Coolors Style (Secondary) - Redesigned 10x --- */}
+          {/* --- SECTION 2: Coolors Style (Secondary) - Redesigned 10x --- */}
+          {/* --- SECTION 2: Coolors Style (Secondary) - Redesigned 10x --- */}
+          {/* --- UNIFIED PROFESSIONAL HERO --- */}
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 relative pt-12 text-center w-full max-w-6xl mx-auto px-4">
+            {/* Background Decoration */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-r from-pink-400/10 via-orange-400/10 to-yellow-400/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
-          {/* AI Input Box */}
-          <div className="max-w-3xl mx-auto relative group animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 w-full px-2">
-            <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200" />
-            <div className="relative bg-white rounded-2xl p-1 md:p-2 shadow-2xl flex items-center gap-2 md:gap-4">
-              <div className="pl-2 md:pl-4 text-gray-400">
-                <Sparkles size={24} className="w-5 h-5 md:w-6 md:h-6" />
-              </div>
-              <input
-                type="text"
-                placeholder="Describe your project..."
-                className="flex-1 bg-transparent border-none outline-none text-base md:text-lg text-gray-900 placeholder:text-gray-400 h-12 md:h-14 min-w-0"
-              />
-              <Link href="/ai" className="hidden sm:flex px-8 py-4 bg-rainbow text-white rounded-xl font-bold items-center gap-2 hover:brightness-110 hover:shadow-lg hover:shadow-purple-500/20 transition-all active:scale-95 shadow-lg whitespace-nowrap">
-                Start Exploring <ArrowRight size={18} />
-              </Link>
-              <Link href="/ai" aria-label="Explore AI Palette Generator" className="sm:hidden px-3 py-3 bg-rainbow text-white rounded-xl font-bold flex items-center gap-2 hover:brightness-110 hover:shadow-lg hover:shadow-purple-500/20 transition-all active:scale-95 shadow-lg shrink-0">
-                <ArrowRight size={18} />
-              </Link>
+            {/* AI Badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2 bg-rainbow text-white rounded-full mb-10 font-bold text-[10px] sm:text-xs uppercase tracking-widest shadow-lg shadow-purple-500/20 hover:scale-105 transition-transform cursor-default select-none mx-auto">
+              <Sparkles size={12} className="fill-white/50 text-white animate-pulse" />
+              AI-POWERED COLOR ENGINE
             </div>
-          </div>
 
-          {/* Quick Suggestions */}
-          <div className="mt-8 flex flex-wrap justify-center items-center gap-2 md:gap-3 text-sm text-gray-500 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-400 px-4">
-            <span className="font-medium">Try:</span>
-            {['Minimalist Dashboard', 'Luxury Brand', 'Neon Cyberpunk', 'Pastel App', 'Ocean Vibes'].map((tag) => (
-              <button key={tag} className="px-4 py-2 bg-white rounded-full border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all text-xs font-bold uppercase tracking-wider">
-                {tag}
-              </button>
-            ))}
-          </div>
+            {/* Main Headline */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-gray-900 tracking-tight leading-[0.95] mb-8 text-balance drop-shadow-sm max-w-6xl mx-auto">
+              Build smarter<br />
+              <span className="relative inline-block">
+                <span className="text-rainbow mr-3">color</span>
+                <span className="text-rainbow">systems</span>
+              </span><br />
+              instantly
+            </h1>
 
-          {/* Social Proof Section */}
-          <div className="mt-16 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-6">
-              Trusted by 50,000+ top designers and developers
+            {/* Subheadline */}
+            <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-12 font-medium opacity-90">
+              Dopely Colors is the world's most intelligent color toolkit. Stop guessing and start building production-ready palettes, gradients, and design systems in seconds.
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-30 grayscale contrast-125">
-              {/* Using generic representation for logos */}
-              <div className="flex items-center gap-2 font-black text-xl italic uppercase tracking-tighter">Apple</div>
-              <div className="flex items-center gap-2 font-black text-xl italic uppercase tracking-tighter">Google</div>
-              <div className="flex items-center gap-2 font-black text-xl italic uppercase tracking-tighter">Figma</div>
-              <div className="flex items-center gap-2 font-black text-xl italic uppercase tracking-tighter">Meta</div>
-              <div className="flex items-center gap-2 font-black text-xl italic uppercase tracking-tighter">Netflix</div>
+
+            {/* AI Input Box - Professional Style */}
+            <div className="max-w-3xl mx-auto relative group w-full mb-10 z-20">
+              {/* Glow Effect */}
+              <div className="absolute -inset-1.5 bg-gradient-to-r from-pink-200 via-orange-200 to-yellow-200 rounded-[2rem] blur opacity-40 group-hover:opacity-60 transition duration-1000 group-hover:duration-200" />
+
+              <div className="relative bg-white rounded-[1.8rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center gap-2">
+                <div className="pl-5 text-gray-400">
+                  <Sparkles size={24} className="text-orange-400 fill-orange-400/20" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Describe your project..."
+                  className="flex-1 bg-transparent border-none outline-none text-lg text-gray-900 placeholder:text-gray-400 h-16 min-w-0 font-medium"
+                />
+                <Link href="/ai" className="hidden sm:flex px-8 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-all active:scale-95 whitespace-nowrap text-base">
+                  Start Exploring <ArrowRight size={18} />
+                </Link>
+                <Link href="/ai" aria-label="Generate" className="sm:hidden px-4 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold flex items-center gap-2 hover:shadow-lg transition-all active:scale-95 shrink-0">
+                  <ArrowRight size={20} />
+                </Link>
+              </div>
+            </div>
+
+            {/* Quick Suggestions - Pills */}
+            <div className="flex flex-wrap justify-center items-center gap-3 mb-16">
+              <span className="font-bold text-xs uppercase tracking-widest text-gray-400 mr-2">Try:</span>
+              {['Minimalist Dashboard', 'Luxury Brand', 'Neon Cyberpunk', 'Pastel App', 'Ocean Vibes'].map((tag) => (
+                <button key={tag} className="px-4 py-2 bg-white rounded-full border border-gray-200 text-gray-600 hover:border-gray-900 hover:text-gray-900 hover:shadow-md transition-all text-[11px] font-bold uppercase tracking-wide">
+                  {tag}
+                </button>
+              ))}
+            </div>
+
+            {/* Actions (Standalone Buttons) */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 relative z-10">
+              {/* Removed 'Start the generator' button as requested */}
+              <Link href="/colors" className="px-12 py-5 bg-white text-gray-900 border-2 border-gray-100 rounded-[1.5rem] font-bold text-lg hover:border-gray-200 hover:bg-gray-50 hover:shadow-xl hover:-translate-y-1 transition-all w-full sm:w-auto flex items-center justify-center gap-3 group">
+                Explore Trending Palettes
+                <ArrowRight size={18} className="text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
+              </Link>
             </div>
           </div>
 
-          <h2 className="mt-16 text-gray-400 text-sm font-bold uppercase tracking-widest border-b border-gray-100 pb-4 inline-block">
-            See context in action
-          </h2>
+          {/* Full Width Marquee Section */}
+          <div className="w-full overflow-hidden pb-24 relative mask-linear-fade">
+
+            {/* Row 1 - Left */}
+            <div className="flex gap-6 animate-marquee hover:pause mb-6 w-max">
+              {[...TRENDING_PALETTES, ...TRENDING_PALETTES, ...TRENDING_PALETTES].map((palette, i) => (
+                <div key={`r1-${i}`} className="flex-shrink-0 bg-white p-3 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer min-w-[240px] group">
+                  <div className="flex rounded-xl overflow-hidden w-full h-32 relative">
+                    {palette.colors.map((color, colorIndex) => (
+                      <div key={colorIndex} className="flex-1 h-full group-hover:w-[120%] transition-all duration-500" style={{ backgroundColor: color }} />
+                    ))}
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="mt-4 flex justify-between items-center px-1">
+                    <div>
+                      <span className="block text-sm font-bold text-gray-800">{palette.name}</span>
+                      <span className="text-[10px] uppercase tracking-wide text-gray-400 font-medium">5 Colors • {palette.colors[0]}</span>
+                    </div>
+                    <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-red-50 group-hover:text-red-500 transition-colors">
+                      <Heart size={14} className="fill-current" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Row 2 - Right (Reversed) */}
+            <div className="flex gap-6 animate-marquee-reverse hover:pause w-max ml-[-500px]">
+              {[...TRENDING_PALETTES, ...TRENDING_PALETTES, ...TRENDING_PALETTES].reverse().map((palette, i) => (
+                <div key={`r2-${i}`} className="flex-shrink-0 bg-white p-3 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer min-w-[240px] group">
+                  <div className="flex rounded-xl overflow-hidden w-full h-32 relative">
+                    {palette.colors.map((color, colorIndex) => (
+                      <div key={colorIndex} className="flex-1 h-full group-hover:w-[120%] transition-all duration-500" style={{ backgroundColor: color }} />
+                    ))}
+                  </div>
+                  <div className="mt-4 flex justify-between items-center px-1">
+                    <div>
+                      <span className="block text-sm font-bold text-gray-800">{palette.name}</span>
+                      <span className="text-[10px] uppercase tracking-wide text-gray-400 font-medium">5 Colors • {palette.colors[0]}</span>
+                    </div>
+                    <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+                      <Download size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+
+
         </div>
 
         {/* -----------------------------
@@ -159,7 +232,7 @@ export default function LandingPage() {
           <div className="bg-white/70 backdrop-blur-3xl rounded-[2rem] md:rounded-[3.5rem] border border-white/60 shadow-2xl p-4 md:p-10 ring-1 ring-black/5" style={{ '--preview-bg': design.background, '--preview-text': design.text, '--preview-primary': design.primary, '--preview-secondary': design.secondary, '--preview-accent': design.accent } as any}>
 
             {/* Tabs */}
-            <div className="flex justify-center mb-6 md:mb-10 overflow-x-auto no-scrollbar pb-4 md:pb-0">
+            <div className="flex justify-center mb-6 md:mb-10 overflow-x-auto no-scrollbar pb-4 md:pb-0 sticky top-4 md:relative md:top-0 z-30">
               <div className="bg-white/80 backdrop-blur-md p-2 rounded-full inline-flex gap-2 border border-black/5 shadow-sm whitespace-nowrap">
                 <button
                   onClick={() => setActivePreview('dashboard')}
@@ -528,22 +601,22 @@ export default function LandingPage() {
         </div>
 
         {/* Tools Grid (Bento Box) */}
-        {/* Tools Grid (Bento Box) */}
+        {/* Tools Grid (Bento Box) - Professional & Unified */}
         <div className="max-w-7xl mx-auto px-6 pb-24 relative z-10 w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            {/* AI Generator - Large */}
-            <Link href="/ai" className="lg:col-span-2 group relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#6366f1] to-[#a855f7] p-6 md:p-10 text-white shadow-xl transition-all hover:shadow-2xl hover:scale-[1.01] min-h-[340px] flex flex-col justify-between">
+            {/* AI Generator - Feature Card (Purple) */}
+            <Link href="/ai" className="lg:col-span-2 group relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-[#6366f1] to-[#a855f7] p-8 md:p-12 text-white shadow-xl transition-all hover:shadow-2xl hover:scale-[1.01] min-h-[360px] flex flex-col justify-between">
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20">
-                  <Sparkles size={28} className="text-white" />
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-inner">
+                  <Sparkles size={32} className="text-white" />
                 </div>
-                <h3 className="text-3xl font-bold mb-3">AI Palette Generator</h3>
-                <p className="text-xl text-white/90 font-medium max-w-md leading-relaxed">
-                  Describe any mood, object, or scene to generate the perfect color palette instantly using advanced AI.
+                <h3 className="text-3xl font-bold mb-4 tracking-tight">AI Palette Generator</h3>
+                <p className="text-lg text-white/90 font-medium max-w-lg leading-relaxed opacity-90">
+                  Transform simple text prompts into production-ready color systems. Our advanced AI analyzes context, mood, and color theory to generate harmonious palettes instantly.
                 </p>
               </div>
-              <div className="relative z-10">
+              <div className="relative z-10 mt-8">
                 <div className="inline-flex items-center gap-2 font-bold px-6 py-3 bg-white/20 backdrop-blur-md rounded-xl hover:bg-white/30 transition-colors border border-white/20">
                   Try it out <ArrowRight size={18} />
                 </div>
@@ -552,116 +625,128 @@ export default function LandingPage() {
               <div className="absolute right-[-10%] bottom-[-40%] w-[500px] h-[500px] bg-white/10 rounded-full blur-[80px] group-hover:scale-110 transition-transform duration-700" />
             </Link>
 
-            {/* Image Extractor */}
-            <Link href="/image" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-6 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-xl hover:scale-[1.02] min-h-[340px] flex flex-col justify-between">
+            {/* Image Extractor - White Card */}
+            <Link href="/image" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
               <div className="absolute top-0 right-0 p-32 bg-orange-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 mb-6">
+                <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <ImageIcon size={28} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Image Extractor</h3>
-                <p className="text-gray-500 font-medium leading-relaxed">Extract dominant colors from any image automatically.</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Image Extractor</h3>
+                <p className="text-gray-500 font-medium leading-relaxed">
+                  Upload any photo or design mockup to automatically isolate dominant colors and build a cohesive palette based on the visual data.
+                </p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 group-hover:translate-x-2 transition-transform">
+              <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 group-hover:translate-x-2 transition-transform self-end">
                 <ArrowRight size={20} />
               </div>
             </Link>
 
-            {/* Contrast Checker */}
-            <Link href="/contrast" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-6 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-xl hover:scale-[1.02] min-h-[340px] flex flex-col justify-between">
+            {/* Contrast Checker - White Card */}
+            <Link href="/contrast" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
               <div className="absolute top-0 right-0 p-32 bg-emerald-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 mb-6">
+                <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <CheckCircle2 size={28} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Contrast Checker</h3>
-                <p className="text-gray-500 font-medium leading-relaxed">Ensure accessibility with WCAG 2.1 scoring.</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Contrast Checker</h3>
+                <p className="text-gray-500 font-medium leading-relaxed">
+                  Validate your foreground and background pairings against WCAG 2.1 standards to ensure your designs are accessible to everyone.
+                </p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:translate-x-2 transition-transform">
+              <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:translate-x-2 transition-transform self-end">
                 <ArrowRight size={20} />
               </div>
             </Link>
 
-            {/* Pro Picker */}
-            <Link href="/picker" className="group relative overflow-hidden rounded-[2.5rem] bg-[#fff0f5] p-6 md:p-10 shadow-lg border border-pink-100 transition-all hover:shadow-xl hover:scale-[1.02] min-h-[340px] flex flex-col justify-between">
-              <div className="absolute top-0 right-0 p-32 bg-pink-100/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
+            {/* Pro Picker - UNIFIED White Card (Previously Pink) */}
+            <Link href="/picker" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
+              <div className="absolute top-0 right-0 p-32 bg-pink-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600 mb-6">
+                <div className="w-14 h-14 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Droplet size={28} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Pro Picker</h3>
-                <p className="text-gray-600 font-medium leading-relaxed">Advanced HSL/RGB/CMYK picker with harmonies.</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Pro Picker</h3>
+                <p className="text-gray-500 font-medium leading-relaxed">
+                  Fine-tune colors with professional precision using HSL, RGB, and CMYK inputs, complete with harmony rule suggestions.
+                </p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-pink-100/50 flex items-center justify-center text-pink-600 group-hover:translate-x-2 transition-transform">
+              <div className="w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 group-hover:translate-x-2 transition-transform self-end">
                 <ArrowRight size={20} />
               </div>
             </Link>
 
-            {/* Gradient Studio */}
-            <Link href="/gradients" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-6 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-xl hover:scale-[1.02] min-h-[340px] flex flex-col justify-between">
+            {/* Gradient Studio - White Card */}
+            <Link href="/gradients" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
               <div className="absolute top-0 right-0 p-32 bg-cyan-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-cyan-100 rounded-2xl flex items-center justify-center text-cyan-600 mb-6">
+                <div className="w-14 h-14 bg-cyan-50 rounded-2xl flex items-center justify-center text-cyan-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Layers size={28} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Gradient Studio</h3>
-                <p className="text-gray-500 font-medium leading-relaxed">Craft complex gradients with a visual builder.</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Gradient Studio</h3>
+                <p className="text-gray-500 font-medium leading-relaxed">
+                  Design complex, multi-stop linear and radial gradients with an intuitive visual builder and export clean CSS instantly.
+                </p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-600 group-hover:translate-x-2 transition-transform">
+              <div className="w-12 h-12 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-600 group-hover:translate-x-2 transition-transform self-end">
                 <ArrowRight size={20} />
               </div>
             </Link>
 
-            {/* Design System Builder - Large Dark Theme */}
-            <Link href="/design-system" className="lg:col-span-2 group relative overflow-hidden rounded-[2.5rem] bg-[#0f172a] p-6 md:p-10 text-white shadow-xl transition-all hover:shadow-2xl hover:scale-[1.01] min-h-[340px] flex flex-col justify-between">
+            {/* Design System Builder - Feature Card (Dark) */}
+            <Link href="/design-system" className="lg:col-span-2 group relative overflow-hidden rounded-[2.5rem] bg-[#0f172a] p-8 md:p-12 text-white shadow-xl transition-all hover:shadow-2xl hover:scale-[1.01] min-h-[360px] flex flex-col justify-between">
               {/* Grid Pattern Background */}
               <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-[100px] group-hover:bg-blue-500/30 transition-colors" />
 
-              <div className="relative z-10 flex flex-col sm:flex-row gap-8 items-start">
-                <div className="flex-1">
-                  <div className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/10">
-                    <Layout size={28} className="text-blue-400" />
+              <div className="relative z-10 flex flex-col sm:flex-row gap-8 items-start h-full">
+                <div className="flex-1 flex flex-col justify-between h-full">
+                  <div>
+                    <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/10 shadow-inner">
+                      <Layout size={32} className="text-blue-400" />
+                    </div>
+                    <h3 className="text-3xl font-bold mb-4 tracking-tight">Design System Builder</h3>
+                    <p className="text-xl text-gray-400 font-medium max-w-lg leading-relaxed mb-8">
+                      Visualize your color tokens, typography scales, and UI components in a live environment. Ensure consistency across your entire product suite.
+                    </p>
                   </div>
-                  <h3 className="text-3xl font-bold mb-3">Design System Builder</h3>
-                  <p className="text-xl text-gray-400 font-medium max-w-sm leading-relaxed mb-8">
-                    Visualize tokens, typography, and components live. Export production-ready code.
-                  </p>
-                  <div className="inline-flex items-center gap-2 font-bold px-6 py-3 bg-blue-600 rounded-xl hover:bg-blue-500 transition-colors shadow-lg shadow-blue-900/20">
+                  <div className="inline-flex items-center gap-2 font-bold px-6 py-3 bg-blue-600 rounded-xl hover:bg-blue-500 transition-colors shadow-lg shadow-blue-900/20 w-max">
                     Start Building <ArrowRight size={18} />
                   </div>
                 </div>
 
                 {/* Visual Preview Decoration */}
-                <div className="hidden sm:block w-64 h-48 bg-gray-900/50 rounded-2xl border border-white/10 p-4 rotate-3 group-hover:rotate-6 transition-transform">
-                  <div className="flex gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-lg bg-blue-500"></div>
-                    <div className="w-8 h-8 rounded-lg bg-purple-500"></div>
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500"></div>
+                <div className="hidden sm:block w-72 h-56 bg-gray-900/50 rounded-2xl border border-white/10 p-5 rotate-3 group-hover:rotate-6 transition-transform shadow-2xl backdrop-blur-sm">
+                  <div className="flex gap-3 mb-5">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500 shadow-lg shadow-blue-500/20"></div>
+                    <div className="w-10 h-10 rounded-xl bg-purple-500 shadow-lg shadow-purple-500/20"></div>
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500 shadow-lg shadow-emerald-500/20"></div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="h-2 w-3/4 bg-gray-700 rounded-full"></div>
-                    <div className="h-2 w-1/2 bg-gray-700 rounded-full"></div>
+                  <div className="space-y-3">
+                    <div className="h-3 w-3/4 bg-gray-700/50 rounded-full"></div>
+                    <div className="h-3 w-1/2 bg-gray-700/50 rounded-full"></div>
                   </div>
-                  <div className="mt-6 flex gap-2">
-                    <div className="px-3 py-1 rounded-md bg-white/10 text-xs text-gray-400">Button</div>
-                    <div className="px-3 py-1 rounded-md bg-white/10 text-xs text-gray-400">Input</div>
+                  <div className="mt-8 flex gap-3">
+                    <div className="px-4 py-2 rounded-lg bg-white/10 text-xs text-gray-400 font-medium border border-white/5">Button</div>
+                    <div className="px-4 py-2 rounded-lg bg-white/10 text-xs text-gray-400 font-medium border border-white/5">Input</div>
                   </div>
                 </div>
               </div>
             </Link>
 
-            {/* Tailwind Generator */}
-            <Link href="/tailwind" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-6 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-xl hover:scale-[1.02] min-h-[340px] flex flex-col justify-between">
+            {/* Tailwind Generator - White Card */}
+            <Link href="/tailwind" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
               <div className="absolute top-0 right-0 p-32 bg-blue-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6">
+                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Wind size={28} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Tailwind Generator</h3>
-                <p className="text-gray-500 font-medium leading-relaxed">Export config directly.</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Tailwind Generator</h3>
+                <p className="text-gray-500 font-medium leading-relaxed">
+                  Export your custom color palette directly as a Tailwind CSS configuration file, ready to drop into your tailwind.config.js.
+                </p>
               </div>
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:translate-x-2 transition-transform">
+              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:translate-x-2 transition-transform self-end">
                 <ArrowRight size={20} />
               </div>
             </Link>
@@ -669,106 +754,160 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* More Useful Resources Section */}
-        <div className="max-w-7xl mx-auto px-6 py-24 relative z-10 w-full">
-          <h2 className="text-center text-gray-400 text-sm font-bold uppercase tracking-[0.2em] mb-12">
-            More Useful Resources
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* More Useful Resources Section - Redesigned 10x UI */}
+        <div className="max-w-7xl mx-auto px-6 py-32 relative z-10 w-full">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-50/50 to-transparent pointer-events-none" />
+
+          <div className="text-center mb-20 relative">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100">
+              <Sparkles size={12} className="fill-blue-600" />
+              Everything you need
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter mb-6">
+              Creator <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600">Toolkit</span>
+            </h2>
+            <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+              Powerful standalone tools to help you design better, faster, and more efficiently.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
 
             {/* Color Names */}
-            <Link href="/colors" className="group bg-white/50 backdrop-blur-sm p-8 rounded-[2rem] border border-gray-100 hover:border-indigo-200 hover:bg-white transition-all shadow-sm hover:shadow-xl">
-              <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-110 transition-transform">
-                <Tag size={24} />
+            <Link href="/colors" className="group relative bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
+              <div className="absolute top-0 right-0 p-32 bg-indigo-50/50 rounded-full blur-3xl -mr-20 -mt-20 transition-opacity opacity-50 group-hover:opacity-100" />
+
+              <div className="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-indigo-200 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 relative z-10">
+                <Tag size={28} strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Color Names</h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Browse and search through a comprehensive list of color names to find the perfect shade.
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight group-hover:text-indigo-600 transition-colors">Color Names</h3>
+              <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-1">
+                The ultimate encyclopedia of color. Search thousands of names and find the exact shade you're looking for.
               </p>
-              <div className="flex items-center text-indigo-600 font-bold text-xs uppercase tracking-widest gap-2">
-                Explore Names <ArrowRight size={14} />
+
+              <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-indigo-600 transition-colors">Explore Library</span>
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                  <ArrowRight size={18} />
+                </div>
               </div>
             </Link>
 
             {/* Free Fonts */}
-            <Link href="/fonts" className="group bg-white/50 backdrop-blur-sm p-8 rounded-[2rem] border border-gray-100 hover:border-pink-200 hover:bg-white transition-all shadow-sm hover:shadow-xl">
-              <div className="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-600 mb-6 group-hover:scale-110 transition-transform">
-                <Type size={24} />
+            <Link href="/fonts" className="group relative bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
+              <div className="absolute top-0 right-0 p-32 bg-pink-50/50 rounded-full blur-3xl -mr-20 -mt-20 transition-opacity opacity-50 group-hover:opacity-100" />
+
+              <div className="w-16 h-16 bg-pink-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-pink-200 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 relative z-10">
+                <Type size={28} strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Free Fonts</h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Discover and collect beautiful free fonts for your designs from our curated list of typography.
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight group-hover:text-pink-600 transition-colors">Free Fonts</h3>
+              <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-1">
+                A curated collection of beautiful, open-source typefaces ready for your next big project.
               </p>
-              <div className="flex items-center text-pink-600 font-bold text-xs uppercase tracking-widest gap-2">
-                Browse Fonts <ArrowRight size={14} />
+
+              <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-pink-600 transition-colors">Browse Typography</span>
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-pink-600 group-hover:text-white transition-all duration-300">
+                  <ArrowRight size={18} />
+                </div>
               </div>
             </Link>
 
             {/* Collage Maker */}
-            <Link href="/collage-maker" className="group bg-white/50 backdrop-blur-sm p-8 rounded-[2rem] border border-gray-100 hover:border-emerald-200 hover:bg-white transition-all shadow-sm hover:shadow-xl">
-              <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform">
-                <LayoutGrid size={24} />
+            <Link href="/collage-maker" className="group relative bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
+              <div className="absolute top-0 right-0 p-32 bg-emerald-50/50 rounded-full blur-3xl -mr-20 -mt-20 transition-opacity opacity-50 group-hover:opacity-100" />
+
+              <div className="w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-emerald-200 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 relative z-10">
+                <LayoutGrid size={28} strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Collage Maker</h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Create stylish collages by combining your photos and palettes in seconds.
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight group-hover:text-emerald-600 transition-colors">Collage Maker</h3>
+              <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-1">
+                Compose stunning moodboards and photo grids in seconds with our drag-and-drop tool.
               </p>
-              <div className="flex items-center text-emerald-600 font-bold text-xs uppercase tracking-widest gap-2">
-                Create Collage <ArrowRight size={14} />
+
+              <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-emerald-600 transition-colors">Start Creating</span>
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                  <ArrowRight size={18} />
+                </div>
               </div>
             </Link>
 
             {/* Browse Gradients */}
-            <Link href="/gradients" className="group bg-white/50 backdrop-blur-sm p-8 rounded-[2rem] border border-gray-100 hover:border-orange-200 hover:bg-white transition-all shadow-sm hover:shadow-xl">
-              <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 mb-6 group-hover:scale-110 transition-transform">
-                <Layers size={24} />
+            <Link href="/gradients" className="group relative bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
+              <div className="absolute top-0 right-0 p-32 bg-orange-50/50 rounded-full blur-3xl -mr-20 -mt-20 transition-opacity opacity-50 group-hover:opacity-100" />
+
+              <div className="w-16 h-16 bg-orange-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-orange-200 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 relative z-10">
+                <Layers size={28} strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Browse Gradients</h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Explore beautiful gradients for your projects or create your own with the Gradient Maker.
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight group-hover:text-orange-600 transition-colors">Browse Gradients</h3>
+              <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-1">
+                Explore thousands of hand-picked gradients or use the studio to craft your own unique blends.
               </p>
-              <div className="flex items-center text-orange-600 font-bold text-xs uppercase tracking-widest gap-2">
-                View Gradients <ArrowRight size={14} />
+
+              <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-orange-600 transition-colors">View Collection</span>
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
+                  <ArrowRight size={18} />
+                </div>
               </div>
             </Link>
 
             {/* Gradient Palette */}
-            <Link href="/gradient-palette" className="group bg-white/50 backdrop-blur-sm p-8 rounded-[2rem] border border-gray-100 hover:border-blue-200 hover:bg-white transition-all shadow-sm hover:shadow-xl">
-              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
-                <Palette size={24} />
+            <Link href="/gradient-palette" className="group relative bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
+              <div className="absolute top-0 right-0 p-32 bg-cyan-50/50 rounded-full blur-3xl -mr-20 -mt-20 transition-opacity opacity-50 group-hover:opacity-100" />
+
+              <div className="w-16 h-16 bg-cyan-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-cyan-200 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 relative z-10">
+                <Palette size={28} strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Gradient Palette</h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Create a gradient palette between two colors and export it in various formats.
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight group-hover:text-cyan-600 transition-colors">Gradient Palette</h3>
+              <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-1">
+                Visualize gradients as full color palettes. Perfect for extracting steps and interpolations.
               </p>
-              <div className="flex items-center text-blue-600 font-bold text-xs uppercase tracking-widest gap-2">
-                Generate Palette <ArrowRight size={14} />
+
+              <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-cyan-600 transition-colors">Generate Palette</span>
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-cyan-600 group-hover:text-white transition-all duration-300">
+                  <ArrowRight size={18} />
+                </div>
               </div>
             </Link>
 
             {/* Image Converter */}
-            <Link href="/image-converter" className="group bg-white/50 backdrop-blur-sm p-8 rounded-[2rem] border border-gray-100 hover:border-purple-200 hover:bg-white transition-all shadow-sm hover:shadow-xl">
-              <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform">
-                <RefreshCw size={24} />
+            <Link href="/image-converter" className="group relative bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
+              <div className="absolute top-0 right-0 p-32 bg-purple-50/50 rounded-full blur-3xl -mr-20 -mt-20 transition-opacity opacity-50 group-hover:opacity-100" />
+
+              <div className="w-16 h-16 bg-purple-600 text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-purple-200 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 relative z-10">
+                <RefreshCw size={28} strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Image Converter</h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                Convert images to different formats with ease. Bulk processing supported.
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight group-hover:text-purple-600 transition-colors">Image Converter</h3>
+              <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-1">
+                Convert, compress, and resize images in bulk. Supports PNG, JPG, WebP and SVG.
               </p>
-              <div className="flex items-center text-purple-600 font-bold text-xs uppercase tracking-widest gap-2">
-                Convert Image <ArrowRight size={14} />
+
+              <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-purple-600 transition-colors">Convert Files</span>
+                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
+                  <ArrowRight size={18} />
+                </div>
               </div>
             </Link>
 
           </div>
         </div>
 
-        <section className="py-24 bg-white text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-50" />
+        <section className="py-20 bg-white text-center relative overflow-hidden border-t border-gray-100">
+          <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
           <div className="max-w-3xl mx-auto px-6 relative z-10">
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-8 tracking-tight">Ready to verify your designs?</h2>
-            <Link href="/ai" className="inline-block bg-black text-white px-10 py-5 rounded-2xl text-xl font-bold hover:bg-gray-800 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
-              Start Creating for Free
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 tracking-tight">Ready to create your perfect palette?</h2>
+            <Link href="/ai" className="inline-flex items-center gap-2 bg-white text-gray-900 border border-gray-200 px-8 py-3.5 rounded-xl text-lg font-bold hover:bg-gray-50 transition-all shadow-lg hover:-translate-y-0.5">
+              Start Creating for Free <ArrowRight size={18} />
             </Link>
           </div>
         </section>
