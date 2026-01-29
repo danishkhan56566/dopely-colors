@@ -8,6 +8,11 @@ import { ArrowLeft, Save, Globe, Image as ImageIcon, Eye, BarChart, Sparkles } f
 import { toast } from 'sonner';
 import { generateBlogPost, savePost } from '../actions';
 
+import { marked } from 'marked';
+import dynamic from 'next/dynamic';
+
+const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false });
+
 function BlogEditorContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -40,9 +45,19 @@ function BlogEditorContent() {
         setIsGenerating(true);
         try {
             const generated = await generateBlogPost(topic);
+
+            // Convert Generated Markdown to HTML
+            let contentHtml = generated.content || '';
+            try {
+                contentHtml = await marked(contentHtml);
+            } catch (e) {
+                console.error("Auto-generate markdown conversion failed", e);
+            }
+
             setFormData(prev => ({
                 ...prev,
                 ...generated,
+                content: contentHtml,
                 status: 'draft' // Keep as draft so user can review
             }));
             toast.success('✨ Blog post generated!');
@@ -66,11 +81,25 @@ function BlogEditorContent() {
                 .single();
 
             if (data) {
+                // Convert Markdown to HTML for the Editor if strictly Markdown
+                // Logic: If it has newlines but no HTML tags, likely MD. 
+                // Simple approach: Always run marked, it handles HTML strings gracefully too?
+                // marked returns a Promise in v12+? The user code used `await marked()`.
+                let contentHtml = data.content || '';
+                try {
+                    // Check if content looks like HTML (starts with <)
+                    if (!contentHtml.trim().startsWith('<')) {
+                        contentHtml = await marked(contentHtml);
+                    }
+                } catch (e) {
+                    console.error("Markdown conversion failed", e);
+                }
+
                 setFormData({
                     title: data.title || '',
                     slug: data.slug || '',
                     excerpt: data.excerpt || '',
-                    content: data.content || '',
+                    content: contentHtml, // Pass HTML to editor
                     featured_image: data.featured_image || '',
                     author: data.author || 'Danish Khan',
                     country_focus: data.country_focus || '',
@@ -211,17 +240,15 @@ function BlogEditorContent() {
                     </div>
 
                     {/* Content Editor */}
-                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Content (Markdown Supported)</label>
-                        <textarea
-                            name="content"
-                            value={formData.content}
-                            onChange={handleChange}
-                            rows={25}
-                            placeholder="# Write your masterpiece here..."
-                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm leading-relaxed"
-                        ></textarea>
-                        <p className="text-xs text-gray-400 mt-2 text-right">Markdown is supported. Use # for headings, ** for bold.</p>
+                    <div className="bg-white rounded-xl shadow-sm">
+                        <label className="block text-sm font-bold text-gray-700 mb-2 px-6 pt-6">Content</label>
+                        <RichTextEditor
+                            content={formData.content}
+                            onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
+                        />
+                        <p className="text-xs text-gray-400 mt-2 text-right px-6 pb-6">
+                            Rich text editor active. Supports tables, images, and formatting.
+                        </p>
                     </div>
 
                     {/* Excerpt */}
