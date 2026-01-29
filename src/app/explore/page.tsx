@@ -1,7 +1,8 @@
 import { ExploreLayout } from '@/components/explore/ExploreLayout';
 import { createClient } from '@/lib/supabase-server';
 
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic'; // DISABLED to save CPU
+export const revalidate = 3600; // Cache for 1 hour
 
 export default async function ExplorePage() {
     const supabase = await createClient();

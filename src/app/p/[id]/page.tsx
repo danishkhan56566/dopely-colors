@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { PaletteDetail } from '@/components/explore/PaletteDetail';
 
 // Generate Metadata for SEO
+export const revalidate = 86400; // Cache for 24 hours (Critical for Cost Savings)
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await params;
     const supabase = await createClient();

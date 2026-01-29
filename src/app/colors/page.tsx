@@ -1,6 +1,9 @@
 import { createClient } from '@/lib/supabase-server';
 import { ColorList } from '@/components/colors/ColorList';
 
+export const revalidate = 86400; // Cache for 24 hours
+
+
 async function getPublishedColors() {
     const supabase = await createClient(); // Await createClient!
     const { data } = await supabase
