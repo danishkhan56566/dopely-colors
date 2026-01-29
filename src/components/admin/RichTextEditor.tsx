@@ -54,6 +54,7 @@ export default function RichTextEditor({
     onChange: (html: string) => void;
 }) {
     const editor = useEditor({
+        immediatelyRender: false,
         extensions: [
             StarterKit,
             Underline,

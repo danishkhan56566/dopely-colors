@@ -16,7 +16,7 @@ import {
 // import { AIExportCard } from './AIExportCard';
 import { toast } from 'sonner';
 import { usePaletteStore } from '@/store/usePaletteStore';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 // import { extractColors } from 'extract-colors'; // Moved to dynamic import
 import dynamic from 'next/dynamic';
 
@@ -149,6 +149,9 @@ export default function AIAssistant() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toggleFavorite } = usePaletteStore();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const query = searchParams.get('q');
+    const [hasTriggeredInitial, setHasTriggeredInitial] = useState(false);
 
     // Initial Greeting & User ID Setup
     useEffect(() => {
@@ -159,11 +162,15 @@ export default function AIAssistant() {
             console.log('New User ID generated:', newId);
         }
 
-        if (state.history.length === 0) {
-            // No greeting initially, just the input screen. 
-            // Or maybe a "Describe your idea" prompt.
+        // 2. Handle initial query from Landing Page
+        if (query && state.history.length === 0 && !hasTriggeredInitial) {
+            setHasTriggeredInitial(true);
+            // Small delay to ensure everything is ready
+            setTimeout(() => {
+                handleSendMessage(query);
+            }, 500);
         }
-    }, []);
+    }, [query, state.history.length, hasTriggeredInitial]);
 
     // Scroll to bottom helper
     const scrollToBottom = () => {

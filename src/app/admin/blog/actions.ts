@@ -85,19 +85,87 @@ Ensure your usage of {Topic} meets WCAG AA standards.
 
 Start small. Inject {Topic} into micro-interactions and hover states first.
         `
+    },
+    {
+        keywords: ['vs', 'compare', 'difference', 'best'],
+        title: "{Topic}: When to Use and When to Avoid",
+        excerpt: "A deep dive comparison of {Topic} and its alternatives in various design scenarios.",
+        content: `
+# {Topic} Comparison Guide
+
+Choosing between **{Topic}** and other color strategies can be difficult. This guide breaks down the performance, emotional impact, and accessibility of each.
+
+## Feature Comparison Matrix
+
+| Feature | {Topic} Strategy | Conventional Approach |
+| :--- | :--- | :--- |
+| **Trust Score** | High (85%) | Medium (60%) |
+| **User Delight** | Exceptional | Standard |
+| **Setup Speed** | Instant with AI | Manual |
+| **Accessibility** | Built-in | Variable |
+
+## Key Advantages
+1. **Consistency:** {Topic} ensures your brand looks the same across all touchpoints.
+2. **Speed:** Accelerate your workflow by 300%.
+3. **Accuracy:** Never miss a shade or tint again.
+
+## Recommendation
+Use **{Topic}** for high-conversion landing pages and premium dashboard interfaces where professional polish is non-negotiable.
+        `
     }
 ];
 
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// Initialize Gemini (In production, use Vercel Env Vars)
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "");
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
 export async function generateBlogPost(topic: string) {
-    // Simulate AI Delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    const apiKey = process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
 
+    if (apiKey) {
+        try {
+            const prompt = `
+                You are a professional Design Blogger. Generate a high-quality blog post about: "${topic}".
+                
+                REQUIREMENTS:
+                1. Use professional Markdown formatting (H1 for title, H2/H3 for sections).
+                2. Include a bulleted list of 3-5 key points.
+                3. Include a comparison table (3 columns: Feature, Benefit, Score) related to the topic.
+                4. Include a catchy title and a short excerpt.
+                5. Output MUST be valid JSON with keys: "title", "excerpt", "content".
+                6. Length: Approx 500 words for content.
+                7. Tone: Professional, modern, and helpful.
+            `;
+
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
+
+            // Clean JSON string (remove markdown code blocks if any)
+            const jsonStr = text.replace(/```json|```/g, "").trim();
+            const data = JSON.parse(jsonStr);
+
+            return {
+                title: data.title,
+                slug: data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
+                excerpt: data.excerpt,
+                content: data.content.trim(),
+                seo_title: data.title,
+                seo_description: data.excerpt,
+                author: 'AI Designer',
+                generated: true
+            };
+        } catch (err) {
+            console.error("Gemini Generation Failed, falling back to templates:", err);
+        }
+    }
+
+    // Fallback to Template Logic
+    // ... existing template logic ...
     const topicLower = topic.toLowerCase();
-
-    // Find best matching template
     let template = TEMPLATES.find(t => t.keywords.some(k => topicLower.includes(k)));
-
-    // Fallback to generic "Creative" template if no match
     if (!template) {
         template = {
             keywords: [],
@@ -121,7 +189,6 @@ Whether you love it or hate it, ignoring ${topic} is no longer an option for ser
         };
     }
 
-    // Replace Placeholders
     const year = new Date().getFullYear();
     const title = template.title.replace('{Year}', year.toString()).replace('{Topic}', topic);
     const excerpt = template.excerpt.replace('{Year}', year.toString()).replace('{Topic}', topic);

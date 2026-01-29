@@ -130,22 +130,30 @@ export default function LandingPage() {
               {/* Glow Effect */}
               <div className="absolute -inset-1.5 bg-gradient-to-r from-pink-200 via-orange-200 to-yellow-200 rounded-[2rem] blur opacity-40 group-hover:opacity-60 transition duration-1000 group-hover:duration-200" />
 
-              <div className="relative bg-white rounded-[1.8rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center gap-2">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const query = (e.currentTarget.elements.namedItem('aiQuery') as HTMLInputElement).value;
+                  if (query) window.location.href = `/ai?q=${encodeURIComponent(query)}`;
+                }}
+                className="relative bg-white rounded-[1.8rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center gap-2"
+              >
                 <div className="pl-5 text-gray-400">
                   <Sparkles size={24} className="text-orange-400 fill-orange-400/20" />
                 </div>
                 <input
                   type="text"
+                  name="aiQuery"
                   placeholder="Describe your project..."
                   className="flex-1 bg-transparent border-none outline-none text-lg text-gray-900 placeholder:text-gray-400 h-16 min-w-0 font-medium"
                 />
-                <Link href="/ai" className="hidden sm:flex px-8 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-all active:scale-95 whitespace-nowrap text-base">
+                <button type="submit" className="hidden sm:flex px-8 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-all active:scale-95 whitespace-nowrap text-base">
                   Start Exploring <ArrowRight size={18} />
-                </Link>
-                <Link href="/ai" aria-label="Generate" className="sm:hidden px-4 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold flex items-center gap-2 hover:shadow-lg transition-all active:scale-95 shrink-0">
+                </button>
+                <button type="submit" aria-label="Generate" className="sm:hidden px-4 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold flex items-center gap-2 hover:shadow-lg transition-all active:scale-95 shrink-0">
                   <ArrowRight size={20} />
-                </Link>
-              </div>
+                </button>
+              </form>
             </div>
 
             {/* Quick Suggestions - Pills */}
