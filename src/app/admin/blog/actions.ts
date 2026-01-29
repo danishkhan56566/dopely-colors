@@ -219,16 +219,36 @@ const adminClient = createClient(
     }
 );
 
+import { createAdminClient } from '@/lib/supabase-server';
+import { checkPermission } from '@/lib/permissions';
+
 export async function savePost(payload: any) {
     try {
-        if (!process.env.SUPABASE_SERVICE_KEY) {
-            throw new Error('Missing SUPABASE_SERVICE_KEY');
+        const supabase = createAdminClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            throw new Error('Unauthorized');
+        }
+
+        // Check for EDIT permission
+        const canEdit = await checkPermission(user.id, 'Blog Section', 'edit');
+        if (!canEdit) {
+            return { success: false, error: 'DENIED: You do not have "Edit" permissions for the Blog Section.' };
+        }
+
+        // If the user is trying to PUBLISH, check for PUBLISH permission
+        if (payload.status === 'published') {
+            const canPublish = await checkPermission(user.id, 'Blog Section', 'publish');
+            if (!canPublish) {
+                // If they can't publish, we can either block the whole save or just force it to draft
+                return { success: false, error: 'DENIED: You do not have "Publish" permissions. Please save as Draft instead.' };
+            }
         }
 
         // Check if we are updating or inserting
         let result;
         if (payload.id) {
-            // Update
             result = await adminClient
                 .from('posts')
                 .update(payload)
@@ -236,7 +256,6 @@ export async function savePost(payload: any) {
                 .select()
                 .single();
         } else {
-            // Insert
             result = await adminClient
                 .from('posts')
                 .insert(payload)
