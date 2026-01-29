@@ -41,6 +41,10 @@ const nextConfig: NextConfig = {
       { source: '/tailwind-colors', destination: '/tailwind' },
       { source: '/design-system-builder', destination: '/design-system' },
 
+      // Fixes for Search Console 404s
+      { source: '/saved', destination: '/favorites' },
+      { source: '/&', destination: '/' },
+
       // Development Proxy for Python Backend (Vercel handles this automatically in prod via vercel.json)
       {
         source: '/api/:path*',

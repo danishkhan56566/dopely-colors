@@ -1,8 +1,24 @@
 import Generator from '@/components/Generator';
 import { Suspense } from 'react';
+import { Metadata } from 'next';
+
+type Props = {
+    params: Promise<{ colors: string }>
+}
 
 export function generateStaticParams() {
     return [];
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { colors } = await params;
+    return {
+        title: `Color Palette Generator - ${colors.split('-').map(c => '#' + c).join(', ')}`,
+        description: `Generate, visualize and export your color palette. Hex codes: ${colors.split('-').map(c => '#' + c.toUpperCase()).join(', ')}`,
+        alternates: {
+            canonical: `/generate/${colors}`,
+        },
+    };
 }
 
 export default function Page() {
