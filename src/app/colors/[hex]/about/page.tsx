@@ -41,6 +41,8 @@ export async function generateMetadata(
     const description = data?.description ||
         `${colorName} (${formattedHex}) is a ${formattedHex} hex color code. usage, psychology, and similar colors for your next design project. RGB: ${conversions.rgb}, CMYK: ${conversions.cmyk}.`;
 
+    const normalizedHex = formattedHex.replace('#', '').toUpperCase();
+
     return {
         title: `${colorName} (${formattedHex}) Color Code - Meaning, Palettes & Paint`,
         description: description.substring(0, 160), // SEO optimal length
@@ -52,7 +54,7 @@ export async function generateMetadata(
                 // In a real app we'd have a dynamic OG image generator route
                 // `/api/og/color?hex=${formattedHex.replace('#', '')}`
                 {
-                    url: `https://dopelycolors.com/api/og/color?hex=${formattedHex.replace('#', '')}`,
+                    url: `https://dopelycolors.com/api/og/color?hex=${normalizedHex}`,
                     width: 1200,
                     height: 630,
                     alt: `${colorName} Color Preview`,
@@ -65,7 +67,7 @@ export async function generateMetadata(
             description: description,
         },
         alternates: {
-            canonical: `https://dopelycolors.com/colors/${formattedHex.replace('#', '')}/about`,
+            canonical: `/colors/${normalizedHex}/about`,
         }
     };
 }

@@ -28,6 +28,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://dopelycolors.com'),
+  alternates: {
+    canonical: './',
+  },
   title: "Dopely Colors – AI Color Palette Generator for Designers & Developers",
   description: "Dopely Colors is an AI-powered color and design toolkit for designers and developers. Generate color palettes, gradients, Tailwind colors, and complete design systems instantly.",
   keywords: ["AI color palette generator", "color palettes", "gradient generator", "Tailwind colors", "design system builder", "WCAG contrast checker", "color picker for designers"],
