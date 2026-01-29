@@ -30,8 +30,9 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
-import { getAdminPermissions, updateAdminPermissions, type FeaturePermissions, type PermissionGrade } from './actions';
+import { getAdminPermissions, updateAdminPermissions, getAuditLogs, logAdminAction, inviteAdmin, type FeaturePermissions, type PermissionGrade } from './actions';
 import { getUsersAdmin, type AdminUser } from '../../users/actions';
+import { format } from 'date-fns';
 
 // Define Permissions State Typings
 // Local UI types moved to actions.ts
@@ -43,6 +44,11 @@ export default function AdminSettingsAdmin() {
     const [admins, setAdmins] = useState<AdminUser[]>([]);
     const [selectedAdminIndex, setSelectedAdminIndex] = useState(0);
     const [showKey, setShowKey] = useState<Record<string, boolean>>({});
+    const [auditLogs, setAuditLogs] = useState<any[]>([]);
+    const [isFetchingLogs, setIsFetchingLogs] = useState(false);
+    const [auditError, setAuditError] = useState<string | null>(null);
+    const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+    const [inviteEmail, setInviteEmail] = useState('');
 
     const [adminSettings, setAdminSettings] = useState({
         googleApiKey: 'AIzaSyDD0I9y6QrlJlhGVx8bINwTUJonZUs5YOE',
@@ -63,10 +69,23 @@ export default function AdminSettingsAdmin() {
         'Design System Builder': { view: true, edit: true, publish: false },
     });
 
-    // Fetch admins on mount
+    // Fetch admins and logs on mount
     useEffect(() => {
         fetchAdmins();
+        fetchLogs();
     }, []);
+
+    const fetchLogs = async () => {
+        setIsFetchingLogs(true);
+        setAuditError(null);
+        const { logs, error } = await getAuditLogs();
+        if (error) {
+            setAuditError(error);
+        } else {
+            setAuditLogs(logs);
+        }
+        setIsFetchingLogs(false);
+    };
 
     const fetchAdmins = async () => {
         setIsFetchingAdmins(true);
@@ -124,8 +143,35 @@ export default function AdminSettingsAdmin() {
         const { success, error } = await updateAdminPermissions(admins[selectedAdminIndex].id, permissions);
         if (success) {
             toast.success(`Permissions for ${admins[selectedAdminIndex].email} synced successfully`);
+
+            // Log the action (Server will auto-detect current user email)
+            await logAdminAction({
+                action: 'Update Permissions',
+                details: `Modified RBAC matrix for ${admins[selectedAdminIndex].email}`,
+                payload: permissions,
+                context: 'RBAC Sync'
+            });
+            fetchLogs(); // Refresh logs
         } else {
             toast.error(error || 'Failed to sync permissions');
+        }
+        setIsLoading(false);
+    };
+
+    const handleInvite = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!inviteEmail) return;
+
+        setIsLoading(true);
+        const { success, error } = await inviteAdmin(inviteEmail, 'editor');
+        if (success) {
+            toast.success(`Invitation sent to ${inviteEmail}`);
+            setInviteEmail('');
+            setIsInviteModalOpen(false);
+            fetchAdmins(); // Refresh admin list
+            fetchLogs(); // Refresh logs
+        } else {
+            toast.error(error || 'Failed to send invitation');
         }
         setIsLoading(false);
     };
@@ -215,7 +261,11 @@ export default function AdminSettingsAdmin() {
                                 ))}
                             </div>
                             <div className="p-6 bg-gray-50/50 border-t border-gray-50">
-                                <button className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-gray-100 rounded-2xl text-xs font-bold text-gray-600 hover:bg-gray-100 transition-all shadow-sm">
+                                <button
+                                    onClick={() => setIsInviteModalOpen(true)}
+                                    disabled={isLoading}
+                                    className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-gray-100 rounded-2xl text-xs font-bold text-gray-600 hover:bg-gray-100 transition-all shadow-sm disabled:opacity-50"
+                                >
                                     <UserPlus size={16} />
                                     Invite New Editor
                                 </button>
@@ -496,29 +546,111 @@ export default function AdminSettingsAdmin() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50">
-                                    {[
-                                        { time: '2026-01-29 20:58', user: 'Danish Khan', action: 'Update Role', diff: 'Editor -> Super Admin (Lapsed)', meta: 'RBAC Sync' },
-                                        { time: '2026-01-29 18:42', user: 'System', action: 'Key Rotation', diff: 'Google API Key Refreshed', meta: 'Automated' },
-                                        { time: '2026-01-29 16:15', user: 'Waqar Ahmed', action: 'Bulk Upload', diff: '+240 Palettes Created', meta: 'JSON Feed' },
-                                        { time: '2026-01-29 15:00', user: 'System', action: 'Session Expired', diff: 'UID: 9021 Logged Out', meta: 'Timeout' },
-                                    ].map((log, i) => (
-                                        <tr key={i} className="hover:bg-gray-50/50 transition-colors">
-                                            <td className="px-8 py-5 font-mono text-[11px] text-gray-400 whitespace-nowrap">{log.time}</td>
-                                            <td className="px-6 py-5">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-6 h-6 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-[10px] font-black">{log.user.charAt(0)}</div>
-                                                    <span className="text-sm font-bold text-gray-900">{log.user}</span>
+                                    {isFetchingLogs ? (
+                                        <tr>
+                                            <td colSpan={5} className="py-20 text-center">
+                                                <div className="flex flex-col items-center gap-4">
+                                                    <RefreshCw size={24} className="animate-spin text-violet-500" />
+                                                    <span className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Syncing History...</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-5 text-xs font-black uppercase text-violet-500 tracking-wider whitespace-nowrap">{log.action}</td>
-                                            <td className="px-6 py-5 text-xs text-gray-600 font-medium">{log.diff}</td>
-                                            <td className="px-8 py-5 text-right font-bold text-[10px] text-gray-400 uppercase tracking-widest">{log.meta}</td>
                                         </tr>
-                                    ))}
+                                    ) : auditError ? (
+                                        <tr>
+                                            <td colSpan={5} className="py-20 text-center">
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <AlertTriangle size={32} className="text-amber-500" />
+                                                    <div className="text-sm font-bold text-gray-900">{auditError}</div>
+                                                    <p className="text-xs text-gray-500 max-w-md mx-auto">
+                                                        The `audit_logs` table needs to be created in your Supabase database.
+                                                        Please run the migration located in <code className="bg-gray-100 px-1 py-0.5 rounded">supabase/migrations</code>.
+                                                    </p>
+                                                    <button
+                                                        onClick={fetchLogs}
+                                                        className="mt-4 px-6 py-2 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-black transition-all"
+                                                    >
+                                                        Retry Connection
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ) : auditLogs.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={5} className="py-20 text-center text-gray-400 text-xs font-bold italic">
+                                                No administrative actions recorded yet.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        auditLogs.map((log, i) => (
+                                            <tr key={log.id} className="hover:bg-gray-50/50 transition-colors">
+                                                <td className="px-8 py-5 font-mono text-[11px] text-gray-400 whitespace-nowrap">
+                                                    {format(new Date(log.created_at), 'yyyy-MM-dd HH:mm')}
+                                                </td>
+                                                <td className="px-6 py-5">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-6 h-6 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-[10px] font-black">
+                                                            {(log.operator_email || 'S').charAt(0).toUpperCase()}
+                                                        </div>
+                                                        <span className="text-sm font-bold text-gray-900 truncate max-w-[150px]" title={log.operator_email}>
+                                                            {log.operator_email || 'System'}
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-5 text-xs font-black uppercase text-violet-500 tracking-wider whitespace-nowrap">{log.action}</td>
+                                                <td className="px-6 py-5 text-xs text-gray-600 font-medium max-w-xs truncate">{log.details}</td>
+                                                <td className="px-8 py-5 text-right font-bold text-[10px] text-gray-400 uppercase tracking-widest">{log.context || 'System'}</td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>
                     </section>
+                </div>
+            )}
+            {/* Invitation Modal */}
+            {isInviteModalOpen && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[2.5rem] shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-300">
+                        <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+                            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                <UserPlus className="text-violet-600" size={24} />
+                                Invite Editor
+                            </h3>
+                            <button
+                                onClick={() => setIsInviteModalOpen(false)}
+                                className="p-2 hover:bg-gray-100 rounded-xl transition-all"
+                            >
+                                <X size={20} className="text-gray-400" />
+                            </button>
+                        </div>
+                        <form onSubmit={handleInvite} className="p-8 space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Email Address</label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={inviteEmail}
+                                    onChange={(e) => setInviteEmail(e.target.value)}
+                                    placeholder="editor@dopleycolors.com"
+                                    className="w-full bg-gray-50 px-5 py-4 rounded-2xl border border-gray-200 font-medium text-sm focus:ring-2 focus:ring-violet-100 transition-all outline-none"
+                                />
+                            </div>
+                            <div className="p-4 bg-violet-50 rounded-2xl flex gap-3">
+                                <Info size={18} className="text-violet-600 shrink-0" />
+                                <p className="text-[11px] text-violet-600 font-medium leading-relaxed">
+                                    Invitations grant immediate "Editor" access. You can customize granular permissions in the RBAC tab after they accept.
+                                </p>
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black text-sm hover:bg-black transition-all shadow-xl shadow-gray-900/10 disabled:opacity-50"
+                            >
+                                {isLoading ? <RefreshCw className="animate-spin mx-auto" size={20} /> : 'Send Magic Invite'}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             )}
         </div>

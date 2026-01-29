@@ -1,6 +1,6 @@
 'use server';
 
-import { createAdminClient } from '@/lib/supabase-server';
+import { createAdminClient, createClient } from '@/lib/supabase-server';
 import { revalidatePath } from 'next/cache';
 
 export type PermissionGrade = {
@@ -68,19 +68,106 @@ export async function updateAdminPermissions(userId: string, permissions: Featur
 /**
  * Log an action to the audit trail
  */
-export async function logAdminAction(action: string, details: string, operatorId?: string) {
-    // In a real app, this would write to a dedicated 'audit_logs' table
-    // For now we can just console log or if we have a table, insert into it.
-    console.log(`[AUDIT] Action: ${action} | Details: ${details} | Operator: ${operatorId || 'System'}`);
+export async function logAdminAction(payload: {
+    action: string;
+    details: string;
+    operatorId?: string;
+    operatorEmail?: string;
+    payload?: any;
+    context?: string;
+}) {
+    try {
+        const supabase = createAdminClient();
 
-    // Optional: Insert into audit_logs table if you want to implement it now
-    /*
-    const supabase = createAdminClient();
-    await supabase.from('audit_logs').insert({
-        operator_id: operatorId,
-        action,
-        details,
-        timestamp: new Date().toISOString()
-    });
-    */
+        let email = payload.operatorEmail;
+        let userId = payload.operatorId;
+
+        // If no email provided, try to get from current session
+        if (!email) {
+            const client = await createClient();
+            const { data: { user } } = await client.auth.getUser();
+            if (user) {
+                email = user.email;
+                userId = user.id;
+            }
+        }
+
+        const { error } = await supabase
+            .from('audit_logs')
+            .insert({
+                operator_id: userId,
+                operator_email: email || 'System',
+                action: payload.action,
+                details: payload.details,
+                payload: payload.payload,
+                context: payload.context || 'Admin Console'
+            });
+
+        if (error) {
+            console.error('Audit Log Error:', error);
+        }
+    } catch (err) {
+        console.error('Audit Log Failed:', err);
+    }
+}
+
+/**
+ * Fetch audit logs
+ */
+export async function getAuditLogs() {
+    try {
+        const supabase = createAdminClient();
+        const { data, error } = await supabase
+            .from('audit_logs')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(100);
+
+        if (error) {
+            if (error.code === '42P01') { // relation "audit_logs" does not exist
+                return { logs: [], error: 'Table Missing: Run audit_logs migration' };
+            }
+            throw error;
+        }
+        return { logs: data || [], error: null };
+    } catch (err: any) {
+        return { logs: [], error: err.message };
+    }
+}
+
+/**
+ * Invite a new admin/editor
+ */
+export async function inviteAdmin(email: string, role: 'admin' | 'editor') {
+    try {
+        const supabase = createAdminClient();
+
+        const { data, error } = await supabase.auth.admin.inviteUserByEmail(email, {
+            data: { role: role }
+        });
+
+        if (error) throw error;
+
+        // Also create an entry in profiles to ensure role is tracked
+        if (data.user) {
+            await supabase.from('profiles').upsert({
+                id: data.user.id,
+                email: email,
+                role: role,
+                status: 'pending'
+            });
+
+            await logAdminAction({
+                action: 'Invite Admin',
+                details: `Invited ${email} as ${role}`,
+                context: 'User Management'
+            });
+        }
+
+        revalidatePath('/admin/settings/admin');
+        return { success: true };
+    } catch (err: any) {
+        console.error('Invite Admin Error:', err);
+        return { success: false, error: err.message };
+    }
 }
