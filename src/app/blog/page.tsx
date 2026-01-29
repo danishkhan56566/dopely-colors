@@ -10,8 +10,8 @@ export const metadata = {
 
 
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// export const dynamic = 'force-dynamic'; // DISABLED
+export const revalidate = 3600; // Cache for 1 hour
 
 export default async function BlogIndex() {
     const posts = await getAllPosts();
