@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { AdUnit } from '@/components/ads/AdUnit';
-import { Palette, Zap, Layers, ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowRight, Check, X, Info, AlertTriangle } from 'lucide-react';
+import { SafeSchema } from '@/components/seo/SafeSchema';
 
 // --- Shared Components ---
 const FAQSection = ({ title, items }: { title: string, items: { q: string, a: React.ReactNode }[] }) => {
-    // Generate Schema (Note: Schema only accepts plain strings, so we strip any React nodes if they were strings)
-    const schema = {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
+    // Generate Schema
+    const schemaData = {
         "mainEntity": items.map(item => ({
             "@type": "Question",
             "name": item.q,
@@ -21,12 +19,11 @@ const FAQSection = ({ title, items }: { title: string, items: { q: string, a: Re
 
     return (
         <section className="max-w-4xl mx-auto py-16 px-6 text-gray-700 border-t border-gray-100 bg-white">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-            />
+            <SafeSchema type="FAQPage" data={schemaData} />
 
             <h2 className="text-3xl font-black text-gray-900 mb-10 text-center tracking-tight">{title}</h2>
+
+
 
             <div className="grid gap-6">
                 {items.map((item, i) => (
@@ -346,126 +343,142 @@ export const DesignSystemFAQ = () => (
     />
 );
 
+export const ToolsHubFAQ = () => (
+    <FAQSection
+        title="Dopely Colors Suite FAQ"
+        items={[
+            {
+                q: "Is Dopely Colors free to use?",
+                a: "Yes! The core tools including the Palette Generator, Contrast Checker, and Image Extractor are completely free to use. We offer a Pro plan for users who need cloud sync and advanced project management."
+            },
+            {
+                q: "Can I use these tools for commercial projects?",
+                a: "Absolutely. Any color palette, gradient, or design system you generate is yours to use in any personal or commercial project with no attribution required."
+            },
+            {
+                q: "Do I need to install anything?",
+                a: "No, Dopely Colors runs entirely in your browser. However, we do offer extensions for Chrome and Figma if you want to integrate our tools directly into your workflow."
+            },
+            {
+                q: "How does the AI feature work?",
+                a: (
+                    <>
+                        Our <Link href="/ai" className="text-indigo-600 font-medium hover:underline">AI Generator</Link> uses advanced natural language processing to convert text descriptions (like 'Serene Ocean Sunset') into scientifically balanced color palettes.
+                    </>
+                )
+            },
+            {
+                q: "What makes this different from other color tools?",
+                a: "We built Dopely because we were tired of tools that generate pretty but useless colors. A palette might look great in a moodboard, but if it fails WCAG contrast tests or doesn't have a semantic dark mode equivalent, it's useless for software development. We prioritize 'shippability' over pure aesthetics."
+            }
+        ]}
+    />
+);
+
 export const AIHowTo = () => (
-    <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "HowTo",
-                "name": "How to Generate an AI Color Palette",
-                "description": "Learn how to generate professional color palettes using AI.",
-                "step": [
-                    {
-                        "@type": "HowToStep",
-                        "name": "Enter your prompt",
-                        "text": "Describe your design style, brand, or mood in the input field. For example: 'Cyberpunk city at night'."
-                    },
-                    {
-                        "@type": "HowToStep",
-                        "name": "Generate palette",
-                        "text": "Click the generate button. The AI uses semantic analysis to create a 5-color palette matching your description."
-                    },
-                    {
-                        "@type": "HowToStep",
-                        "name": "Refine and Export",
-                        "text": "Click any color to lock it or drag to reorder. When satisfied, export your palette to CSS, Tailwind, or Figma."
-                    }
-                ]
-            })
+    <SafeSchema
+        type="HowTo"
+        data={{
+            "name": "How to Generate an AI Color Palette",
+            "description": "Learn how to generate professional color palettes using AI.",
+            "step": [
+                {
+                    "@type": "HowToStep",
+                    "name": "Enter your prompt",
+                    "text": "Describe your design style, brand, or mood in the input field. For example: 'Cyberpunk city at night'."
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Generate palette",
+                    "text": "Click the generate button. The AI uses semantic analysis to create a 5-color palette matching your description."
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Refine and Export",
+                    "text": "Click any color to lock it or drag to reorder. When satisfied, export your palette to CSS, Tailwind, or Figma."
+                }
+            ]
         }}
     />
 );
 
 export const ImageHowTo = () => (
-    <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "HowTo",
-                "name": "How to Extract Colors from an Image",
-                "description": "Extract a beautiful color palette from any photo or screenshot.",
-                "step": [
-                    {
-                        "@type": "HowToStep",
-                        "name": "Upload Image",
-                        "text": "Drag and drop your image (JPG, PNG, WEBP) into the upload zone."
-                    },
-                    {
-                        "@type": "HowToStep",
-                        "name": "Analyze Colors",
-                        "text": "Our algorithm automatically processes the image using K-Means clustering to find dominant and accent colors."
-                    },
-                    {
-                        "@type": "HowToStep",
-                        "name": "Select Palette",
-                        "text": "Choose up to 5 colors from the extracted list to build your final palette."
-                    }
-                ]
-            })
+    <SafeSchema
+        type="HowTo"
+        data={{
+            "name": "How to Extract Colors from an Image",
+            "description": "Extract a beautiful color palette from any photo or screenshot.",
+            "step": [
+                {
+                    "@type": "HowToStep",
+                    "name": "Upload Image",
+                    "text": "Drag and drop your image (JPG, PNG, WEBP) into the upload zone."
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Analyze Colors",
+                    "text": "Our algorithm automatically processes the image using K-Means clustering to find dominant and accent colors."
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Select Palette",
+                    "text": "Choose up to 5 colors from the extracted list to build your final palette."
+                }
+            ]
         }}
     />
 );
 
 export const TailwindHowTo = () => (
-    <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "HowTo",
-                "name": "How to Generate Tailwind Color Scales",
-                "description": "Create a full 50-950 color scale for Tailwind CSS from a single base color.",
-                "step": [
-                    {
-                        "@type": "HowToStep",
-                        "name": "Pick Base Color",
-                        "text": "Select your primary brand color using the picker or enter a hex code."
-                    },
-                    {
-                        "@type": "HowToStep",
-                        "name": "Preview Scale",
-                        "text": "The tool automatically generates 11 shades (50-950) blended with white and black for perfect perceptual balance."
-                    },
-                    {
-                        "@type": "HowToStep",
-                        "name": "Export Config",
-                        "text": "Copy the generated code snippet and paste it into your tailwind.config.js file under theme.extend.colors."
-                    }
-                ]
-            })
+    <SafeSchema
+        type="HowTo"
+        data={{
+            "name": "How to Generate Tailwind Color Scales",
+            "description": "Create a full 50-950 color scale for Tailwind CSS from a single base color.",
+            "step": [
+                {
+                    "@type": "HowToStep",
+                    "name": "Pick Base Color",
+                    "text": "Select your primary brand color using the picker or enter a hex code."
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Preview Scale",
+                    "text": "The tool automatically generates 11 shades (50-950) blended with white and black for perfect perceptual balance."
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Export Config",
+                    "text": "Copy the generated code snippet and paste it into your tailwind.config.js file under theme.extend.colors."
+                }
+            ]
         }}
     />
 );
 
 export const DesignSystemHowTo = () => (
-    <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "HowTo",
-                "name": "How to Build a Color Design System",
-                "description": "Define your semantic color tokens for a scalable design system.",
-                "step": [
-                    {
-                        "@type": "HowToStep",
-                        "name": "Define Brand Colors",
-                        "text": "Set your Primary and Secondary brand colors."
-                    },
-                    {
-                        "@type": "HowToStep",
-                        "name": "Set Semantic Roles",
-                        "text": "Choose colors for Success, Warning, Error, and Info states to ensure consistent feedback."
-                    },
-                    {
-                        "@type": "HowToStep",
-                        "name": "Export Tokens",
-                        "text": "Export your system as CSS Variables or JSON tokens for use in development or Figma."
-                    }
-                ]
-            })
+    <SafeSchema
+        type="HowTo"
+        data={{
+            "name": "How to Build a Color Design System",
+            "description": "Define your semantic color tokens for a scalable design system.",
+            "step": [
+                {
+                    "@type": "HowToStep",
+                    "name": "Define Brand Colors",
+                    "text": "Set your Primary and Secondary brand colors."
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Set Semantic Roles",
+                    "text": "Choose colors for Success, Warning, Error, and Info states to ensure consistent feedback."
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Export Tokens",
+                    "text": "Export your system as CSS Variables or JSON tokens for use in development or Figma."
+                }
+            ]
         }}
     />
 );

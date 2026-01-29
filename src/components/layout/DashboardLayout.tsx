@@ -1,12 +1,13 @@
 'use client';
 
-import { Search, Menu, X, Plus, TrendingUp, Clock, Shuffle, Heart, Wand2, Image, Contrast, Pipette, Smartphone, FileCode, Sparkles, Layers, Layout, Palette, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Search, Menu, X, Plus, TrendingUp, Clock, Shuffle, Heart, Wand2, Image, Contrast, Pipette, Smartphone, FileCode, Sparkles, Layers, Layout, Palette, PanelLeftClose, PanelLeftOpen, LayoutGrid } from 'lucide-react';
 import { useState, ReactNode, Suspense } from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import clsx from 'clsx';
 import { useSearchParams } from 'next/navigation';
 import { UserButton } from '@/components/auth/UserButton';
+import { Footer } from '@/components/layout/Footer';
 
 const SIDEBAR_LINKS = [
     { icon: Clock, label: 'New', href: '/explore?sort=new' },
@@ -15,6 +16,7 @@ const SIDEBAR_LINKS = [
 ];
 
 const TOOL_LINKS = [
+    { icon: LayoutGrid, label: 'All Tools', href: '/tools' },
     { icon: Wand2, label: 'Generate Palettes', href: '/' },
     { icon: TrendingUp, label: 'Explore Popular', href: '/explore?sort=popular' },
     { icon: Image, label: 'Extract from Image', href: '/image' },
@@ -172,6 +174,9 @@ export const DashboardLayout = ({ children, showUserInfo = true }: { children: R
                 )}
 
                 {children}
+
+                {/* Global Footer */}
+                <Footer />
             </main>
         </div>
     );

@@ -6,7 +6,6 @@ import chroma from 'chroma-js';
 import { ArrowLeftRight, Check, X, RefreshCw, Copy, Info, Sparkles, AlertTriangle } from 'lucide-react';
 import { ContrastGuide } from '@/components/content/PageGuides';
 import { ContrastFAQ } from '@/components/content/PageFAQs';
-import { Footer } from '@/components/layout/Footer';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 
@@ -263,7 +262,6 @@ export default function ContrastCheckerPage() {
                     <ContrastGuide />
                     <ContrastFAQ />
                 </div>
-                <Footer />
             </div>
         </DashboardLayout >
     );

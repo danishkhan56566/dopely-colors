@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, Lock, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { AIGeneratorGuide } from '@/components/content/AIGeneratorGuide';
 
 export function LockedUI() {
     return (
@@ -67,6 +68,7 @@ export function LockedUI() {
                     </motion.div>
                 </div>
             </div>
+            <AIGeneratorGuide />
         </DashboardLayout>
     );
 }

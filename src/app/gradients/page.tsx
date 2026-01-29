@@ -20,7 +20,6 @@ import {
     Maximize2
 } from 'lucide-react';
 import { GradientGuide } from '@/components/content/GradientGuide';
-import { Footer } from '@/components/layout/Footer';
 import { toast } from 'sonner';
 import clsx from 'clsx';
 
@@ -442,7 +441,6 @@ export default function GradientGeneratorPage() {
                  `}</style>
 
                 <GradientGuide />
-                <Footer />
             </div>
         </DashboardLayout>
     );

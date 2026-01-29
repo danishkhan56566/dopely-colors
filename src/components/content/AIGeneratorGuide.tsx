@@ -8,105 +8,88 @@ export const AIGeneratorGuide = () => {
                     The Neural Design Engine
                 </h2>
                 <p className="text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed text-center mb-16">
-                    Turn a simple idea, a brand logo, or even a single color into a production-ready design system for modern web and mobile applications.
+                    Turn abstract concepts into production-ready design systems. We built this engine because standard random generators don't understand <i>context</i>—but LLMs do.
                 </p>
 
                 {/* Section 1: Introduction */}
                 <div className="mb-20">
-                    <h3 className="text-3xl font-bold text-gray-900 mb-6">Imagine Your Design System in Seconds</h3>
+                    <h3 className="text-3xl font-bold text-gray-900 mb-6">Why we trained a model on "Vibe"</h3>
                     <p className="text-lg leading-relaxed mb-6">
-                        Dopely AI helps designers and developers generate accessible, scalable, and platform-ready color systems — without manual guesswork or endless iterations. Whether you’re building a startup MVP or refining an enterprise product, Dopely AI transforms inspiration into a complete visual foundation you can actually ship.
+                        Most color generators use simple math: "Pick a color, then rotate the hue 180 degrees." This creates mathematically correct but often soulless palettes.
+                    </p>
+                    <p className="text-lg leading-relaxed mb-6">
+                        We took a different approach. We fed our model thousands of award-winning UI designs, movie posters, and art history records. Why? Because when you ask for "Cyberpunk," you don't just want neon pink; you want the <i>specific</i> dirty low-light blue-greys that make the neons pop. That's the difference between a math formula and a semantic understanding.
                     </p>
                 </div>
 
                 {/* Section 2: How It Works */}
                 <div className="grid md:grid-cols-2 gap-12 mb-20">
                     <div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">🎯 Start With an Idea</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">🎯 How to Speak Color</h3>
                         <p className="mb-4 text-gray-600">
-                            Describe what you’re building, and Dopely AI creates a color ecosystem designed for real products. It understands context, not just keywords.
+                            The AI works best when given constraints. Think like an art director, not a programmer.
                         </p>
-                        <ul className="space-y-3 bg-gray-50 p-6 rounded-2xl border border-gray-200">
-                            <li className="flex gap-2">
-                                <span className="text-green-500">✓</span> "A modern fintech app for Gen Z with neon vibes"
+                        <ul className="space-y-4 bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                            <li className="flex gap-3">
+                                <span className="text-red-500 font-bold">Don't say:</span>
+                                <span className="text-gray-500 line-through">"A blue finance app"</span>
                             </li>
-                            <li className="flex gap-2">
-                                <span className="text-green-500">✓</span> "A minimal SaaS landing page with trust-focused colors"
+                            <li className="flex gap-3">
+                                <span className="text-green-600 font-bold">Do say:</span>
+                                <span className="text-gray-900">"A trustworthy fintech dashboard for older users, relying on deep navies and high-contrast gold accents for readability."</span>
                             </li>
-                            <li className="flex gap-2">
-                                <span className="text-green-500">✓</span> "A food delivery app with high-contrast UI"
+                            <li className="text-sm text-gray-500 italic mt-2 border-t border-gray-200 pt-2">
+                                Notice the difference? The second prompt gives the AI clues about <strong>contrast</strong> (readability) and <strong>mood</strong> (trustworthy).
                             </li>
                         </ul>
                     </div>
                     <div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">🖼️ Logo Analysis (Brand Intelligence)</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">🖼️ Visual Intelligence</h3>
                         <p className="mb-4 text-gray-600">
-                            Already have a logo? Upload it and let Dopely AI analyze your brand visually. We extract deep semantic data to ensure consistency.
+                            If you upload a logo, the AI doesn't just grab the hex code. It analyzes the <strong>saturation density</strong>.
                         </p>
-                        <ul className="space-y-2 text-sm font-medium text-gray-700">
-                            <li className="flex gap-2 items-center"><div className="w-2 h-2 rounded-full bg-indigo-500" /> Dominant & Secondary Colors</li>
-                            <li className="flex gap-2 items-center"><div className="w-2 h-2 rounded-full bg-indigo-500" /> Semantic Roles (Primary, Accent, Bg)</li>
-                            <li className="flex gap-2 items-center"><div className="w-2 h-2 rounded-full bg-indigo-500" /> Contrast & Readability Scores</li>
-                            <li className="flex gap-2 items-center"><div className="w-2 h-2 rounded-full bg-indigo-500" /> Brand "Vibe" Analysis</li>
-                        </ul>
+                        <p className="mb-4 text-gray-600">
+                            It asks: "Is this a pastel brand or a neon brand?" Then, it builds a supporting cast of colors that share that underlying DNA, ensuring your secondary buttons don't clash with your primary logo.
+                        </p>
+                        <div className="bg-indigo-50 p-4 rounded-xl text-indigo-900 text-sm font-medium">
+                            It's easier to verify a good palette than to generate one from scratch. Use this tool to get 90% of the way there, then tweak the final 10% manually.
+                        </div>
                     </div>
                 </div>
 
                 {/* Section 3: Deep Tech */}
                 <div className="mb-20">
-                    <h3 className="text-3xl font-bold text-gray-900 mb-8">🎨 Neural Palettes & Accessibility</h3>
+                    <h3 className="text-3xl font-bold text-gray-900 mb-8">Not Just Random Colors</h3>
                     <div className="grid md:grid-cols-3 gap-6">
-                        <div className="bg-gradient-to-br from-violet-50 to-white p-8 rounded-[2rem] border border-violet-100">
-                            <h4 className="text-xl font-bold text-violet-900 mb-3">AI-Generated Systems</h4>
-                            <p className="text-sm text-violet-700 leading-relaxed">
-                                Our proprietary neural engine generates complete systems, not just random palettes. Each output is balanced for UI components, text hierarchy, and background surfaces.
+                        <div className="bg-white p-6 rounded-[2rem] border border-gray-200 shadow-sm">
+                            <h4 className="text-xl font-bold text-gray-900 mb-3">1. Semantic Mapping</h4>
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                We map words like "warm," "trust," and "danger" to specific coordinate regions in the CIELAB color space.
                             </p>
                         </div>
-                        <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-[2rem] border border-blue-100">
-                            <h4 className="text-xl font-bold text-blue-900 mb-3">Accessible by Default</h4>
-                            <p className="text-sm text-blue-700 leading-relaxed">
-                                Accessibility is buried into every system. We perform real-time contrast validation and WCAG AA/AAA checks on every single color pair generated.
+                        <div className="bg-white p-6 rounded-[2rem] border border-gray-200 shadow-sm">
+                            <h4 className="text-xl font-bold text-gray-900 mb-3">2. Contrast Cleanup</h4>
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                After the AI makes a "creative" guess, a second algorithm runs a "sanity check" to ensure text will be readable on the background colors.
                             </p>
                         </div>
-                        <div className="bg-gradient-to-br from-emerald-50 to-white p-8 rounded-[2rem] border border-emerald-100">
-                            <h4 className="text-xl font-bold text-emerald-900 mb-3">Platform Ready</h4>
-                            <p className="text-sm text-emerald-700 leading-relaxed">
-                                Ship faster with instant exports. Get CSS Variables, Tailwind Configs, and Material Design Tokens for Web, iOS, and Android.
+                        <div className="bg-white p-6 rounded-[2rem] border border-gray-200 shadow-sm">
+                            <h4 className="text-xl font-bold text-gray-900 mb-3">3. Tokenization</h4>
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                Finally, we assign roles. The darkest color becomes `surface-900`, the brightest `surface-50`. This prepares the palette for code export immediately.
                             </p>
                         </div>
                     </div>
-                </div>
-
-                {/* Section 4: Use Cases */}
-                <div className="bg-gray-900 text-white p-10 md:p-16 rounded-[3rem] mb-20 text-center">
-                    <h3 className="text-3xl font-bold mb-6">Trusted by Builders Worldwide</h3>
-                    <div className="grid grid-cols-3 gap-8 mb-10 border-b border-gray-800 pb-10">
-                        <div>
-                            <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-400 to-fuchsia-400">1.2M+</div>
-                            <div className="text-xs font-bold uppercase tracking-widest text-gray-500 mt-2">Tokens Generated</div>
-                        </div>
-                        <div>
-                            <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-teal-400">99.9%</div>
-                            <div className="text-xs font-bold uppercase tracking-widest text-gray-500 mt-2">A11y Score</div>
-                        </div>
-                        <div>
-                            <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-amber-400 to-orange-400">50k+</div>
-                            <div className="text-xs font-bold uppercase tracking-widest text-gray-500 mt-2">Assets Created</div>
-                        </div>
-                    </div>
-                    <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                        "Dopely AI is built for designers, developers, and founders who want speed without sacrificing quality. It's the design partner that never sleeps."
-                    </p>
                 </div>
 
                 {/* Section 5: CTA */}
-                <div className="text-center">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">✨ Start Designing With Confidence</h3>
-                    <p className="mb-8 text-gray-600">
-                        Turn inspiration into a complete design system in seconds. Upload a logo, describe your idea, or start from a single color — Dopely AI handles the rest.
+                <div className="text-center bg-gray-900 text-white rounded-[2rem] p-12">
+                    <h3 className="text-2xl font-bold mb-4">Ready to experiment?</h3>
+                    <p className="mb-8 text-gray-400 max-w-xl mx-auto">
+                        There's no cost to play. Generate ten variations, pick the best one, and export it to your CSS.
                     </p>
-                    <div className="inline-block bg-indigo-50 text-indigo-800 px-6 py-4 rounded-xl font-medium border border-indigo-100">
-                        <strong>Pro Tip:</strong> Try asking for "A dark mode dashboard for a crypto app" to see the AI's complex reasoning in action.
+                    <div className="inline-block bg-white/10 text-indigo-300 px-6 py-3 rounded-full text-sm font-medium backdrop-blur-md">
+                        <strong>Pro Tip:</strong> Try asking for "A dark mode dashboard for a crypto app" to see the engine's reasoning in action.
                     </div>
                 </div>
             </div>

@@ -31,7 +31,7 @@ export const HomeGuide = () => (
                 Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Perception</span>
             </h2>
             <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
-                Color isn't just math—it's the silent narrator of your interface. We build tools that bridge the gap between aesthetic intuition and technical precision.
+                Most color tools are broken. They give you 5 random colors that look nice in a stripe but fail in a real UI. We built Dopely to fix that.
             </p>
         </div>
 
@@ -42,15 +42,18 @@ export const HomeGuide = () => (
                     <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white">
                         <Palette size={20} />
                     </div>
-                    <span className="text-sm font-bold uppercase tracking-widest text-indigo-600">Design Philosophy</span>
+                    <span className="text-sm font-bold uppercase tracking-widest text-indigo-600">The Problem</span>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-6">Beyond the Color Wheel</h3>
+                <h3 className="text-3xl font-bold text-gray-900 mb-6">Why "Math" isn't enough</h3>
                 <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                    Most tools stop at "looking good." We focus on **Perceptual Uniformity**. Traditional HSL often lies about brightness—yellow feels lighter than blue even at the same L-value. Our engine uses advanced modulation to ensure your palettes feel balanced to the human eye, not just the computer.
+                    Computers see color linearly. Humans don't. To a computer, pure yellow (`#FFFF00`) and pure blue (`#0000FF`) share the same saturation value. But to your eye, the yellow screams while the blue recedes.
+                </p>
+                <p className="text-lg text-gray-600 leading-relaxed mb-6">
+                    This is why strictly mathematical palettes look "off." Our engine uses <strong>Perceptual Modeling</strong> to adjust for these human quirks, ensuring that "Light Blue" and "Light Yellow" actually <i>feel</i> equally light.
                 </p>
                 <div className="flex flex-wrap gap-4">
                     <Link href="/generate" className="px-6 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-all">
-                        Try the Generator
+                        Experience the Difference
                     </Link>
                 </div>
             </div>
@@ -58,9 +61,9 @@ export const HomeGuide = () => (
             {/* Bento Card 2: Micro-Tip */}
             <div className="md:col-span-4 bg-indigo-600 p-8 md:p-10 rounded-[2.5rem] text-white flex flex-col justify-between">
                 <div>
-                    <h4 className="text-xl font-bold mb-4 italic">"Color is a conversation, not a calculation."</h4>
+                    <h4 className="text-xl font-bold mb-4 italic">"If you can't read the text, the color is wrong."</h4>
                     <p className="text-indigo-100 leading-relaxed">
-                        A great UI uses color to guide attention, establish hierarchy, and reduce cognitive load. If everything pops, nothing pops.
+                        Accessibility isn't a "nice to have" feature. It's the baseline. If your grey text on a white background has a ratio under 4.5:1, your design is fundamentally broken.
                     </p>
                 </div>
                 <div className="mt-8 pt-8 border-t border-white/10">
@@ -158,25 +161,34 @@ export const ImageGuide = () => (
         <Subtitle>How pixel quantization turns complex photography into usable color palettes.</Subtitle>
 
         <p className="mb-8">
-            Photos often contain thousands of distinct unique colors. To reduce an image (like a sunset photo) down to a usable 5-color palette, we use an algorithm called <strong>K-Means Clustering</strong>. This process groups similar pixels together and mathematically finds the "center" color of each group.
+            Photos often contain millions of distinct colors. To reduce an image (like a sunset photo) down to a usable 5-color palette, we don't just pick "random pixels." We use a machine learning algorithm called <strong>K-Means Clustering</strong>.
         </p>
+
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 mb-8">
+            <h4 className="font-bold text-gray-900 mb-2">How it works under the hood:</h4>
+            <ol className="list-decimal pl-5 space-y-2 text-gray-700">
+                <li><strong>Downsampling:</strong> We first resize the image internally to speed up processing, ensuring we aren't analyzing noise.</li>
+                <li><strong>Quantization:</strong> We map every pixel to a 3D color space (RGB).</li>
+                <li><strong>Centroid Discovery:</strong> The algorithm drops "seeds" into this 3D space and moves them to the densest clusters of dots.</li>
+                <li><strong>Filtering:</strong> Finally, we ignore muddy browns/grays (unless you ask for them) to find the "soul" of the image.</li>
+            </ol>
+        </div>
 
         <AdUnit slotId="image-guide-1" />
 
         <h3 className="text-2xl font-bold mb-4">Best Practices for Extraction</h3>
         <ul className="list-disc pl-6 mb-8 space-y-2">
-            <li><strong>Lighting Matters:</strong> Avoid photos with heavy shadows if you want clean UI colors. Shadows often extract as muddy grays.</li>
+            <li><strong>Lighting Matters:</strong> Avoid photos with heavy shadows if you want clean UI colors. Shadows often extract as muddy grays, which look great in a photo but bad on a button.</li>
             <li><strong>Focus on Subject:</strong> If you're extracting for a brand, choose images where the brand product is the dominant focal point.</li>
             <li><strong>Vibrancy vs. Accuracy:</strong> Sometimes the mathematically dominant color is a boring beige background. Our "Vibrant" mode filters these out to find the accent colors that truly pop.</li>
         </ul>
 
         <h3 className="text-2xl font-bold mb-4">From Moodboard to Production</h3>
         <p className="mb-4">
-            Interior designers and brand strategists have used this technique for decades ("Moodboarding"). By pulling colors directly from inspirational imagery, you ensure your design captures the exact *feeling* of the source material. You can check if your extracted colors meet readability standards using our <Link href="/contrast" className="text-indigo-600 font-bold hover:underline">Contrast Auditor</Link>.
+            Interior designers and brand strategists have used this technique for decades ("Moodboarding"). By pulling colors directly from inspirational imagery, you ensure your design captures the exact *feeling* of the source material.
         </p>
-
-        <p>
-            Want to create more variations from your extracted colors? Use our <Link href="/generate" className="text-indigo-600 font-bold">Palette Generator</Link> to iterate on your findings.
+        <p className="mb-4">
+            <strong>Pro Tip:</strong> After extracting, take your new hex codes to the <Link href="/contrast" className="text-indigo-600 font-bold hover:underline">Contrast Auditor</Link>. A color might look great in a photo, but fail WCAG testing when used as text.
         </p>
     </Section>
 );
@@ -293,9 +305,12 @@ export const TailwindGuide = () => (
 
         <div className="grid md:grid-cols-2 gap-8 mb-12 mt-8">
             <div className="p-6 bg-slate-900 text-white rounded-2xl">
-                <h4 className="font-bold mb-4 text-emerald-400">Semantic Naming</h4>
+                <h4 className="font-bold mb-4 text-emerald-400">Stop Hardcoding Hexes</h4>
                 <p className="text-sm text-slate-300 mb-4">
-                    Don't name colors "red-500". Name them "danger-primary". This allows you to rebrand your entire app (e.g., changing 'danger' to orange) without touching a single HTML file.
+                    The biggest mistake junior devs make is naming colors "blue-500". What happens when the CEO wants to rebrand to purple? You have to find/replace 500 files.
+                </p>
+                <p className="text-sm text-slate-300 mb-4">
+                    Instead, map your primitive scale to <strong>semantic tokens</strong>.
                 </p>
                 <code className="text-xs bg-black/50 p-2 rounded block">
                     primary: colors.indigo,<br />

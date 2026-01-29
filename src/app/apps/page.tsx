@@ -1,5 +1,4 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Footer } from '@/components/layout/Footer';
 import { Smartphone, Monitor, Globe, Code, Figma, Chrome, ArrowRight, Apple, Play } from 'lucide-react';
 import Link from 'next/link';
 
@@ -127,7 +126,6 @@ export default function AppsPage() {
                         ))}
                     </div>
                 </div>
-                <Footer />
             </div>
         </DashboardLayout>
     );

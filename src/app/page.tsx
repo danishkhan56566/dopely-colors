@@ -1,7 +1,6 @@
 'use client';
 
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Footer } from '@/components/layout/Footer';
 import {
   Sparkles,
   Zap,
@@ -914,7 +913,6 @@ export default function LandingPage() {
 
         <HomeGuide />
         <HomeFAQ />
-        <Footer />
       </div>
     </DashboardLayout>
   );

@@ -1,5 +1,4 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Footer } from '@/components/layout/Footer';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -19,7 +18,6 @@ export default function GuidesLayout({
                     {children}
                 </div>
             </div>
-            <Footer />
         </DashboardLayout>
     );
 }
