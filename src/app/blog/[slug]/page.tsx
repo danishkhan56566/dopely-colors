@@ -46,11 +46,45 @@ export default async function BlogPost({ params }: PageProps) {
         notFound();
     }
 
-    const htmlContent = await marked(post.content);
+    const isHtml = post.content.trim().startsWith('<');
+    const htmlContent = isHtml ? post.content : await marked(post.content);
 
     return (
         <DashboardLayout>
             <div className="min-h-screen bg-[#FBFBFB]">
+                {/* Style override for Tiptap Tables and Blocks */}
+                <style dangerouslySetInnerHTML={{
+                    __html: `
+                    .blog-content table {
+                        border-collapse: collapse;
+                        table-layout: fixed;
+                        width: 100%;
+                        margin: 2rem 0;
+                        overflow: hidden;
+                    }
+                    .blog-content table td, .blog-content table th {
+                        border: 1px solid #e2e8f0;
+                        padding: 12px 16px;
+                        min-width: 1em;
+                        position: relative;
+                        text-align: left;
+                        vertical-align: top;
+                    }
+                    .blog-content table th {
+                        background-color: #f8fafc;
+                        font-weight: bold;
+                    }
+                    .blog-content blockquote {
+                        border-left: 4px solid #3b82f6;
+                        padding-left: 1.5rem;
+                        font-style: italic;
+                        color: #475569;
+                        background: #f1f5f9;
+                        padding: 1rem 1.5rem;
+                        border-radius: 0 0.5rem 0.5rem 0;
+                    }
+                `}} />
+
                 <article className="max-w-4xl mx-auto px-6 py-12">
                     <Link href="/blog" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 mb-8 transition-colors">
                         <ChevronLeft size={20} />
@@ -88,7 +122,7 @@ export default async function BlogPost({ params }: PageProps) {
                             <AdUnit slotId="post-banner-1" label="TOP BANNER AD" className="h-[100px] mb-8" />
 
                             <div
-                                className="prose prose-lg prose-slate max-w-none
+                                className="prose prose-lg prose-slate max-w-none blog-content
                                 prose-headings:font-bold prose-headings:text-gray-900
                                 prose-p:text-gray-600 prose-p:leading-relaxed
                                 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
