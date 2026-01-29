@@ -43,13 +43,12 @@ export async function middleware(request: NextRequest) {
         }
     )
 
-    const { data: { user } } = await supabase.auth.getUser()
-
-    // Protected Routes
-    if (request.nextUrl.pathname.startsWith('/profile') ||
+    const isProtectedRoute = request.nextUrl.pathname.startsWith('/profile') ||
         request.nextUrl.pathname.startsWith('/settings') ||
-        request.nextUrl.pathname.startsWith('/dashboard')) {
-        // Removed /admin check to allow full localhost access as requested
+        request.nextUrl.pathname.startsWith('/dashboard');
+
+    if (isProtectedRoute) {
+        const { data: { user } } = await supabase.auth.getUser()
         if (!user) {
             return NextResponse.redirect(new URL('/login', request.url))
         }

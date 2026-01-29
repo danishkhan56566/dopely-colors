@@ -33,7 +33,7 @@ export interface DesignState {
 }
 
 export interface UserIntent {
-    type: 'ADJUST' | 'MODE' | 'PREVIEW' | 'FEEDBACK' | 'RESET' | 'UNKNOWN' | 'REGENERATE';
+    type: 'ADJUST' | 'MODE' | 'PREVIEW' | 'FEEDBACK' | 'RESET' | 'UNKNOWN' | 'REGENERATE' | 'EXPORT';
     target?: 'brightness' | 'contrast' | 'saturation' | 'hue' | 'palette';
     value?: string | number; // "+10%", "dark", "blue"
     specific_color?: string; // "primary", "background"
@@ -129,6 +129,11 @@ export const parseUserIntent = (text: string): UserIntent => {
     // REGENERATE
     if (t.includes('regenerate') || t.includes('try again') || t.includes('roll again')) {
         return { type: 'REGENERATE', raw_text: text };
+    }
+
+    // EXPORT / TOKENS
+    if (t.includes('code') || t.includes('css') || t.includes('tokens') || t.includes('export') || t.includes('json')) {
+        return { type: 'EXPORT', raw_text: text };
     }
 
     return { type: 'UNKNOWN', raw_text: text };

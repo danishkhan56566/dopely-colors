@@ -12,12 +12,23 @@ import {
     analyzeText, generateDesignTokens, generateLogoConcepts, AIPalette,
     createInitialDesign, evolveDesignSystem, designStateToPalette, parseUserIntent
 } from '@/lib/ai-assistant';
-import { FeaturePreview, DesignTokensPreview } from './AIPreviews';
-import { AIExportCard } from './AIExportCard';
+// import { FeaturePreview, DesignTokensPreview } from './AIPreviews';
+// import { AIExportCard } from './AIExportCard';
 import { toast } from 'sonner';
 import { usePaletteStore } from '@/store/usePaletteStore';
 import { useRouter } from 'next/navigation';
-import { extractColors } from 'extract-colors';
+// import { extractColors } from 'extract-colors'; // Moved to dynamic import
+import dynamic from 'next/dynamic';
+
+const FeaturePreview = dynamic(() => import('./AIPreviews').then(mod => mod.FeaturePreview), {
+    loading: () => <div className="w-full h-full bg-gray-100/50 animate-pulse rounded-3xl" />
+});
+const DesignTokensPreview = dynamic(() => import('./AIPreviews').then(mod => mod.DesignTokensPreview), {
+    loading: () => <div className="w-full h-40 bg-gray-100/50 animate-pulse rounded-3xl" />
+});
+const AIExportCard = dynamic(() => import('./AIExportCard').then(mod => mod.AIExportCard), {
+    loading: () => <div className="w-full h-64 bg-gray-100/50 animate-pulse rounded-3xl" />
+});
 
 // --- Chat Bubble Component ---
 const ChatBubble = ({ message }: { message: Message }) => {
@@ -376,7 +387,8 @@ export default function AIAssistant() {
                     body: JSON.stringify({
                         message: input,
                         current_state: newContext,
-                        user_id: storedUserId // Send identity for Supabase history
+                        current_design: newDesign, // Pass full design state for stateless processing
+                        user_id: storedUserId
                     })
                 });
 
@@ -427,7 +439,9 @@ export default function AIAssistant() {
                         responseMsgs.push({
                             id: 'ai-agent-chat-' + Date.now(),
                             sender: 'ai',
-                            text: data.message
+                            text: data.message,
+                            type: data.type, // Pass through UI type (e.g. export-ui)
+                            data: data.data  // Pass through UI data (e.g. design state)
                         });
                     }
                 } else {
@@ -560,8 +574,9 @@ export default function AIAssistant() {
 
                     // 3. Fallback to Client Side if Backend Failed
                     if (extractedHexes.length === 0) {
+                        const { extractColors } = await import('extract-colors');
                         const extractedData = await extractColors(result);
-                        extractedHexes = extractedData.map(c => c.hex);
+                        extractedHexes = extractedData.map((c: any) => c.hex);
                         toast.info("Analysis Complete (Client-side fallback)");
                     }
 
@@ -599,15 +614,11 @@ export default function AIAssistant() {
     };
 
     // --- Action Card Handlers ---
-    const handleVisualsClick = () => handleSendMessage("I want to customize the look");
+    // --- Action Card Handlers ---
+    const handleVisualsClick = () => handleSendMessage("Help me refine the visuals");
     const handleCodeClick = () => handleSendMessage("Show me the CSS and Design Tokens");
     const handleExportClick = () => handleActionClick("save_project", "Save Project");
-    const handleAssetsClick = () => {
-        toast.info("Preparing assets package...");
-        setTimeout(() => {
-            toast.success("Assets downloaded! (Simulation)");
-        }, 1500);
-    };
+    const handleAssetsClick = () => handleSendMessage("Generate assets and export package");
 
     // --- Trigger AI response if context changes (e.g., re-upload logo) ---
     useEffect(() => {
