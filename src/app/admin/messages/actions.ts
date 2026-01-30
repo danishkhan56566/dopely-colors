@@ -73,7 +73,7 @@ export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
                 last_name: 'RETURN',
                 email: 'force@check.com',
                 message: 'This is a hardcoded return. If you see this, Supabase fetch is likely crashing/hanging.',
-                status: 'unread'
+                status: 'unread' as const
             }]
         };
     } catch (err: any) {
