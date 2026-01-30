@@ -49,13 +49,14 @@ export default function AdminMessagesPage() {
             // 2. Data Fetch via Server Action (Bypassing RLS)
             const result = await getMessagesAdmin(filter);
 
-            // console.log('Fetch Result:', result);
+            console.log('Fetch Result RAW:', result);
 
             if (result.error) {
+                console.error('Fetch Result ERROR:', result.error);
                 throw new Error(result.error);
             }
 
-            // console.log('Setting messages:', result.messages);
+            console.log('Setting messages:', result.messages);
             setMessages(result.messages || []);
         } catch (err: any) {
             console.error('Inbox Fetch Error:', err);

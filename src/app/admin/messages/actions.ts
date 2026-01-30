@@ -61,8 +61,21 @@ export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
             status: 'unread'
         });
 
-        // Ensure plain JSON structure to prevent serialization issues
-        return { messages: JSON.parse(JSON.stringify(messages)) };
+        // FORCE RETURN STATIC DATA ONLY TO TEST PIPELINE
+        // return { messages: JSON.parse(JSON.stringify(messages)) };
+
+        console.log('SERVER ACTION: Returning static debug message');
+        return {
+            messages: [{
+                id: 'FORCE_STATIC_RETURN',
+                created_at: new Date().toISOString(),
+                first_name: 'FORCE',
+                last_name: 'RETURN',
+                email: 'force@check.com',
+                message: 'This is a hardcoded return. If you see this, Supabase fetch is likely crashing/hanging.',
+                status: 'unread'
+            }]
+        };
     } catch (err: any) {
         console.error('Fetch Messages Error:', err);
         return { error: err.message };
