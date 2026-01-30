@@ -2,7 +2,7 @@
 
 import {
     Users, Activity, Palette, Sparkles, Wand2, ArrowRight,
-    TrendingUp, Star, Layout as LayoutIcon
+    TrendingUp, Star, Layout as LayoutIcon, Image as ImageIcon, Eye
 } from 'lucide-react';
 import Link from 'next/link';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -110,26 +110,45 @@ export default function DashboardHome() {
                     </div>
                 </div>
 
-                {/* Recent Activity Section */}
+                {/* Explore More Tools */}
                 <div>
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">Recent Activity</h3>
-                        <Link href="/library" className="text-sm font-bold text-blue-600 hover:underline">View Library</Link>
-                    </div>
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                        {[1, 2, 3].map((_, i) => (
-                            <div key={i} className="p-4 border-b border-gray-50 hover:bg-gray-50 flex items-center gap-4 transition-colors">
-                                <div className="w-16 h-12 rounded-lg bg-gradient-to-r from-blue-400 to-purple-400"></div>
-                                <div className="flex-1">
-                                    <div className="font-bold text-gray-900 text-sm">Neon Cyberpunk V2</div>
-                                    <div className="text-xs text-gray-400">Edited 2 hours ago • 5 Colors</div>
+                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Explore Tools</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <Link href="/image" className="group relative overflow-hidden rounded-2xl h-40 flex items-end p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                            <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-orange-50 group-hover:scale-105 transition-transform duration-500"></div>
+                            <div className="relative z-10 w-full">
+                                <div className="p-2 bg-white/80 backdrop-blur-sm rounded-lg w-fit mb-3 shadow-sm">
+                                    <ImageIcon size={20} className="text-pink-500" />
                                 </div>
-                                <button className="p-2 text-gray-400 hover:text-gray-900">
-                                    <Star size={16} />
-                                </button>
+                                <h4 className="font-bold text-gray-900">Extract from Image</h4>
+                                <p className="text-xs text-gray-500 mt-1">Get colors from your photos instantly.</p>
                             </div>
-                        ))}
+                        </Link>
+                        <Link href="/contrast" className="group relative overflow-hidden rounded-2xl h-40 flex items-end p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-cyan-50 group-hover:scale-105 transition-transform duration-500"></div>
+                            <div className="relative z-10 w-full">
+                                <div className="p-2 bg-white/80 backdrop-blur-sm rounded-lg w-fit mb-3 shadow-sm">
+                                    <Eye size={20} className="text-blue-500" />
+                                </div>
+                                <h4 className="font-bold text-gray-900">Contrast Checker</h4>
+                                <p className="text-xs text-gray-500 mt-1">Ensure accessibility and readability.</p>
+                            </div>
+                        </Link>
                     </div>
+                </div>
+
+                {/* Pro Inspiration Banner */}
+                <div className="p-8 rounded-3xl bg-gray-900 text-white flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+                    <div className="relative z-10">
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            Need inspiration? <Sparkles size={20} className="text-yellow-400" />
+                        </h3>
+                        <p className="text-gray-400 mt-2 max-w-md">Browse thousands of community-made palettes and trending color combinations.</p>
+                    </div>
+                    <Link href="/explore" className="relative z-10 px-8 py-4 bg-white text-black font-bold rounded-2xl hover:scale-105 transition-transform flex items-center gap-2 whitespace-nowrap">
+                        Explore Popular <ArrowRight size={18} />
+                    </Link>
                 </div>
 
             </div>
