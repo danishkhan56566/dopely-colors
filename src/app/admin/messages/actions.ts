@@ -50,6 +50,17 @@ export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
             status: msg.status || 'unread'
         }));
 
+        // ADD FAKE DEBUG MESSAGE
+        messages.unshift({
+            id: 'debug-fake-id',
+            created_at: new Date().toISOString(),
+            first_name: 'DEBUG',
+            last_name: 'SYSTEM',
+            email: 'debug@system.com',
+            message: 'If you can see this, the Server Action IS returning data to the Client.',
+            status: 'unread'
+        });
+
         // Ensure plain JSON structure to prevent serialization issues
         return { messages: JSON.parse(JSON.stringify(messages)) };
     } catch (err: any) {

@@ -127,6 +127,12 @@ export default function AdminMessagesPage() {
                 </div>
             </div>
 
+            {/* RAW DATA DUMP FOR DEBUGGING */}
+            <div className="bg-black text-green-400 p-4 rounded mb-8 text-xs font-mono overflow-auto max-h-40">
+                <strong>DEBUG RAW STATE:</strong>
+                <pre>{JSON.stringify(messages, null, 2)}</pre>
+            </div>
+
             {isLoading ? (
                 <div className="text-center py-20">
                     <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
