@@ -7,6 +7,7 @@ import chroma from 'chroma-js';
 import { toast } from 'sonner';
 import clsx from 'clsx';
 import dynamic from 'next/dynamic';
+import { ExportModal } from '@/components/ExportModal';
 
 const HexColorPicker = dynamic(() => import('react-colorful').then(mod => mod.HexColorPicker), { ssr: false });
 
@@ -16,6 +17,7 @@ export default function GradientPalettePage() {
     const [steps, setSteps] = useState(7);
     const [palette, setPalette] = useState<string[]>([]);
     const [activePicker, setActivePicker] = useState<'start' | 'end' | null>(null);
+    const [isExportOpen, setIsExportOpen] = useState(false);
 
     useEffect(() => {
         try {
@@ -64,7 +66,10 @@ export default function GradientPalettePage() {
                             <button onClick={randomizeColors} className="p-3 bg-white hover:bg-gray-50 rounded-2xl border border-gray-200 shadow-sm transition-all text-gray-600 hover:text-indigo-600">
                                 <RefreshCw size={20} />
                             </button>
-                            <button className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+                            <button
+                                onClick={() => setIsExportOpen(true)}
+                                className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+                            >
                                 <Download size={18} /> Export
                             </button>
                         </div>
@@ -191,6 +196,13 @@ export default function GradientPalettePage() {
                     </div>
                 </div>
             </div>
+
+            <ExportModal
+                isOpen={isExportOpen}
+                onClose={() => setIsExportOpen(false)}
+                colors={palette.map((hex, i) => ({ id: i.toString(), hex, isLocked: false }))}
+                initialFormat="css"
+            />
         </DashboardLayout>
     );
 }
