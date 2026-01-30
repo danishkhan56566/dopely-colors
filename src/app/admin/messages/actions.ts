@@ -40,7 +40,9 @@ export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
 
         console.log(`SERVER ACTION: Found ${data?.length} messages. Filter: ${filter}`);
 
-        return { messages: data as AdminMessage[] };
+        // Ensure plain JSON structure to prevent serialization issues
+        const plainMessages = JSON.parse(JSON.stringify(data));
+        return { messages: plainMessages as AdminMessage[] };
     } catch (err: any) {
         console.error('Fetch Messages Error:', err);
         return { error: err.message };
