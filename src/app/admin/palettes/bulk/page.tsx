@@ -355,57 +355,17 @@ export default function BulkUploadPage() {
                     created_by: userId
                 }));
 
-                let insertError = null;
+                const result = await publishPalettesAdmin(payloads);
 
-                // Check auth again or reuse logic
-                if (!user && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-                    // Use API Route instead of Server Action to avoid AbortErrors
-                    let retries = 2;
-                    while (retries > 0) {
-                        try {
-                            const res = await fetch('/api/admin/bulk-publish', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ palettes: payloads })
-                            });
-
-                            if (!res.ok) {
-                                const errData = await res.json();
-                                throw new Error(errData.error || 'API Failed');
-                            }
-
-                            insertError = null;
-                            break;
-                        } catch (e: any) {
-                            if (e.name === 'AbortError') {
-                                console.warn('Caught AbortError in API fetch, retrying...');
-                            }
-                            retries--;
-                            if (retries === 0) insertError = e;
-                            await new Promise(r => setTimeout(r, 1000));
-                        }
-                    }
-                } else {
-                    // Client Insert (RLS Protected) for Prod
-                    const { error } = await supabase.from('palettes').insert(payloads);
-                    insertError = error;
-                }
-
-                if (insertError) throw insertError;
+                if (result.error) throw new Error(result.error);
 
                 updateStatus(chunkIds, 'success');
                 successCount += chunk.length;
 
             } catch (err: any) {
-                if (err?.name === 'AbortError' || err?.message?.includes('aborted')) {
-                    console.warn('Batch aborted explicitly', err);
-                    updateStatus(chunkIds, 'error');
-                    // Don't toast for aborts to avoid spam
-                } else {
-                    console.error('Batch upload failed', err);
-                    updateStatus(chunkIds, 'error');
-                    toast.error(`Batch failed: ${err.message || 'Unknown error'}`);
-                }
+                console.error('Batch upload failed', err);
+                updateStatus(chunkIds, 'error');
+                toast.error(`Batch failed: ${err.message || 'Unknown error'}`);
             }
 
             // Artificial delay to prevent flooding

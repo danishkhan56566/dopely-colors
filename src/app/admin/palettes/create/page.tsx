@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Algorithm, ALGORITHMS, generateColor } from '@/store/usePaletteStore';
+import { createPalettesBulk } from '../actions';
 
 export default function AdminCreatePalettePage() {
     const router = useRouter();
@@ -93,8 +94,8 @@ export default function AdminCreatePalettePage() {
                 });
             }
 
-            const { error } = await supabase.from('palettes').insert(palettesToInsert);
-            if (error) throw error;
+            const result = await createPalettesBulk(palettesToInsert);
+            if (result.error) throw new Error(result.error);
 
             toast.success(`Successfully published ${bulkCount} ${selectedAlgorithm} palettes! 🚀`);
             // Optional: Redirect to list or stay

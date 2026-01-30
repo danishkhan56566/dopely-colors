@@ -13,6 +13,10 @@ export type AdminUser = {
 
 export async function getUsersAdmin(): Promise<{ users: AdminUser[], error: string | null }> {
     try {
+        if (!process.env.SUPABASE_SERVICE_KEY) {
+            console.error('Missing SUPABASE_SERVICE_KEY');
+            return { users: [], error: 'Configuration Error: Missing Service Key' };
+        }
         const supabase = createAdminClient();
 
         // Fetch auth users (pagination handling simplified for now, fetches 1000)

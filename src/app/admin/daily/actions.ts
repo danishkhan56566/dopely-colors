@@ -42,7 +42,7 @@ export async function generateDailyBatch(count: number = 100) {
             });
         }
 
-        // Manual "Gold Standard" Seeds (Clean, Bright Bases)
+        // Always include Gold Seeds for variety
         const GOLD_SEEDS = [
             '#FF9A9E', '#FECFEF', '#A18CD1', '#FBC2EB',
             '#84fab0', '#8fd3f4', '#a1c4fd', '#c2e9fb',
@@ -59,7 +59,6 @@ export async function generateDailyBatch(count: number = 100) {
 
         // Helper: Random Range with constraints
         const rand = (min: number, max: number) => min + Math.random() * (max - min);
-        const noise = (c: any) => c.set('hsl.l', c.get('hsl.l') + rand(-0.05, 0.05)).set('hsl.s', c.get('hsl.s') + rand(-0.1, 0.1));
 
         // ALGORITHM: 4-Step "Visual Hierarchy" Engine
         const generateCleanPalette = (base: any, vibe: string) => {
@@ -130,8 +129,6 @@ export async function generateDailyBatch(count: number = 100) {
 
             // Clean up: Ensure step-down contrast
             let uniqueColors = colors.map(c => chroma(c));
-            // Force sorting just in case?
-            // No, the templates are ordered. Just fix muddy neighbors.
             for (let k = 0; k < uniqueColors.length - 1; k++) {
                 if (chroma.deltaE(uniqueColors[k], uniqueColors[k + 1]) < 15) {
                     uniqueColors[k + 1] = uniqueColors[k + 1].darken(1.5).saturate(0.5);
@@ -145,7 +142,8 @@ export async function generateDailyBatch(count: number = 100) {
         // GENERATION LOOP WITH RETRY
         let attempts = 0;
 
-        while (newPalettes.length < count && attempts < count * 10) {
+        // Increase attempts limit to avoid early exit (count * 50)
+        while (newPalettes.length < count && attempts < count * 50) {
             attempts++;
 
             // 1. Pick Seed

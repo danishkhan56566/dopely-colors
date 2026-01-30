@@ -243,6 +243,7 @@ function BlogEditorContent() {
                     <div className="bg-white rounded-xl shadow-sm">
                         <label className="block text-sm font-bold text-gray-700 mb-2 px-6 pt-6">Content</label>
                         <RichTextEditor
+                            key={isGenerating ? 'loading' : `editor-${formData.content.length}`}
                             content={formData.content}
                             onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
                         />

@@ -118,14 +118,16 @@ Use **{Topic}** for high-conversion landing pages and premium dashboard interfac
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Initialize Gemini (In production, use Vercel Env Vars)
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+// Moved inside function for safety
 
 export async function generateBlogPost(topic: string) {
     const apiKey = process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
 
     if (apiKey) {
         try {
+            const genAI = new GoogleGenerativeAI(apiKey);
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
             const prompt = `
                 You are a professional Design Blogger. Generate a high-quality blog post about: "${topic}".
                 
@@ -219,12 +221,12 @@ const adminClient = createClient(
     }
 );
 
-import { createAdminClient } from '@/lib/supabase-server';
+import { createAdminClient, createClient as createServerClient } from '@/lib/supabase-server';
 import { checkPermission } from '@/lib/permissions';
 
 export async function savePost(payload: any) {
     try {
-        const supabase = createAdminClient();
+        const supabase = await createServerClient();
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {

@@ -4,26 +4,21 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Mail, Trash2, Check, Clock, User, AlertCircle, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-
-interface Message {
-    id: string;
-    created_at: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    message: string;
-    status: 'unread' | 'read' | 'archived';
-}
+import { getMessagesAdmin, updateMessageStatusAdmin, deleteMessageAdmin, AdminMessage } from './actions';
 
 export default function AdminMessagesPage() {
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<AdminMessage[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
+    console.log('AdminMessagesPage Mounted');
+
     const fetchMessages = async () => {
+        console.log('Calling fetchMessages with filter:', filter);
         setIsLoading(true);
         try {
-            // 1. Auth Check
+            // 1. Auth Check (Client Side UI Gate)
+            // 1. Auth Check (Client Side UI Gate)
             const authRes = await supabase.auth.getUser();
 
             if (!authRes.data?.user) {
@@ -34,29 +29,15 @@ export default function AdminMessagesPage() {
                 return;
             }
 
-            // 2. Data Fetch
-            let query = supabase
-                .from('messages')
-                .select('*')
-                .order('created_at', { ascending: false });
+            // 2. Data Fetch via Server Action (Bypassing RLS)
+            const result = await getMessagesAdmin(filter);
 
-            if (filter === 'unread') {
-                query = query.eq('status', 'unread');
+            if (result.error) {
+                throw new Error(result.error);
             }
 
-            const { data, error } = await query;
-
-            if (error) {
-                // Silently return on abort
-                if (error.code === '20' || error.message?.includes('abort')) return;
-                throw error;
-            }
-
-            setMessages(data || []);
+            setMessages(result.messages || []);
         } catch (err: any) {
-            // Completely ignore abort errors
-            if (err.name === 'AbortError' || err.message?.includes('abort')) return;
-
             console.error('Inbox Fetch Error:', err);
             toast.error(err.message || 'Failed to load messages');
         } finally {
@@ -70,12 +51,8 @@ export default function AdminMessagesPage() {
 
     const markAsRead = async (id: string) => {
         try {
-            const { error } = await supabase
-                .from('messages')
-                .update({ status: 'read' })
-                .eq('id', id);
-
-            if (error) throw error;
+            const result = await updateMessageStatusAdmin(id, 'read');
+            if (result.error) throw new Error(result.error);
 
             setMessages(prev => prev.map(msg =>
                 msg.id === id ? { ...msg, status: 'read' } : msg
@@ -90,12 +67,8 @@ export default function AdminMessagesPage() {
         if (!confirm('Are you sure you want to delete this message?')) return;
 
         try {
-            const { error } = await supabase
-                .from('messages')
-                .delete()
-                .eq('id', id);
-
-            if (error) throw error;
+            const result = await deleteMessageAdmin(id);
+            if (result.error) throw new Error(result.error);
 
             setMessages(prev => prev.filter(msg => msg.id !== id));
             toast.success('Message deleted');

@@ -1,14 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { supabase, isSupabaseConfigured, safeGetSession } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Mail, Lock, Loader2, ArrowLeft, Github, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 
-export default function LoginPage() {
+function LoginForm() {
     const [mode, setMode] = useState<'login' | 'signup'>('login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -92,6 +92,9 @@ export default function LoginPage() {
         }
     };
 
+    const searchParams = useSearchParams();
+    const next = searchParams.get('next') || '/dashboard';
+
     const handleGoogleLogin = async () => {
         if (!isSupabaseConfigured()) {
             toast.error("Authentication is not configured");
@@ -99,21 +102,21 @@ export default function LoginPage() {
         }
 
         try {
-            // Determine redirect URL
-            // Determine redirect URL
-            let redirectUrl = `${window.location.origin}/auth/callback`;
+            // Determine redirect URL base
+            let redirectBase = `${window.location.origin}/auth/callback`;
 
             // Explicitly handle localhost for development clarity
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                redirectUrl = 'http://localhost:3000/auth/callback';
+                redirectBase = 'http://localhost:3000/auth/callback';
             }
             // Production override
             else if (window.location.hostname === 'dopelycolors.com') {
-                redirectUrl = 'https://dopelycolors.com/auth/callback';
+                redirectBase = 'https://dopelycolors.com/auth/callback';
             }
 
+            // Append next param
+            const redirectUrl = `${redirectBase}?next=${encodeURIComponent(next)}`;
             console.log('OAuth Redirect:', redirectUrl);
-
 
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
@@ -241,5 +244,13 @@ export default function LoginPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#FBFBFB]">Loading...</div>}>
+            <LoginForm />
+        </Suspense>
     );
 }
