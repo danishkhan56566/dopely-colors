@@ -147,10 +147,9 @@ export async function checkSupabaseConnection() {
             keyStatus: keyStatus,
             count: count,
             readError: error ? error.message : null,
-            insertId: insertData?.id,
-            insertError: insertError ? insertError.message : null
         };
     } catch (e: any) {
         return { error: e.message };
     }
 }
+
