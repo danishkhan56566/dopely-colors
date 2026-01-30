@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Mail, Trash2, Check, Clock, User, AlertCircle, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-import { getMessagesAdmin, updateMessageStatusAdmin, deleteMessageAdmin, AdminMessage } from './actions';
+import { getMessagesAdmin, updateMessageStatusAdmin, deleteMessageAdmin, checkSupabaseConnection, AdminMessage } from './actions';
 
 export default function AdminMessagesPage() {
     const [messages, setMessages] = useState<AdminMessage[]>([]);
@@ -12,6 +12,23 @@ export default function AdminMessagesPage() {
     const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
     console.log('AdminMessagesPage Mounted');
+
+    const testConnection = async () => {
+        toast.promise(
+            (async () => {
+                const result: any = await checkSupabaseConnection();
+                if (result.error) throw new Error(result.error);
+                if (result.readError) throw new Error('Read Failed: ' + result.readError);
+                if (result.insertError) throw new Error('Insert Failed: ' + result.insertError);
+                return `Connected! Found ${result.count} msgs. Inserted ID: ${result.insertId}`;
+            })(),
+            {
+                loading: 'Testing DB Connection...',
+                success: (data) => data,
+                error: (err: any) => `Connection Error: ${err.message}`
+            }
+        );
+    };
 
     const fetchMessages = async () => {
         console.log('Calling fetchMessages with filter:', filter);
@@ -84,19 +101,24 @@ export default function AdminMessagesPage() {
                     <h1 className="text-3xl font-bold text-gray-900">Inbox</h1>
                     <p className="text-gray-500 mt-1">Manage contact form submissions.</p>
                 </div>
-                <div className="flex bg-white rounded-lg p-1 border border-gray-200">
-                    <button
-                        onClick={() => setFilter('all')}
-                        className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${filter === 'all' ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}
-                    >
-                        All
+                <div className="flex gap-2">
+                    <button onClick={testConnection} className="px-3 py-1.5 rounded-md text-xs font-bold bg-gray-800 text-white hover:bg-black transition-colors self-center">
+                        Debug DB
                     </button>
-                    <button
-                        onClick={() => setFilter('unread')}
-                        className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${filter === 'unread' ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:text-gray-900'}`}
-                    >
-                        Unread
-                    </button>
+                    <div className="flex bg-white rounded-lg p-1 border border-gray-200">
+                        <button
+                            onClick={() => setFilter('all')}
+                            className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${filter === 'all' ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}
+                        >
+                            All
+                        </button>
+                        <button
+                            onClick={() => setFilter('unread')}
+                            className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${filter === 'unread' ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:text-gray-900'}`}
+                        >
+                            Unread
+                        </button>
+                    </div>
                 </div>
             </div>
 

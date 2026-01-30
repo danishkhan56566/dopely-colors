@@ -15,11 +15,13 @@ export type AdminMessage = {
 export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
     try {
         if (!process.env.SUPABASE_SERVICE_KEY) {
+            console.error('SERVER ACTION: Missing SUPABASE_SERVICE_KEY');
             return { error: 'Server config missing Service Key' };
         }
 
         const supabase = createAdminClient();
 
+        console.log('SERVER ACTION: Connecting to Supabase...');
         let query = supabase
             .from('messages')
             .select('*')
@@ -31,9 +33,12 @@ export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
 
         const { data, error } = await query;
 
-        if (error) throw error;
+        if (error) {
+            console.error('SERVER ACTION: Query failed:', error);
+            throw error;
+        }
 
-        console.log('Admin fetching messages, found:', data?.length);
+        console.log(`SERVER ACTION: Found ${data?.length} messages. Filter: ${filter}`);
 
         return { messages: data as AdminMessage[] };
     } catch (err: any) {
@@ -73,5 +78,44 @@ export async function deleteMessageAdmin(id: string) {
         return { success: true };
     } catch (err: any) {
         return { error: err.message };
+    }
+}
+
+export async function checkSupabaseConnection() {
+    try {
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'missing';
+        const key = process.env.SUPABASE_SERVICE_KEY;
+        const keyStatus = key ? `Present (${key.substring(0, 5)}...)` : 'missing';
+
+        const supabase = createAdminClient();
+
+        // Try simple count
+        const { count, error } = await supabase
+            .from('messages')
+            .select('*', { count: 'exact', head: true });
+
+        // Try insert test
+        const { data: insertData, error: insertError } = await supabase
+            .from('messages')
+            .insert({
+                first_name: 'Connectivity',
+                last_name: 'Test',
+                email: 'test@connectivity.check',
+                message: 'Connection Verified at ' + new Date().toISOString(),
+                status: 'unread'
+            })
+            .select()
+            .single();
+
+        return {
+            url: url,
+            keyStatus: keyStatus,
+            count: count,
+            readError: error ? error.message : null,
+            insertId: insertData?.id,
+            insertError: insertError ? insertError.message : null
+        };
+    } catch (e: any) {
+        return { error: e.message };
     }
 }
