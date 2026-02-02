@@ -1,6 +1,80 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Check, X, Info, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Check, X, Info, AlertTriangle, DollarSign, Lock, Cpu, Users, HelpCircle } from 'lucide-react';
+
+// ... (existing helper function remain unchanged) ...
+
+// --- 1. Homepage FAQ (Premium Redesign) ---
+export const HomeFAQ = () => (
+    <section className="max-w-7xl mx-auto py-32 px-6 relative overflow-hidden">
+        {/* Abstract Background Decoration */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-50/50 rounded-full blur-3xl -z-10" />
+
+        <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold uppercase tracking-widest mb-6">
+                <HelpCircle size={12} className="fill-indigo-600" />
+                Support & Details
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight">
+                Common <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Questions.</span>
+            </h2>
+            <p className="text-xl text-gray-500 max-w-2xl mx-auto font-medium leading-relaxed">
+                Everything you need to know about our philosophy, pricing, and algorithms.
+            </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+                {
+                    icon: <Cpu size={24} />,
+                    q: "Why did we build Dopely?",
+                    a: "Most tools ignore production reality. We built a playground that handles contrast, accessibility, and developer handoff (Tailwind) natively.",
+                    color: "text-indigo-600 bg-indigo-50 border-indigo-100"
+                },
+                {
+                    icon: <DollarSign size={24} />,
+                    q: "Is it really free?",
+                    a: "Yes. The core toolkit (Generator, Picker, Extractor) is free. We support the project via optional Pro memberships for cloud sync.",
+                    color: "text-emerald-600 bg-emerald-50 border-emerald-100"
+                },
+                {
+                    icon: <Lock size={24} />,
+                    q: "Commercial Rights?",
+                    a: "Absolutely independent. Any palette you generate is 100% yours. No attribution needed. Ship faster, don't worry about royalties.",
+                    color: "text-blue-600 bg-blue-50 border-blue-100"
+                },
+                {
+                    icon: <Cpu size={24} />, // Reusing CPU icon for algo
+                    q: "Smart Algorithm?",
+                    a: "We act on HCL (Human Perception) space, not random RGB math. Your palettes won't just look scientific—they'll feel balanced.",
+                    color: "text-purple-600 bg-purple-50 border-purple-100"
+                },
+                {
+                    icon: <Users size={24} />,
+                    q: "Ideal User?",
+                    a: "Designers who care about systems, and Developers tired of guessing hex codes. If you value scalability over singular style, this is for you.",
+                    color: "text-pink-600 bg-pink-50 border-pink-100"
+                },
+                {
+                    icon: <HelpCircle size={24} />,
+                    q: "Need more help?",
+                    a: "We are active on Twitter and Discord. If you have a specific edge-case or feature request, drop us a line anywhere.",
+                    color: "text-orange-600 bg-orange-50 border-orange-100"
+                }
+            ].map((item, i) => (
+                <div key={i} className="group p-8 rounded-[2rem] bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-start">
+                    <div className={`w-14 h-14 rounded-2xl ${item.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-current/10`}>
+                        {item.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{item.q}</h3>
+                    <p className="text-gray-500 leading-relaxed font-medium text-sm md:text-base">
+                        {item.a}
+                    </p>
+                </div>
+            ))}
+        </div>
+    </section>
+);
 import { SafeSchema } from '@/components/seo/SafeSchema';
 
 // --- Shared Components ---
@@ -43,61 +117,7 @@ const FAQSection = ({ title, items }: { title: string, items: { q: string, a: Re
 };
 
 // --- 1. Homepage FAQ ---
-export const HomeFAQ = () => (
-    <section className="max-w-7xl mx-auto py-32 px-6">
-        <div className="flex flex-col xl:flex-row gap-16">
-            <div className="xl:w-1/3">
-                <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight leading-[1.1]">
-                    Common <br />Questions.
-                </h2>
-                <p className="text-gray-500 font-medium leading-relaxed">
-                    Everything you need to know about building better color systems. If you have a specific question, feel free to reach out to our team.
-                </p>
-                <div className="mt-10 p-6 bg-gray-50 rounded-[2rem] border border-gray-100 italic text-sm text-gray-500">
-                    "Design is not just what it looks like and feels like. Design is how it works."
-                    <br />— Steve Jobs
-                </div>
-            </div>
 
-            <div className="xl:w-2/3 space-y-4">
-                {[
-                    {
-                        q: "Why did we build Dopely Colors?",
-                        a: "We found that most tools focused on 'pretty' palettes but ignored production reality. We built this to bridge that gap—giving you a playground that understands contrast, accessibility, and developer handoff (like Tailwind) natively."
-                    },
-                    {
-                        q: "Is it really free?",
-                        a: "Yes. The core toolkit—generator, picker, extractor—is free for everyone. We believe professional tools should be accessible. We sustain the project through optional Pro memberships which offer cloud storage and advanced project management."
-                    },
-                    {
-                        q: "Can I use these colors for commercial apps?",
-                        a: "Absolutely. Any palette or system you generate here is yours to use. No attribution required. We're here to help you ship faster, not collect royalties."
-                    },
-                    {
-                        q: "How does the 'Smart' algorithm differ from others?",
-                        a: "Most generators use random math. Ours uses HCL color space (Hue, Chroma, Luminance) which matches how humans perceive color. This means your palettes won't just look scientific—they'll feel balanced and professional."
-                    },
-                    {
-                        q: "Who is the ideal user for Dopely?",
-                        a: "If you're a UI designer who cares about accessibility, or a developer tired of guessing hex codes, Dopely is for you. It's built for those who value systems over singular style."
-                    }
-                ].map((item, i) => (
-                    <div key={i} className="group p-8 rounded-[2rem] bg-white hover:bg-gray-50 transition-all border border-gray-100 hover:border-indigo-100">
-                        <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center justify-between">
-                            {item.q}
-                            <div className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-indigo-600 group-hover:text-white flex items-center justify-center transition-colors">
-                                <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-                            </div>
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed font-medium">
-                            {item.a}
-                        </p>
-                    </div>
-                ))}
-            </div>
-        </div>
-    </section>
-);
 
 // --- 2. Favorites FAQ ---
 export const FavoritesFAQ = () => (
