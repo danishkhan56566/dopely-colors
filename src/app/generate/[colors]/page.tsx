@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `Color Palette Generator - ${colors.split('-').map(c => '#' + c).join(', ')}`,
         description: `Generate, visualize and export your color palette. Hex codes: ${colors.split('-').map(c => '#' + c.toUpperCase()).join(', ')}`,
         alternates: {
-            canonical: `/generate/${colors}`,
+            canonical: `https://dopelycolors.com/generate/${colors}`,
         },
     };
 }
