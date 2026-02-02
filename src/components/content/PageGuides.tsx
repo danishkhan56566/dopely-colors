@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { AdUnit } from '@/components/ads/AdUnit';
-import { Palette, Zap, Layers, ArrowRight } from 'lucide-react';
+import { Palette, Zap, Layers, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 // --- Shared Styles ---
 const Section = ({ children }: { children: React.ReactNode }) => (
@@ -22,97 +22,169 @@ const Subtitle = ({ children }: { children: React.ReactNode }) => (
 
 // --- 1. Home Page Guide ---
 export const HomeGuide = () => (
-    <section className="max-w-7xl mx-auto py-32 px-6 relative">
-        {/* Background Accent */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-50/50 rounded-full blur-[120px] -z-10" />
-
-        <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight">
-                Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Perception</span>
+    <section className="max-w-7xl mx-auto py-24 px-6 relative">
+        {/* Section Header */}
+        <div className="text-center mb-24 relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold uppercase tracking-widest mb-6">
+                <Zap size={12} className="fill-indigo-600" />
+                The Science of Color
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 tracking-tight leading-[0.9]">
+                Engineering <br className="hidden md:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600">Perception.</span>
             </h2>
-            <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
-                Most color tools are broken. They give you 5 random colors that look nice in a stripe but fail in a real UI. We built Dopely to fix that.
+            <p className="text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto leading-relaxed font-medium">
+                Most tools give you 5 random colors that look nice in a stripe but fail in a real UI. We built Dopely to fix that.
             </p>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-            {/* Bento Card 1: The Philosophy */}
-            <div className="xl:col-span-8 bg-white p-8 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-center">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white">
-                        <Palette size={20} />
+        {/* 1. The Core Conflict: Math vs Eye */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+            <div className="bg-slate-950 rounded-[2.5rem] p-10 md:p-14 text-white flex flex-col justify-center relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-[100px] group-hover:bg-indigo-500/30 transition-colors duration-700" />
+
+                <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10">
+                            <Palette size={20} />
+                        </div>
+                        <span className="text-sm font-bold uppercase tracking-widest text-indigo-400">The Problem</span>
                     </div>
-                    <span className="text-sm font-bold uppercase tracking-widest text-indigo-600">The Problem</span>
+
+                    <h3 className="text-3xl md:text-4xl font-bold mb-6">Why "Math" isn't enough</h3>
+                    <p className="text-lg text-gray-400 leading-relaxed mb-6">
+                        Computers see color linearly. Humans don't. Pure yellow (<code className="bg-white/10 px-1.5 py-0.5 rounded text-yellow-300">#FFFF00</code>) and pure blue (<code className="bg-white/10 px-1.5 py-0.5 rounded text-blue-300">#0000FF</code>) share the same math "value", but your eye screams at the yellow while the blue recedes.
+                    </p>
+                    <p className="text-lg text-gray-400 leading-relaxed font-medium">
+                        Our <strong>Perceptual Modeling Engine</strong> adjusts for these quirks, ensuring "Light Blue" and "Light Yellow" actually <em>feel</em> the same.
+                    </p>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-6">Why "Math" isn't enough</h3>
-                <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                    Computers see color linearly. Humans don't. To a computer, pure yellow (`#FFFF00`) and pure blue (`#0000FF`) share the same saturation value. But to your eye, the yellow screams while the blue recedes.
-                </p>
-                <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                    This is why strictly mathematical palettes look "off." Our engine uses <strong>Perceptual Modeling</strong> to adjust for these human quirks, ensuring that "Light Blue" and "Light Yellow" actually <i>feel</i> equally light.
+            </div>
+
+            {/* Visual Demo Card */}
+            <div className="bg-gradient-to-br from-indigo-50 to-white rounded-[2.5rem] p-10 md:p-14 border border-indigo-50 flex flex-col relative overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:24px_24px] opacity-50" />
+
+                <div className="relative z-10 h-full flex flex-col justify-center">
+                    <div className="space-y-6">
+                        {/* Bad Stripe */}
+                        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                            <div className="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">
+                                <span>Linear Math</span>
+                                <span className="text-red-500">Unbalanced</span>
+                            </div>
+                            <div className="h-16 rounded-xl w-full flex overflow-hidden">
+                                <div className="flex-1 bg-[#FFFF00]" />
+                                <div className="flex-1 bg-[#00FF00]" />
+                                <div className="flex-1 bg-[#0000FF]" />
+                            </div>
+                        </div>
+
+                        {/* Good Stripe */}
+                        <div className="bg-white p-4 rounded-2xl shadow-xl border border-indigo-100 scale-105 relative">
+                            <div className="absolute -right-3 -top-3 bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">Dopely Engine</div>
+                            <div className="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">
+                                <span>Perceptual Model</span>
+                                <span className="text-emerald-500">Balanced</span>
+                            </div>
+                            <div className="h-16 rounded-xl w-full flex overflow-hidden">
+                                <div className="flex-1 bg-[#FFD700]" />
+                                <div className="flex-1 bg-[#10B981]" />
+                                <div className="flex-1 bg-[#3B82F6]" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {/* 2. Accessibility & Logic Split */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+
+            {/* Accessibility Card (Featured) */}
+            <div className="xl:col-span-1 bg-indigo-600 rounded-[2.5rem] p-10 text-white flex flex-col justify-between shadow-xl shadow-indigo-900/20 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-24 bg-white/10 rounded-full blur-2xl -mr-12 -mt-12 group-hover:bg-white/20 transition-colors" />
+
+                <div className="relative z-10">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-lg rounded-2xl flex items-center justify-center mb-6">
+                        <span className="font-black text-xl">Aa</span>
+                    </div>
+                    <h3 className="text-3xl font-bold mb-4 leading-tight">
+                        "If you can't read this, the color is wrong."
+                    </h3>
+                    <p className="text-indigo-100 leading-relaxed mb-6">
+                        Accessibility is the baseline. We enforce a minimum <strong>4.5:1</strong> contrast ratio on generated text pairs.
+                    </p>
+                </div>
+
+                <div className="mt-8 bg-black/20 rounded-xl p-4 backdrop-blur-sm border border-white/10">
+                    <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold uppercase tracking-widest opacity-60">WCAG AA Score</span>
+                        <span className="text-2xl font-black text-emerald-400">PASS</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Logic Tools & Harmony */}
+            <div className="xl:col-span-2 bg-white rounded-[2.5rem] p-10 md:p-12 border border-gray-100 shadow-lg flex flex-col">
+                <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                        <Zap size={20} />
+                    </div>
+                    <span className="text-sm font-bold uppercase tracking-widest text-gray-500">Logic Tools</span>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6 h-full">
+                    {[
+                        { title: 'Analogous', desc: 'Serenity through proximity. Perfect for backgrounds.', color: 'bg-emerald-500' },
+                        { title: 'Complementary', desc: 'High-tension pairs for CTA dominance.', color: 'bg-pink-500' },
+                        { title: 'Triadic', desc: 'Vibrant balance for visualizations.', color: 'bg-blue-500' }
+                    ].map((item, i) => (
+                        <div key={i} className="bg-gray-50 rounded-2xl p-6 hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group">
+                            <div className={`w-3 h-3 rounded-full ${item.color} mb-4 group-hover:scale-150 transition-transform`} />
+                            <h4 className="font-bold text-gray-900 mb-2">{item.title}</h4>
+                            <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+
+        {/* 3. Scalability Banner */}
+        <div className="bg-slate-50 rounded-[2.5rem] p-10 md:p-16 border border-gray-200 relative overflow-hidden">
+            <div className="max-w-2xl relative z-10">
+                <div className="flex items-center gap-3 mb-6 text-indigo-600">
+                    <Layers size={20} />
+                    <span className="text-sm font-bold uppercase tracking-widest">Scalability</span>
+                </div>
+                <h3 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight">Building Systems, Not Swatches.</h3>
+                <p className="text-xl text-gray-500 leading-relaxed mb-10">
+                    Picking 5 colors is easy. Building a system with <strong>Semantic Tokens</strong> (Success/Error/Warning) and <strong>Interactive States</strong> (Hover/Active) is where the real work happens. We automate the boring math so you can focus on the art.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                    <Link href="/generate" className="px-6 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-all">
-                        Experience the Difference
+                    <Link href="/design-system" className="px-8 py-4 bg-gray-900 text-white rounded-xl font-bold hover:bg-black hover:scale-105 transition-all shadow-lg flex items-center gap-2">
+                        Build a Design System <ArrowRight size={18} />
+                    </Link>
+                    <Link href="/contrast" className="px-8 py-4 bg-white text-gray-900 border border-gray-200 rounded-xl font-bold hover:bg-gray-50 transition-all flex items-center gap-2">
+                        Check Accessibility <CheckCircle2 size={18} />
                     </Link>
                 </div>
             </div>
 
-            {/* Bento Card 2: Micro-Tip */}
-            <div className="xl:col-span-4 bg-indigo-600 p-8 md:p-10 rounded-[2.5rem] text-white flex flex-col justify-between">
-                <div>
-                    <h4 className="text-xl font-bold mb-4 italic">"If you can't read the text, the color is wrong."</h4>
-                    <p className="text-indigo-100 leading-relaxed">
-                        Accessibility isn't a "nice to have" feature. It's the baseline. If your grey text on a white background has a ratio under 4.5:1, your design is fundamentally broken.
-                    </p>
-                </div>
-                <div className="mt-8 pt-8 border-t border-white/10">
-                    <p className="text-xs font-bold uppercase tracking-widest text-indigo-200 opacity-60">Design Wisdom #42</p>
-                </div>
-            </div>
-
-            {/* Bento Card 3: The Toolkit */}
-            <div className="xl:col-span-4 bg-gray-900 p-8 md:p-10 rounded-[2.5rem] text-white flex flex-col">
-                <div className="flex items-center gap-3 mb-6 text-emerald-400">
-                    <Zap size={20} />
-                    <span className="text-sm font-bold uppercase tracking-widest">Logic Tools</span>
-                </div>
-                <h4 className="text-2xl font-bold mb-6">Core Harmonies</h4>
-                <ul className="space-y-4">
-                    <li className="flex gap-3 items-start">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 shrink-0" />
-                        <p className="text-sm text-gray-400"><span className="text-white font-bold">Analogous:</span> Creating serenity through proximity. Perfect for backgrounds.</p>
-                    </li>
-                    <li className="flex gap-3 items-start">
-                        <div className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-2 shrink-0" />
-                        <p className="text-sm text-gray-400"><span className="text-white font-bold">Complementary:</span> High-tension pairs for CTA dominance.</p>
-                    </li>
-                    <li className="flex gap-3 items-start">
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-2 shrink-0" />
-                        <p className="text-sm text-gray-400"><span className="text-white font-bold">Triadic:</span> Vibrant balance for complex data visualization.</p>
-                    </li>
-                </ul>
-            </div>
-
-            {/* Bento Card 4: Building for Scale */}
-            <div className="xl:col-span-8 bg-white p-8 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-32 bg-indigo-50/50 rounded-full blur-3xl -mr-16 -mt-16" />
-                <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-6 text-indigo-600">
-                        <Layers size={20} />
-                        <span className="text-sm font-bold uppercase tracking-widest">Scalability</span>
+            {/* Abstract UI decoration */}
+            <div className="hidden xl:block absolute top-0 right-0 h-full w-1/3 bg-gray-100 border-l border-gray-200">
+                <div className="p-8 space-y-4 opacity-50">
+                    <div className="flex gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gray-300"></div>
+                        <div className="flex-1 space-y-2">
+                            <div className="h-4 w-3/4 bg-gray-300 rounded"></div>
+                            <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+                        </div>
                     </div>
-                    <h3 className="text-3xl font-bold text-gray-900 mb-6">Building Systems, Not Swatches</h3>
-                    <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                        Picking 5 colors is easy. Building a system that accounts for **hover states, active modes, and semantic feedback** (Success/Warning/Error) is where the real work happens. We help you generate full spectrum tints and shades that maintain legislative accessibility standards without sacrificing style.
-                    </p>
-                    <div className="flex items-center gap-6">
-                        <Link href="/design-system" className="font-bold text-indigo-600 hover:underline flex items-center gap-2">
-                            Build a Design System <ArrowRight size={16} />
-                        </Link>
-                        <Link href="/contrast" className="font-bold text-gray-400 hover:text-gray-900 flex items-center gap-2 transition-colors">
-                            Check Accessibility <ArrowRight size={16} />
-                        </Link>
+                    <div className="h-32 rounded-xl bg-gray-200 w-full"></div>
+                    <div className="flex gap-2">
+                        <div className="flex-1 h-10 bg-indigo-200 rounded-lg"></div>
+                        <div className="flex-1 h-10 bg-gray-200 rounded-lg"></div>
                     </div>
                 </div>
             </div>
