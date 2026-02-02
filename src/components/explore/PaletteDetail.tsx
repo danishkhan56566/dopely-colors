@@ -2,7 +2,7 @@
 
 import { DashboardLayout } from '../layout/DashboardLayout';
 import { PaletteCard } from './PaletteCard';
-import { Heart, Image as ImageIcon, Link2, ExternalLink, X, Check, Eye, Code, FileCode } from 'lucide-react';
+import { Heart, Image as ImageIcon, Link2, ExternalLink, X, Check, Eye, Code, FileCode, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import chroma from 'chroma-js';
 import { notFound } from 'next/navigation';
@@ -177,6 +177,28 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
                                     {tag}
                                 </button>
                             ))}
+                        </div>
+                    </div>
+
+                    {/* --- ADSENSE CONTENT INJECTION --- */}
+                    <div className="w-full max-w-2xl px-6 mb-8 text-center md:text-left">
+                        <div className="prose prose-slate prose-sm max-w-none bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mx-auto">
+                            <h3 className="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
+                                <Sparkles size={16} className="text-purple-500" />
+                                Palette Analysis
+                            </h3>
+                            <p className="text-slate-600 mb-4 leading-relaxed">
+                                This professional color scheme, composed of
+                                {colors.map((c, i) => <span key={c} className="font-mono font-bold mx-1 text-slate-800 bg-slate-100 px-1 rounded">{c}</span>)},
+                                is optimized for digital product design.
+                                The dominant color temperature is <strong>{chroma(colors[0]).get('hsl.h') < 180 ? 'Warm' : 'Cool'}</strong>, evoking a
+                                {chroma(colors[0]).get('hsl.h') < 180 ? ' grounded and energetic ' : ' calm and professional '}
+                                atmosphere.
+                            </p>
+                            <p className="text-slate-600 leading-relaxed">
+                                <strong>UX Recommendation:</strong> Use the darkest shade (<strong>{colors.slice().sort((a, b) => chroma(a).luminance() - chroma(b).luminance())[0]}</strong>) for primary typography to ensure WCAG compliance.
+                                The lightest shade (<strong>{colors.slice().sort((a, b) => chroma(b).luminance() - chroma(a).luminance())[0]}</strong>) serves as an ideal background layer.
+                            </p>
                         </div>
                     </div>
 
