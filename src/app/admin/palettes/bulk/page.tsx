@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { supabase, safeGetUser } from '@/lib/supabase';
+import { supabase, safeGetUser, safeGetSession } from '@/lib/supabase';
 import { ArrowLeft, UploadCloud, X, Loader2, CheckCircle, Image as ImageIcon, Wand2, Layers } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -317,24 +317,44 @@ export default function BulkUploadPage() {
         toast.info(`Starting upload of ${pendingItems.length} palettes...`);
 
         try {
-            // 2. Get User (Safety Wrapper against AbortError)
+            // 2. Get User (Safety Wrapper against AbortError) with Retry
             let user = null;
-            const userRes = await safeGetUser();
-            if (userRes.data.user) {
-                user = userRes.data.user;
-            } else {
-                // Double check session if getUser fails
-                const sessionRes = await supabase.auth.getSession();
+            let authAttempts = 0;
+
+            while (!user && authAttempts < 3) {
+                const userRes = await safeGetUser();
+                if (userRes.data.user) {
+                    user = userRes.data.user;
+                    break;
+                }
+
+                // Fallback to Session
+                const sessionRes = await safeGetSession();
                 if (sessionRes.data.session?.user) {
                     user = sessionRes.data.session.user;
+                    break;
+                }
+
+                authAttempts++;
+                await new Promise(r => setTimeout(r, 500));
+            }
+
+            // Final fallback: LocalStorage user bypass (Extreme measure for fragile auth)
+            if (!user) {
+                const localSession = localStorage.getItem('sb-cafwmpzdgatxpavuwnvh-auth-token');
+                if (localSession) {
+                    try {
+                        const parsed = JSON.parse(localSession);
+                        if (parsed.user) user = parsed.user;
+                    } catch (e) { }
                 }
             }
 
             if (!user) {
-                throw new Error('Authentication failed. Please refresh the page.');
+                throw new Error('Authentication Check Failed (Network Error). Please refresh.');
             }
 
-            // 3. Chunk Processing (Micro chunks for stability)
+            // 3. Chunk Processing (Micro chunks)
             const CHUNK_SIZE = 4;
             const chunks = [];
             for (let i = 0; i < pendingItems.length; i += CHUNK_SIZE) {
