@@ -260,7 +260,7 @@ export const ContrastGuide = () => (
 export const TailwindGuide = () => (
     <Section>
         <Title>Developer Handoff with Tailwind CSS</Title>
-        <Subtitle>Copy-paste ready configurations. No more manual `extend: {... }`.</Subtitle>
+        <Subtitle>Copy-paste ready configurations. No more manual 'extend: ...'.</Subtitle>
 
         <div className="grid xl:grid-cols-2 gap-8 mb-12 mt-8">
             <div className="relative group">
