@@ -1,5 +1,8 @@
 'use server';
 
+// Explicitly use Node.js runtime to avoid Vercel Edge Request limits
+export const runtime = 'nodejs';
+
 import { createAdminClient } from '@/lib/supabase-server';
 
 export type AdminMessage = {
@@ -21,7 +24,7 @@ export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
 
         const supabase = createAdminClient();
 
-        console.log('SERVER ACTION: Connecting to Supabase...');
+        // console.log('SERVER ACTION: Connecting to Supabase...');
         let query = supabase
             .from('messages')
             .select('*')
@@ -38,7 +41,7 @@ export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
             throw error;
         }
 
-        console.log(`SERVER ACTION: Found ${data?.length} messages. Filter: ${filter}`);
+        // console.log(`SERVER ACTION: Found ${data?.length} messages. Filter: ${filter}`);
 
         const messages: AdminMessage[] = (data || []).map((msg: any) => ({
             id: msg.id,
@@ -47,35 +50,24 @@ export async function getMessagesAdmin(filter: 'all' | 'unread' = 'all') {
             last_name: msg.last_name,
             email: msg.email,
             message: msg.message,
-            status: msg.status || 'unread'
+            status: (msg.status || 'unread') as 'unread' | 'read' | 'archived'
         }));
 
-        // ADD FAKE DEBUG MESSAGE
+        // ADD FAKE DEBUG MESSAGE - REMOVE THIS LATER
+        /*
         messages.unshift({
             id: 'debug-fake-id',
             created_at: new Date().toISOString(),
             first_name: 'DEBUG',
             last_name: 'SYSTEM',
             email: 'debug@system.com',
-            message: 'If you can see this, the Server Action IS returning data to the Client.',
+            message: 'System is operational.',
             status: 'unread'
         });
+        */
 
-        // FORCE RETURN STATIC DATA ONLY TO TEST PIPELINE
-        // return { messages: JSON.parse(JSON.stringify(messages)) };
-
-        console.log('SERVER ACTION: Returning static debug message');
-        return {
-            messages: [{
-                id: 'FORCE_STATIC_RETURN',
-                created_at: new Date().toISOString(),
-                first_name: 'FORCE',
-                last_name: 'RETURN',
-                email: 'force@check.com',
-                message: 'This is a hardcoded return. If you see this, Supabase fetch is likely crashing/hanging.',
-                status: 'unread' as const
-            }]
-        };
+        // Ensure plain JSON structure to prevent serialization issues
+        return { messages: JSON.parse(JSON.stringify(messages)) };
     } catch (err: any) {
         console.error('Fetch Messages Error:', err);
         return { error: err.message };
