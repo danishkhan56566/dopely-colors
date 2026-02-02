@@ -126,7 +126,7 @@ export const AIGuide = () => (
         <Title>The Future of Design: Generative Color</Title>
         <Subtitle>How Large Language Models (LLMs) connect semantic meaning to visual color coordinates.</Subtitle>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid xl:grid-cols-3 gap-8 mb-16">
             <div className="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl border border-indigo-100">
                 <h3 className="font-bold text-lg mb-2">Semantic Understanding</h3>
                 <p className="text-sm text-gray-600">AI doesn't just "see" blue; it understands that "corporate trust" maps to deep navy (`#0f172a`) while "summertime joy" maps to vibrant coral and turquoise.</p>
@@ -199,7 +199,7 @@ export const ContrastGuide = () => (
         <Title>Web Accessibility Guidelines (WCAG)</Title>
         <Subtitle>Why contrast ratios are legal requirements, not just design suggestions.</Subtitle>
 
-        <div className="grid md:grid-cols-2 gap-12 mb-12">
+        <div className="grid xl:grid-cols-2 gap-12 mb-12">
             <div>
                 <h3 className="text-2xl font-bold mb-4">Understanding AA vs AAA</h3>
                 <p className="mb-4">
@@ -303,7 +303,7 @@ export const TailwindGuide = () => (
 
         <AdUnit slotId="tailwind-guide-1" label="Developer Tools" />
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12 mt-8">
+        <div className="grid xl:grid-cols-2 gap-8 mb-12 mt-8">
             <div className="p-6 bg-slate-900 text-white rounded-2xl">
                 <h4 className="font-bold mb-4 text-emerald-400">Stop Hardcoding Hexes</h4>
                 <p className="text-sm text-slate-300 mb-4">
@@ -343,7 +343,7 @@ export const DesignSystemGuide = () => (
             <p className="mb-6">
                 Design Tokens are the "atoms" of a design system. They are the smallest pieces of UI information—colors, typography sizes, spacing units—stored as variables. By using tokens instead of hardcoded values, you create a system that is:
             </p>
-            <ul className="grid md:grid-cols-3 gap-4 text-center">
+            <ul className="grid xl:grid-cols-3 gap-4 text-center">
                 <li className="bg-gray-50 p-4 rounded-xl border border-gray-200 font-bold">Maintainable</li>
                 <li className="bg-gray-50 p-4 rounded-xl border border-gray-200 font-bold">Scalable</li>
                 <li className="bg-gray-50 p-4 rounded-xl border border-gray-200 font-bold">Themeable</li>
