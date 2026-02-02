@@ -304,85 +304,80 @@ export default function BulkUploadPage() {
         }
     };
 
-    // 4. Batch Upload
+    // 4. Batch Upload (Client-Side Only)
     const handleUploadAll = async () => {
         const pendingItems = processedItems.filter(p => p.status !== 'success');
         if (pendingItems.length === 0) return;
 
+        // 1. Set State Immediately
         setIsUploading(true);
-
-        // Reliable User Check
-        const { data: { user } } = await supabase.auth.getUser();
-        let userId = user?.id;
-
-        // AUTH BYPASS FOR LOCALHOST TESTING
-        if (!userId && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-            console.warn('⚠️ Bypassing Auth for Localhost Testing');
-            userId = 'd83527a0-292c-4b81-a671-629c9fb28074';
-        }
-
-        if (!userId) {
-            toast.error('You must be logged in. Please refresh the page.');
-            setIsUploading(false);
-            return;
-        }
-
-        // Helper to update status of a subset of items
-        const updateStatus = (ids: string[], status: 'uploading' | 'success' | 'error') => {
-            setProcessedItems(prev => prev.map(p => ids.includes(p.id) ? { ...p, status } : p));
-        };
-
-        // Process in chunks to ensure stability
-        const CHUNK_SIZE = 50; // Increased for speed
-        const chunks = [];
-        for (let i = 0; i < pendingItems.length; i += CHUNK_SIZE) {
-            chunks.push(pendingItems.slice(i, i + CHUNK_SIZE));
-        }
-
         setUploadProgress({ current: 0, total: pendingItems.length });
-        let successCount = 0;
+        toast.info(`Starting upload of ${pendingItems.length} palettes...`);
 
-        for (const chunk of chunks) {
-            const chunkIds = chunk.map(p => p.id);
-            updateStatus(chunkIds, 'uploading');
+        try {
+            // 2. Get User
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                throw new Error('You must be logged in to publish.');
+            }
 
-            try {
+            // 3. Chunk Processing
+            const CHUNK_SIZE = 25; // Safe batch size
+            const chunks = [];
+            for (let i = 0; i < pendingItems.length; i += CHUNK_SIZE) {
+                chunks.push(pendingItems.slice(i, i + CHUNK_SIZE));
+            }
+
+            let successCount = 0;
+
+            for (const chunk of chunks) {
+                const chunkIds = chunk.map(p => p.id);
+                // Optimistic UI update
+                setProcessedItems(prev => prev.map(p => chunkIds.includes(p.id) ? { ...p, status: 'uploading' } : p));
+
                 const payloads = chunk.map(item => ({
                     name: item.name,
                     colors: item.colors,
-                    category: [item.category],
+                    category: [item.category], // Assuming DB expects text[]
                     status: 'published',
                     is_featured: false,
                     seo_title: `${item.name} - ${item.category} Color Palette`,
-                    created_by: userId
+                    created_by: user.id
                 }));
 
-                // DIRECT CLIENT INSERT (More Reliable for Bulk)
+                // Direct Supabase Insert
                 const { error } = await supabase.from('palettes').insert(payloads);
-                if (error) throw error;
 
-                updateStatus(chunkIds, 'success');
-                successCount += chunk.length;
-                setUploadProgress(prev => ({ ...prev, current: prev.current + chunk.length }));
+                if (error) {
+                    console.error('Insert error:', error);
+                    // Mark as error
+                    setProcessedItems(prev => prev.map(p => chunkIds.includes(p.id) ? { ...p, status: 'error' } : p));
+                    toast.error(`Chunk failed: ${error.message}`);
+                } else {
+                    // Mark as success
+                    setProcessedItems(prev => prev.map(p => chunkIds.includes(p.id) ? { ...p, status: 'success' } : p));
+                    successCount += chunk.length;
+                    setUploadProgress(prev => ({ ...prev, current: prev.current + chunk.length }));
+                }
 
-            } catch (err: any) {
-                console.error('Batch upload failed', err);
-                updateStatus(chunkIds, 'error');
-                toast.error(`Batch failed: ${err.message || 'Unknown error'}`);
+                // Tiny delay to breathe
+                await new Promise(r => setTimeout(r, 100));
             }
 
-            // Small delay to prevent rate limits
-            await new Promise(resolve => setTimeout(resolve, 200));
-        }
+            if (successCount > 0) {
+                toast.success(`Successfully published ${successCount} palettes!`);
+                // cleanup
+                setTimeout(() => {
+                    setProcessedItems(prev => prev.filter(p => p.status !== 'success'));
+                    setSelectedIds(new Set());
+                }, 1500);
+            }
 
-        setIsUploading(false);
-        if (successCount > 0) {
-            toast.success(`Successfully published ${successCount} palettes!`);
-            // Auto-clear successfully published items
-            setTimeout(() => {
-                setProcessedItems(prev => prev.filter(p => p.status !== 'success'));
-                setSelectedIds(new Set());
-            }, 1000);
+        } catch (err: any) {
+            console.error('Upload process failed:', err);
+            toast.error(err.message || 'Upload failed');
+        } finally {
+            setIsUploading(false);
         }
     };
 
