@@ -353,8 +353,8 @@ export default function BulkUploadClient({ initialUser }: { initialUser: any }) 
                 throw new Error('Authentication failed (Network). Please Refresh Page.');
             }
 
-            // 3. Chunk Processing (Micro chunks)
-            const CHUNK_SIZE = 4;
+            // 3. Chunk Processing (Server Action is more stable for DB)
+            const CHUNK_SIZE = 25;
             const chunks = [];
             for (let i = 0; i < pendingItems.length; i += CHUNK_SIZE) {
                 chunks.push(pendingItems.slice(i, i + CHUNK_SIZE));
@@ -377,24 +377,26 @@ export default function BulkUploadClient({ initialUser }: { initialUser: any }) 
                     created_by: user.id
                 }));
 
-                // Direct Supabase Insert with Retry
+                // Server Action Insert (Bypasses Client RLS / Network Flakes)
                 let error = null;
                 let attempts = 0;
+
                 while (attempts < 3) {
                     try {
-                        const res = await supabase.from('palettes').insert(payloads);
-                        if (!res.error) {
+                        const res = await publishPalettesAdmin(payloads);
+                        if (res.success) {
                             error = null;
                             break;
                         }
-                        error = res.error;
-                    } catch (netErr: any) {
-                        console.warn('Insert threw exception:', netErr);
-                        error = { message: netErr.message || 'Network Exception', details: '', hint: '', code: 'NETWORK_ERROR' };
+                        if (res.error) {
+                            error = { message: res.error };
+                        }
+                    } catch (e: any) {
+                        console.error('Server Action Error', e);
+                        error = { message: e.message || 'Server Action Failed' };
                     }
-
                     attempts++;
-                    await new Promise(r => setTimeout(r, 800)); // Wait longer before retry
+                    await new Promise(r => setTimeout(r, 1000));
                 }
 
                 if (error) {
@@ -408,7 +410,7 @@ export default function BulkUploadClient({ initialUser }: { initialUser: any }) 
                 }
 
                 // Delay
-                await new Promise(r => setTimeout(r, 200));
+                await new Promise(r => setTimeout(r, 100));
             }
 
             if (successCount > 0) {
