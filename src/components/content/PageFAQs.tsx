@@ -45,8 +45,8 @@ const FAQSection = ({ title, items }: { title: string, items: { q: string, a: Re
 // --- 1. Homepage FAQ ---
 export const HomeFAQ = () => (
     <section className="max-w-7xl mx-auto py-32 px-6">
-        <div className="flex flex-col lg:flex-row gap-16">
-            <div className="lg:w-1/3">
+        <div className="flex flex-col xl:flex-row gap-16">
+            <div className="xl:w-1/3">
                 <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight leading-[1.1]">
                     Common <br />Questions.
                 </h2>
@@ -59,7 +59,7 @@ export const HomeFAQ = () => (
                 </div>
             </div>
 
-            <div className="lg:w-2/3 space-y-4">
+            <div className="xl:w-2/3 space-y-4">
                 {[
                     {
                         q: "Why did we build Dopely Colors?",
