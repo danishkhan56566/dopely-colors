@@ -85,6 +85,30 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ErrorSuppressorScript />
+        <Script
+          id="schema-org"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "Dopely Colors",
+              "applicationCategory": "DesignApplication",
+              "operatingSystem": "Web",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "description": "The world's most intelligent AI color palette generator and design system builder.",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "ratingCount": "1250"
+              }
+            })
+          }}
+        />
         {children}
         <CommandPalette />
         <Toaster position="top-center" richColors />
