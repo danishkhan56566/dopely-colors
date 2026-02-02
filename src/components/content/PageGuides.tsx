@@ -384,3 +384,77 @@ export const DesignSystemGuide = () => (
         </div>
     </div>
 );
+
+// --- 7. Picker Guide ---
+export const PickerGuide = () => (
+    <Section>
+        <Title>Professional Color Picking</Title>
+        <Subtitle>Beyond the rainbow wheel. Precision tools for digital color.</Subtitle>
+
+        <p className="mb-8">
+            The standard OS color picker is insufficient for professional work. It lacks context. Our picker provides real-time conversion between color models, ensuring that the color you pick for the web (Hex) matches the color you send to print (CMYK).
+        </p>
+
+        <div className="overflow-x-auto mb-12">
+            <table className="w-full text-left text-sm">
+                <thead>
+                    <tr className="border-b-2 border-gray-100 text-gray-400 uppercase tracking-widest text-xs">
+                        <th className="py-4 font-bold">Model</th>
+                        <th className="py-4 font-bold">Use Case</th>
+                        <th className="py-4 font-bold">Why it matters</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr className="border-b border-gray-100">
+                        <td className="py-4 font-mono font-bold text-indigo-600">HEX</td>
+                        <td className="py-4">Web</td>
+                        <td className="py-4">The standard for HTML/CSS. Compact and universally supported.</td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                        <td className="py-4 font-mono font-bold text-indigo-600">HSL</td>
+                        <td className="py-4">Design Systems</td>
+                        <td className="py-4">Human-readable. Easy to modify lightness without changing hue.</td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                        <td className="py-4 font-mono font-bold text-indigo-600">RGB</td>
+                        <td className="py-4">Screens</td>
+                        <td className="py-4">Additive model. Used for digital displays and video.</td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                        <td className="py-4 font-mono font-bold text-indigo-600">CMYK</td>
+                        <td className="py-4">Print</td>
+                        <td className="py-4">Subtractive model (Ink). Crucial if your brand needs to look good on business cards.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 className="text-2xl font-bold mb-4">Why HSL is King for UI</h3>
+        <p className="mb-8">
+            We prioritize HSL (Hue, Saturation, Lightness) in our tools because it decouples the *color* (Hue) from its *intensity* (Saturation/Lightness). This allows you to generate consistent design systems by keeping the Hue constant while varying Lightness to create hover states and backgrounds. You can check these values in our <Link href="/picker" className="text-indigo-600 font-bold hover:underline">Professional Color Picker</Link>.
+        </p>
+
+        <p className="text-sm bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <strong>Pro Tip:</strong> Once you've picked a base color, put it into our <Link href="/design-system" className="text-indigo-600 font-bold">Design System Builder</Link> to generate a full UI kit.
+        </p>
+    </Section>
+);
+
+// --- 8. Favorites Guide ---
+export const FavoritesGuide = () => (
+    <Section>
+        <Title>Curating Your Visual Library</Title>
+        <Subtitle>Organize, refine, and export your inspiration.</Subtitle>
+
+        <p className="mb-8">
+            Great designers steal—or rather, they curate. Maintaining a library of saved palettes allows you to build mood boards faster. When starting a <Link href="/generate" className="text-indigo-600 font-bold">New Project</Link>, don't start from scratch; browsing your "Favorites" list can spark the initial idea that defines the direction of the product.
+        </p>
+
+        <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-2xl mb-8">
+            <h4 className="font-bold text-yellow-900 mb-2">Pro Tip: Project-Based Collections</h4>
+            <p className="text-yellow-800 text-sm">
+                Don't just save colors you like. Save potential combinations for specific use cases. Tag your favorites mentally as "Corporate," "Playful," or "Dark Mode" to make retrieval easier. You can use our <Link href="/ai" className="text-indigo-600 font-bold hover:underline">AI Tool</Link> to find more specific vibes.
+            </p>
+        </div>
+    </Section>
+);
