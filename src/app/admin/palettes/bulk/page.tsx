@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, safeGetUser } from '@/lib/supabase';
 import { ArrowLeft, UploadCloud, X, Loader2, CheckCircle, Image as ImageIcon, Wand2, Layers } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -304,6 +304,8 @@ export default function BulkUploadPage() {
         }
     };
 
+    // ...
+
     // 4. Batch Upload (Client-Side Only)
     const handleUploadAll = async () => {
         const pendingItems = processedItems.filter(p => p.status !== 'success');
@@ -315,14 +317,25 @@ export default function BulkUploadPage() {
         toast.info(`Starting upload of ${pendingItems.length} palettes...`);
 
         try {
-            // 2. Get User
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                throw new Error('You must be logged in to publish.');
+            // 2. Get User (Safety Wrapper against AbortError)
+            let user = null;
+            const userRes = await safeGetUser();
+            if (userRes.data.user) {
+                user = userRes.data.user;
+            } else {
+                // Double check session if getUser fails
+                const sessionRes = await supabase.auth.getSession();
+                if (sessionRes.data.session?.user) {
+                    user = sessionRes.data.session.user;
+                }
             }
 
-            // 3. Chunk Processing
-            const CHUNK_SIZE = 25; // Safe batch size
+            if (!user) {
+                throw new Error('Authentication failed. Please refresh the page.');
+            }
+
+            // 3. Chunk Processing (Smaller chunks for stability)
+            const CHUNK_SIZE = 15;
             const chunks = [];
             for (let i = 0; i < pendingItems.length; i += CHUNK_SIZE) {
                 chunks.push(pendingItems.slice(i, i + CHUNK_SIZE));
@@ -338,30 +351,39 @@ export default function BulkUploadPage() {
                 const payloads = chunk.map(item => ({
                     name: item.name,
                     colors: item.colors,
-                    category: [item.category], // Assuming DB expects text[]
+                    category: [item.category],
                     status: 'published',
                     is_featured: false,
                     seo_title: `${item.name} - ${item.category} Color Palette`,
                     created_by: user.id
                 }));
 
-                // Direct Supabase Insert
-                const { error } = await supabase.from('palettes').insert(payloads);
+                // Direct Supabase Insert with Retry
+                let error = null;
+                let attempts = 0;
+                while (attempts < 3) {
+                    const res = await supabase.from('palettes').insert(payloads);
+                    if (!res.error) {
+                        error = null;
+                        break;
+                    }
+                    error = res.error;
+                    attempts++;
+                    await new Promise(r => setTimeout(r, 500)); // Wait before retry
+                }
 
                 if (error) {
                     console.error('Insert error:', error);
-                    // Mark as error
                     setProcessedItems(prev => prev.map(p => chunkIds.includes(p.id) ? { ...p, status: 'error' } : p));
                     toast.error(`Chunk failed: ${error.message}`);
                 } else {
-                    // Mark as success
                     setProcessedItems(prev => prev.map(p => chunkIds.includes(p.id) ? { ...p, status: 'success' } : p));
                     successCount += chunk.length;
                     setUploadProgress(prev => ({ ...prev, current: prev.current + chunk.length }));
                 }
 
-                // Tiny delay to breathe
-                await new Promise(r => setTimeout(r, 100));
+                // Delay
+                await new Promise(r => setTimeout(r, 200));
             }
 
             if (successCount > 0) {
