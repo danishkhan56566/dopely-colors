@@ -334,8 +334,8 @@ export default function BulkUploadPage() {
                 throw new Error('Authentication failed. Please refresh the page.');
             }
 
-            // 3. Chunk Processing (Smaller chunks for stability)
-            const CHUNK_SIZE = 15;
+            // 3. Chunk Processing (Micro chunks for stability)
+            const CHUNK_SIZE = 4;
             const chunks = [];
             for (let i = 0; i < pendingItems.length; i += CHUNK_SIZE) {
                 chunks.push(pendingItems.slice(i, i + CHUNK_SIZE));
