@@ -40,6 +40,20 @@ export default function BulkUploadPage() {
     const [urlInput, setUrlInput] = useState('');
     const [importCount, setImportCount] = useState(50);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [currentUser, setCurrentUser] = useState<any>(null);
+
+    // Pre-fetch Auth to avoid network race conditions on click
+    useEffect(() => {
+        const initAuth = async () => {
+            const { data } = await safeGetUser();
+            if (data.user) setCurrentUser(data.user);
+            else {
+                const { data: sData } = await safeGetSession();
+                if (sData.session?.user) setCurrentUser(sData.session.user);
+            }
+        };
+        initAuth();
+    }, []);
 
     // 0. Persistence
     const [isLoaded, setIsLoaded] = useState(false);
@@ -317,41 +331,24 @@ export default function BulkUploadPage() {
         toast.info(`Starting upload of ${pendingItems.length} palettes...`);
 
         try {
-            // 2. Get User (Safety Wrapper against AbortError) with Retry
-            let user = null;
-            let authAttempts = 0;
+            // 2. Resolve User (Prefer State -> Fallback to Network)
+            let user = currentUser;
 
-            while (!user && authAttempts < 3) {
+            if (!user) {
+                // Retry Network if state was empty
+                console.log('User state empty, retrying network...');
                 const userRes = await safeGetUser();
-                if (userRes.data.user) {
-                    user = userRes.data.user;
-                    break;
-                }
+                user = userRes.data.user;
+            }
 
-                // Fallback to Session
+            if (!user) {
+                // Final desperation check
                 const sessionRes = await safeGetSession();
-                if (sessionRes.data.session?.user) {
-                    user = sessionRes.data.session.user;
-                    break;
-                }
-
-                authAttempts++;
-                await new Promise(r => setTimeout(r, 500));
-            }
-
-            // Final fallback: LocalStorage user bypass (Extreme measure for fragile auth)
-            if (!user) {
-                const localSession = localStorage.getItem('sb-cafwmpzdgatxpavuwnvh-auth-token');
-                if (localSession) {
-                    try {
-                        const parsed = JSON.parse(localSession);
-                        if (parsed.user) user = parsed.user;
-                    } catch (e) { }
-                }
+                user = sessionRes.data.session?.user;
             }
 
             if (!user) {
-                throw new Error('Authentication Check Failed (Network Error). Please refresh.');
+                throw new Error('Authentication failed (Network). Please Refresh Page.');
             }
 
             // 3. Chunk Processing (Micro chunks)
