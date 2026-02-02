@@ -357,7 +357,12 @@ export default function BulkUploadPage() {
 
                 const result = await publishPalettesAdmin(payloads);
 
-                if (result.error) throw new Error(result.error);
+                if (result.error) {
+                    console.warn('Server Action failed, attempting Client-Side fallback:', result.error);
+                    // Fallback: Use browser client (leverages User's Session/RLS)
+                    const { error: clientError } = await supabase.from('palettes').insert(payloads);
+                    if (clientError) throw new Error(`Client fallback failed: ${clientError.message}`);
+                }
 
                 updateStatus(chunkIds, 'success');
                 successCount += chunk.length;
