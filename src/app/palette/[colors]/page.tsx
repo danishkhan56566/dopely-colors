@@ -32,7 +32,14 @@ export default async function Page({ params }: Props) {
         return notFound();
     }
 
-    const validHexCodes = hexCodes.map(c => '#' + c);
+    // Validate hex codes (must be 3 or 6 hex digits)
+    const validHexCodes = hexCodes
+        .filter(c => /^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(c))
+        .map(c => '#' + c);
+
+    if (validHexCodes.length === 0) {
+        return notFound();
+    }
 
     return <PaletteDetail colors={validHexCodes} />;
 }
