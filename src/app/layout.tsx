@@ -91,21 +91,48 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "Dopely Colors",
-              "applicationCategory": "DesignApplication",
-              "operatingSystem": "Web",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-              },
-              "description": "The world's most intelligent AI color palette generator and design system builder.",
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.8",
-                "ratingCount": "1250"
-              }
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  "name": "Dopely Colors",
+                  "url": "https://dopelycolors.com",
+                  "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": {
+                      "@type": "EntryPoint",
+                      "urlTemplate": "https://dopelycolors.com/explore?q={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
+                  }
+                },
+                {
+                  "@type": "SoftwareApplication",
+                  "name": "Dopely Colors",
+                  "applicationCategory": "DesignApplication",
+                  "operatingSystem": "Web",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                  },
+                  "description": "The world's most intelligent AI color palette generator and design system builder.",
+                  "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.8",
+                    "ratingCount": "1250"
+                  }
+                },
+                {
+                  "@type": "Organization",
+                  "name": "Dopely Colors",
+                  "url": "https://dopelycolors.com",
+                  "logo": "https://dopelycolors.com/icon.png",
+                  "sameAs": [
+                    "https://twitter.com/dopelycolors",
+                    "https://instagram.com/dopelycolors"
+                  ]
+                }
+              ]
             })
           }}
         />
