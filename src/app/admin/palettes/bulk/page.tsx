@@ -32,6 +32,7 @@ export default function BulkUploadPage() {
     const [processedItems, setProcessedItems] = useState<ProcessedPalette[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
     const [useSmartSplit, setUseSmartSplit] = useState(true);
 
     // New States
@@ -331,13 +332,14 @@ export default function BulkUploadPage() {
             setProcessedItems(prev => prev.map(p => ids.includes(p.id) ? { ...p, status } : p));
         };
 
-        // Process in small chunks to ensure stability
-        const CHUNK_SIZE = 5;
+        // Process in chunks to ensure stability
+        const CHUNK_SIZE = 50; // Increased for speed
         const chunks = [];
         for (let i = 0; i < pendingItems.length; i += CHUNK_SIZE) {
             chunks.push(pendingItems.slice(i, i + CHUNK_SIZE));
         }
 
+        setUploadProgress({ current: 0, total: pendingItems.length });
         let successCount = 0;
 
         for (const chunk of chunks) {
@@ -355,17 +357,13 @@ export default function BulkUploadPage() {
                     created_by: userId
                 }));
 
-                const result = await publishPalettesAdmin(payloads);
-
-                if (result.error) {
-                    console.warn('Server Action failed, attempting Client-Side fallback:', result.error);
-                    // Fallback: Use browser client (leverages User's Session/RLS)
-                    const { error: clientError } = await supabase.from('palettes').insert(payloads);
-                    if (clientError) throw new Error(`Client fallback failed: ${clientError.message}`);
-                }
+                // DIRECT CLIENT INSERT (More Reliable for Bulk)
+                const { error } = await supabase.from('palettes').insert(payloads);
+                if (error) throw error;
 
                 updateStatus(chunkIds, 'success');
                 successCount += chunk.length;
+                setUploadProgress(prev => ({ ...prev, current: prev.current + chunk.length }));
 
             } catch (err: any) {
                 console.error('Batch upload failed', err);
@@ -373,8 +371,8 @@ export default function BulkUploadPage() {
                 toast.error(`Batch failed: ${err.message || 'Unknown error'}`);
             }
 
-            // Artificial delay to prevent flooding
-            await new Promise(resolve => setTimeout(resolve, 800));
+            // Small delay to prevent rate limits
+            await new Promise(resolve => setTimeout(resolve, 200));
         }
 
         setIsUploading(false);
@@ -462,7 +460,7 @@ export default function BulkUploadPage() {
                             className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-lg disabled:opacity-50"
                         >
                             {isUploading ? <Loader2 size={20} className="animate-spin" /> : <UploadCloud size={20} />}
-                            {isUploading ? 'Publishing...' : `Publish ${processedItems.filter(i => i.status !== 'success').length} Palettes`}
+                            {isUploading ? `Publishing ${uploadProgress.current}/${uploadProgress.total}...` : `Publish ${processedItems.filter(i => i.status !== 'success').length} Palettes`}
                         </button>
                     </>
                 )}
