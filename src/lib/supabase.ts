@@ -19,8 +19,11 @@ export const isSupabaseConfigured = () => {
 export const safeGetSession = async () => {
     try {
         return await supabase.auth.getSession();
-    } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
+    } catch (error: any) {
+        if (
+            (error instanceof Error && error.name === 'AbortError') ||
+            (error?.message && error.message.includes('aborted'))
+        ) {
             return { data: { session: null }, error: null };
         }
         throw error;
@@ -30,8 +33,11 @@ export const safeGetSession = async () => {
 export const safeGetUser = async () => {
     try {
         return await supabase.auth.getUser();
-    } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
+    } catch (error: any) {
+        if (
+            (error instanceof Error && error.name === 'AbortError') ||
+            (error?.message && error.message.includes('aborted'))
+        ) {
             return { data: { user: null }, error: null };
         }
         throw error;

@@ -362,14 +362,20 @@ export default function BulkUploadPage() {
                 let error = null;
                 let attempts = 0;
                 while (attempts < 3) {
-                    const res = await supabase.from('palettes').insert(payloads);
-                    if (!res.error) {
-                        error = null;
-                        break;
+                    try {
+                        const res = await supabase.from('palettes').insert(payloads);
+                        if (!res.error) {
+                            error = null;
+                            break;
+                        }
+                        error = res.error;
+                    } catch (netErr: any) {
+                        console.warn('Insert threw exception:', netErr);
+                        error = { message: netErr.message || 'Network Exception', details: '', hint: '', code: 'NETWORK_ERROR' };
                     }
-                    error = res.error;
+
                     attempts++;
-                    await new Promise(r => setTimeout(r, 500)); // Wait before retry
+                    await new Promise(r => setTimeout(r, 800)); // Wait longer before retry
                 }
 
                 if (error) {
