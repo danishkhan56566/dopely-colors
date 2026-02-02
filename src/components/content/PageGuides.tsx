@@ -35,9 +35,9 @@ export const HomeGuide = () => (
             </p>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 2xl:grid-cols-12 gap-6">
             {/* Bento Card 1: The Philosophy */}
-            <div className="xl:col-span-8 bg-white p-8 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-center">
+            <div className="2xl:col-span-8 bg-white p-8 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-center">
                 <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white">
                         <Palette size={20} />
@@ -59,7 +59,7 @@ export const HomeGuide = () => (
             </div>
 
             {/* Bento Card 2: Micro-Tip */}
-            <div className="xl:col-span-4 bg-indigo-600 p-8 md:p-10 rounded-[2.5rem] text-white flex flex-col justify-between">
+            <div className="2xl:col-span-4 bg-indigo-600 p-8 md:p-10 rounded-[2.5rem] text-white flex flex-col justify-between">
                 <div>
                     <h4 className="text-xl font-bold mb-4 italic">"If you can't read the text, the color is wrong."</h4>
                     <p className="text-indigo-100 leading-relaxed">
@@ -72,7 +72,7 @@ export const HomeGuide = () => (
             </div>
 
             {/* Bento Card 3: The Toolkit */}
-            <div className="xl:col-span-4 bg-gray-900 p-8 md:p-10 rounded-[2.5rem] text-white flex flex-col">
+            <div className="2xl:col-span-4 bg-gray-900 p-8 md:p-10 rounded-[2.5rem] text-white flex flex-col">
                 <div className="flex items-center gap-3 mb-6 text-emerald-400">
                     <Zap size={20} />
                     <span className="text-sm font-bold uppercase tracking-widest">Logic Tools</span>
@@ -95,7 +95,7 @@ export const HomeGuide = () => (
             </div>
 
             {/* Bento Card 4: Building for Scale */}
-            <div className="xl:col-span-8 bg-white p-8 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div className="2xl:col-span-8 bg-white p-8 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-32 bg-indigo-50/50 rounded-full blur-3xl -mr-16 -mt-16" />
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 mb-6 text-indigo-600">
