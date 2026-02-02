@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   title: "Dopely Colors – AI Color Palette Generator for Designers & Developers",
   description: "Dopely Colors is an AI-powered color and design toolkit for designers and developers. Generate color palettes, gradients, Tailwind colors, and complete design systems instantly.",
-  keywords: ["AI color palette generator", "color palettes", "gradient generator", "Tailwind colors", "design system builder", "WCAG contrast checker", "color picker for designers"],
+  keywords: ["Dopely Colors", "dopely", "dopely.top", "colors.dopely.top", "AI color palette generator", "color palettes", "gradient generator", "Tailwind colors", "design system builder", "WCAG contrast checker", "color picker for designers"],
   openGraph: {
     title: "Dopely Colors – AI Color Tools for Designers & Developers",
     description: "Create beautiful color palettes, gradients, Tailwind color systems, and accessible design tokens using AI. Built for modern designers and developers.",
