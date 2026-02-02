@@ -29,10 +29,20 @@ export default function AIPaletteGeneratorPage() {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const { data: { session } } = await supabase.auth.getSession();
+                // Race between auth check and a 4-second timeout
+                // This prevents the UI from hanging if Supabase is unreachable/slow
+                const timeoutPromise = new Promise<{ data: { session: null } }>((resolve) => {
+                    setTimeout(() => resolve({ data: { session: null } }), 4000);
+                });
+
+                const authPromise = supabase.auth.getSession();
+
+                const { data: { session } } = await Promise.race([authPromise, timeoutPromise]);
                 setHasSession(!!session);
             } catch (e) {
                 console.error("Auth check failed", e);
+                // Default to no session on error
+                setHasSession(false);
             } finally {
                 setIsLoadingAuth(false);
             }

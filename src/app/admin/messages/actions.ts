@@ -1,7 +1,7 @@
 'use server';
 
 // Explicitly use Node.js runtime to avoid Vercel Edge Request limits
-export const runtime = 'nodejs';
+// runtime config removed, should be in page/layout if needed
 
 import { createAdminClient } from '@/lib/supabase-server';
 
