@@ -887,14 +887,14 @@ export function LandingPage() {
                             </div>
                         </Link>
 
-                        {/* Guides - Now with component */}
-                        <HomeGuide />
-
-                        {/* FAQs */}
-                        <HomeFAQ />
-
                     </div>
                 </div>
+
+                {/* Guides - Now with component */}
+                <HomeGuide />
+
+                {/* FAQs */}
+                <HomeFAQ />
 
             </div>
         </DashboardLayout>
