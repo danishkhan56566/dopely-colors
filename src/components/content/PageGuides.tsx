@@ -22,7 +22,7 @@ const Subtitle = ({ children }: { children: React.ReactNode }) => (
 
 // --- 1. Home Page Guide ---
 export const HomeGuide = () => (
-    <section className="max-w-7xl mx-auto py-32 px-6 relative overflow-hidden">
+    <section className="max-w-7xl mx-auto py-32 px-6 relative">
         {/* Background Accent */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-50/50 rounded-full blur-[120px] -z-10" />
 
