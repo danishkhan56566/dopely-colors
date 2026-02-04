@@ -31,7 +31,7 @@ export default function CognitiveLoadPage() {
             for (let j = i + 1; j < colors.length; j++) {
                 const c1 = chroma(colors[i]);
                 const c2 = chroma(colors[j]);
-                if (c1.saturation() > 0.8 && c2.saturation() > 0.8) {
+                if (c1.get('hsl.s') > 0.8 && c2.get('hsl.s') > 0.8) {
                     // Check hue distance
                     const diff = Math.abs(c1.get('hsl.h') - c2.get('hsl.h'));
                     if (diff > 150 && diff < 210) { // Complementary clash
@@ -60,7 +60,7 @@ export default function CognitiveLoadPage() {
 
     const chartData = colors.map((c, i) => ({
         name: `Color ${i + 1}`,
-        attention: chroma(c).saturation() * 100 + (1 - chroma(c).luminance()) * 50, // Heuristic: Bright + Sat = High Attention
+        attention: chroma(c).get('hsl.s') * 100 + (1 - chroma(c).luminance()) * 50, // Heuristic: Bright + Sat = High Attention
         color: c
     }));
 

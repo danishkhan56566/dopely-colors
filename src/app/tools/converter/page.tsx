@@ -20,7 +20,7 @@ export default function ColorConverter() {
                 setOutputs({
                     HEX: c.hex(),
                     RGB: c.css('rgb'),
-                    RGBA: c.css('rgba'),
+                    RGBA: `rgba(${c.rgba().join(', ')})`,
                     HSL: `hsl(${Math.round(c.get('hsl.h') || 0)}, ${Math.round(c.get('hsl.s') * 100)}%, ${Math.round(c.get('hsl.l') * 100)}%)`,
                     HSV: `hsv(${Math.round(c.get('hsv.h') || 0)}, ${Math.round(c.get('hsv.s') * 100)}%, ${Math.round(c.get('hsv.v') * 100)}%)`,
                     CMYK: `cmyk(${c.cmyk().map(v => Math.round(v * 100)).join(', ')})`,
