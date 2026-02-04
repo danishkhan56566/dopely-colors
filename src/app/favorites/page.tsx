@@ -57,6 +57,7 @@ export default function Favorites() {
                                 id={palette.id}
                                 colors={palette.colors}
                                 likes={palette.likes}
+                                createdAt={new Date(palette.date).toISOString()}
                             />
                             {/* Delete Action Overlay - Customized for Favorites view */}
                             <button

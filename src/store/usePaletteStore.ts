@@ -216,7 +216,9 @@ export const usePaletteStore = create<PaletteState>()(persist((set, get) => ({
                 name,
                 colors,
                 favorites_count,
-                status
+                favorites_count,
+                status,
+                created_at
             )
         `)
         .eq('user_id', session.user.id);
@@ -231,7 +233,7 @@ export const usePaletteStore = create<PaletteState>()(persist((set, get) => ({
         .map((item: any) => ({
           id: item.palettes.id,
           colors: item.palettes.colors,
-          date: Date.now(),
+          date: item.palettes.created_at ? new Date(item.palettes.created_at).getTime() : Date.now(), // Use real creation date
           likes: item.palettes.favorites_count || 0,
           name: item.palettes.name
         }));

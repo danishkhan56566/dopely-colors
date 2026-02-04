@@ -39,6 +39,7 @@ export async function fetchPalettesAction(page = 0, filter: string | null = null
             name: p.name,
             likes: p.favorites_count || 0,
             date: new Date(p.created_at).toLocaleDateString(),
+            createdAt: p.created_at, // Pass raw for "time ago"
             colors: p.colors || [],
             tags: p.category?.[0] || 'uncategorized'
         })) || [];

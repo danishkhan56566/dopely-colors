@@ -22,9 +22,48 @@ interface ProcessedPalette {
     status: 'pending' | 'uploading' | 'success' | 'error';
 }
 
-const CATEGORIES = ['SaaS', 'Nature', 'Food', 'Tech', 'Cyberpunk', 'Minimal', 'Pastel', 'Dark Mode'];
+const CATEGORIES = ['SaaS', 'Nature', 'Food', 'Tech', 'Cyberpunk', 'Minimal', 'Pastel', 'Dark Mode', 'Light'];
 const ADJECTIVES = ['Vibrant', 'Muted', 'Neon', 'Pastel', 'Dark', 'Soft', 'Bold', 'Fresh', 'Warm', 'Cool', 'Electric', 'Cozy', 'Cyber'];
 const NOUNS = ['Sunset', 'Ocean', 'Forest', 'Dream', 'Night', 'Sky', 'Berry', 'Tech', 'Minimal', 'Future', 'Wave', 'Harmony', 'Vibe'];
+
+// AI Classification
+const classifyPalette = (hexColors: string[]): string => {
+    try {
+        const colors = hexColors.map(c => chroma(c));
+        const avgLum = colors.reduce((a, c) => a + c.luminance(), 0) / colors.length;
+        const avgSat = colors.reduce((a, c) => a + c.get('hsl.s'), 0) / colors.length;
+
+        // 1. Dark & Cyberpunk
+        if (avgLum < 0.25) {
+            const hasNeon = colors.some(c => c.get('hsl.s') > 0.8 && c.luminance() > 0.3);
+            return hasNeon ? 'Cyberpunk' : 'Dark Mode';
+        }
+
+        // 2. Light / Minimal
+        if (avgLum > 0.85) return 'Light';
+        if (avgSat < 0.15) return 'Minimal';
+
+        // 3. Pastel
+        if (avgSat > 0.2 && avgSat < 0.6 && avgLum > 0.6) return 'Pastel';
+
+        // 4. Nature (Greens, Earth)
+        const greens = colors.filter(c => { const h = c.get('hsl.h'); return h > 65 && h < 165; }).length;
+        const browns = colors.filter(c => { const h = c.get('hsl.h'); const l = c.luminance(); return (h > 20 && h < 50 && l < 0.5); }).length;
+        if (greens + browns >= 2) return 'Nature';
+
+        // 5. Food (Warm: Red/Orange/Yellow)
+        const warm = colors.filter(c => { const h = c.get('hsl.h'); return h < 50 || h > 340; }).length;
+        if (warm >= 3) return 'Food';
+
+        // 6. Tech / SaaS (Blue/Purple/Cool)
+        const cool = colors.filter(c => { const h = c.get('hsl.h'); return h > 170 && h < 290; }).length;
+        if (cool >= 2) return 'Tech';
+
+        return 'SaaS';
+    } catch (e) {
+        return 'SaaS';
+    }
+};
 
 export default function BulkUploadClient({ initialUser }: { initialUser: any }) {
     const router = useRouter();
@@ -141,6 +180,7 @@ export default function BulkUploadClient({ initialUser }: { initialUser: any }) 
                 ...item,
                 colors: newColors,
                 name: newName,
+                category: classifyPalette(newColors),
                 status: 'pending' as const
             };
         });
@@ -181,7 +221,7 @@ export default function BulkUploadClient({ initialUser }: { initialUser: any }) 
                     preview: '', // No image preview for URL imports initially, could gen solid color
                     colors: p.colors,
                     name: `${ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)]} ${NOUNS[Math.floor(Math.random() * NOUNS.length)]}`,
-                    category: CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)],
+                    category: classifyPalette(p.colors),
                     status: 'pending'
                 }));
 
@@ -223,7 +263,7 @@ export default function BulkUploadClient({ initialUser }: { initialUser: any }) 
 
                 // Generate Meta
                 const randomName = `${ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)]} ${NOUNS[Math.floor(Math.random() * NOUNS.length)]}`;
-                const randomCategory = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+                const randomCategory = classifyPalette(colors);
 
                 // Create a File object for the segment if needed (so it can be uploaded later?)
                 // Actually, for segments, 'source' is base64. We should convert to Blob/File for consistency?
