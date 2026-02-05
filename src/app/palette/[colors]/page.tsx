@@ -41,5 +41,30 @@ export default async function Page({ params }: Props) {
         return notFound();
     }
 
-    return <PaletteDetail colors={validHexCodes} />;
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": `Color Palette ${validHexCodes.join('-')}`,
+        "description": `A curated color palette containing ${validHexCodes.join(', ')}.`,
+        "creator": {
+            "@type": "Organization",
+            "name": "Dopely Colors"
+        },
+        "keywords": `color palette, ${validHexCodes.join(', ')}`,
+        "additionalProperty": validHexCodes.map(hex => ({
+            "@type": "PropertyValue",
+            "name": "Color",
+            "value": hex
+        }))
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <PaletteDetail colors={validHexCodes} />
+        </>
+    );
 }

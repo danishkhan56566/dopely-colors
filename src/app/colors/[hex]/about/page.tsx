@@ -67,5 +67,36 @@ export default async function Page({ params }: Props) {
     const { hex } = await params;
     const { hex: formattedHex, data } = await getColorData(hex);
 
-    return <ColorDetailView hex={formattedHex} initialDbColor={data} />;
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": `${data?.name || getNearestColorName(formattedHex)} Color`,
+        "color": formattedHex,
+        "description": data?.description || `${data?.name || getNearestColorName(formattedHex)} is a ${formattedHex} hex color code.`,
+        "brand": {
+            "@type": "Brand",
+            "name": "Dopely Colors"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        },
+        "additionalProperty": [
+            { "@type": "PropertyValue", "name": "HEX", "value": formattedHex },
+            { "@type": "PropertyValue", "name": "RGB", "value": getFullConversions(formattedHex).rgb },
+            { "@type": "PropertyValue", "name": "CMYK", "value": getFullConversions(formattedHex).cmyk }
+        ]
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <ColorDetailView hex={formattedHex} initialDbColor={data} />
+        </>
+    );
 }
