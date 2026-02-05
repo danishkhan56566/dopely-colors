@@ -50,16 +50,7 @@ export async function generateMetadata(
             title: `${colorName} (${formattedHex})`,
             description: description,
             type: 'website',
-            images: [
-                // In a real app we'd have a dynamic OG image generator route
-                // `/api/og/color?hex=${formattedHex.replace('#', '')}`
-                {
-                    url: `https://dopelycolors.com/api/og/color?hex=${normalizedHex}`,
-                    width: 1200,
-                    height: 630,
-                    alt: `${colorName} Color Preview`,
-                }
-            ],
+            // images: handled automatically by opengraph-image.tsx
         },
         twitter: {
             card: 'summary_large_image',
