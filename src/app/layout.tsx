@@ -139,7 +139,6 @@ export default function RootLayout({
         {children}
         <CommandPalette />
         <Toaster position="top-center" richColors />
-        <Toaster position="top-center" richColors />
         <Analytics />
         <ServiceWorkerRegister />
       </body>

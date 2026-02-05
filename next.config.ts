@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'react-colorful', 'framer-motion', 'date-fns', 'clsx', 'tailwind-merge'],
   },
+  images: {
+    unoptimized: true, // CRITICAL: Disable server-side image optimization to save Vercel Usage (Fast Origin Transfer)
+  },
   async rewrites() {
     return [
       // Marketing Paths -> Internal Routes

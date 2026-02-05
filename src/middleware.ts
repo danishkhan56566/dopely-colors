@@ -63,12 +63,13 @@ export const config = {
          * - /signup
          * - /auth/callback (for session exchange)
          */
-        '/admin/:path*',
-        '/dashboard/:path*',
-        '/profile/:path*',
-        '/settings/:path*',
-        '/login',
-        '/signup',
-        '/auth/:path*'
+        /*
+         * Match all request paths except for the ones starting with:
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico (favicon file)
+         * - public folder content
+         */
+        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 }

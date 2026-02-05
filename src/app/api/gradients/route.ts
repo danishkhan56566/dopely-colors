@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-export const revalidate = 60; // Cache for 1 minute
+export const revalidate = 3600; // Cache for 1 hour to save Vercel Usage
 
 export async function GET() {
     try {
