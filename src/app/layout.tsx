@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { CommandPalette } from "@/components/CommandPalette";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
@@ -140,7 +139,6 @@ export default function RootLayout({
         {children}
         <CommandPalette />
         <Toaster position="top-center" richColors />
-        <SpeedInsights />
         <ServiceWorkerRegister />
       </body>
     </html>
