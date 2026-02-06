@@ -12,6 +12,8 @@ export default function robots(): MetadataRoute.Robots {
                 '/dashboard/*',
                 '/profile/*',
                 '/settings/*',
+                '/colors/*', // STOP THE BLEEDING: Disallow infinite color pages
+                '/palette/*', // STOP THE BLEEDING: Disallow infinite palette pages
             ],
         },
         sitemap: 'https://dopelycolors.com/sitemap.xml',

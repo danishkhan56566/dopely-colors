@@ -2,6 +2,9 @@ import { PaletteDetail } from '@/components/explore/PaletteDetail';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
+// Stop ISR Writes (Vercel Limit Fix)
+export const dynamic = 'force-dynamic';
+
 type Props = {
     params: Promise<{ colors: string }>
 }

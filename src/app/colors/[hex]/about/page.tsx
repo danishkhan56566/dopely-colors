@@ -3,6 +3,9 @@ import { supabase } from '@/lib/supabase';
 import { getNearestColorName, getFullConversions } from '@/lib/color-utils';
 import { Metadata, ResolvingMetadata } from 'next';
 
+// Stop ISR Writes (Vercel Limit Fix)
+export const dynamic = 'force-dynamic';
+
 type Props = {
     params: Promise<{ hex: string }>
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>

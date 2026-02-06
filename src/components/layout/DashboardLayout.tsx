@@ -8,6 +8,7 @@ import clsx from 'clsx';
 import { useSearchParams } from 'next/navigation';
 import { UserButton } from '@/components/auth/UserButton';
 import { Footer } from '@/components/layout/Footer';
+import { ToolsNavbarItem } from '@/components/layout/ToolsNavbarItem';
 
 const SIDEBAR_LINKS = [
     { icon: Clock, label: 'New', href: '/explore?sort=new' },
@@ -168,7 +169,9 @@ export const DashboardLayout = ({ children, showUserInfo = true }: { children: R
 
                 {/* Top Right Login Button (Desktop only, typically for landing page) */}
                 {showUserInfo && (
-                    <div className="hidden md:flex absolute top-6 right-8 z-50">
+                    <div className="hidden md:flex absolute top-6 right-8 z-50 items-center gap-4 bg-white/80 backdrop-blur-sm p-1.5 pl-3 rounded-full border border-gray-100 shadow-sm">
+                        <ToolsNavbarItem />
+                        <div className="w-px h-4 bg-gray-200" />
                         <UserButton />
                     </div>
                 )}
