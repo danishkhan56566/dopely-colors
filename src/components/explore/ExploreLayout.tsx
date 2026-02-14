@@ -11,15 +11,17 @@ import { fetchPalettesAction } from '@/app/explore/actions';
 
 interface ExploreLayoutProps {
     initialCategories?: { id: string; label: string }[];
+    initialPalettes?: any[];
 }
 
-const ExploreContent = ({ categories = [] }: { categories?: { id: string; label: string }[] }) => {
+const ExploreContent = ({ categories = [], initialPalettes = [] }: { categories?: { id: string; label: string }[], initialPalettes?: any[] }) => {
     // Modal States
 
 
     // Data State
-    const [palettes, setPalettes] = useState<any[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // Initialize with ISR data if available
+    const [palettes, setPalettes] = useState<any[]>(initialPalettes);
+    const [isLoading, setIsLoading] = useState(initialPalettes.length === 0);
 
     // Search & Filter
     const searchParams = useSearchParams();
@@ -31,6 +33,8 @@ const ExploreContent = ({ categories = [] }: { categories?: { id: string; label:
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const loadMoreRef = useRef<HTMLDivElement>(null);
+    // Track if we've done the initial client-side fetch (to avoid double fetching if ISR data exists)
+    const isFirstMount = useRef(true);
 
     const fetchPalettes = async (isLoadMore = false) => {
         if (!isLoadMore) setIsLoading(true);
@@ -83,6 +87,22 @@ const ExploreContent = ({ categories = [] }: { categories?: { id: string; label:
 
     // Reset and fetch on filter change
     useEffect(() => {
+        // If it's the first mount and we have ISR data, and no specific filter is active (or matches ISR default), skip fetch
+        // However, if URL params (tag/sort) differ from default, we MUST fetch.
+        // For simplicity: If there's initial data and we are on default view, skip.
+        // Actually, safer logic: If `initialPalettes` is provided, we assume it matches the *current* server render params.
+        // But `useEffect` runs on client. If client navigates, `initialPalettes` stays same (from server prop) but URL changes.
+        // So we should only use `initialPalettes` on *very first* render if params match.
+
+        if (isFirstMount.current) {
+            isFirstMount.current = false;
+            // If we have initial data (ISR) and no specific filter that would require a re-fetch, skip.
+            // But simplify: If provided, use it. If filters change later, this effect runs again.
+            if (initialPalettes.length > 0 && !tag && sort === 'popular') {
+                return;
+            }
+        }
+
         setPage(0);
         fetchPalettes(false);
     }, [tag, sort]);
@@ -172,11 +192,11 @@ const ExploreContent = ({ categories = [] }: { categories?: { id: string; label:
     );
 };
 
-export const ExploreLayout = ({ initialCategories }: ExploreLayoutProps) => {
+export const ExploreLayout = ({ initialCategories, initialPalettes }: ExploreLayoutProps) => {
     return (
         <DashboardLayout>
             <Suspense fallback={<div className="p-10 text-center">Loading feed...</div>}>
-                <ExploreContent categories={initialCategories} />
+                <ExploreContent categories={initialCategories} initialPalettes={initialPalettes} />
             </Suspense>
         </DashboardLayout>
     );
