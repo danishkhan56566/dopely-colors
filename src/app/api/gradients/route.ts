@@ -26,7 +26,11 @@ export async function GET() {
 
         if (error) throw error;
 
-        return NextResponse.json(data);
+        return NextResponse.json(data, {
+            headers: {
+                'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+            }
+        });
 
     } catch (err: any) {
         console.error('API Error:', err);
