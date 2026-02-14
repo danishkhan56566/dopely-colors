@@ -20,7 +20,9 @@ export async function generateStaticParams() {
     }));
 }
 
-async function getColorData(hexParam: string) {
+import { cache } from 'react';
+
+const getColorData = cache(async (hexParam: string) => {
     const hex = hexParam.startsWith('%23')
         ? `#${hexParam.replace('%23', '')}`
         : hexParam.startsWith('#')

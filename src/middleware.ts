@@ -69,6 +69,7 @@ export const config = {
         '/settings/:path*',
         '/login',
         '/signup',
-        '/auth/:path*'
+        '/auth/:path*',
+        '/api/admin/:path*'
     ],
 }
