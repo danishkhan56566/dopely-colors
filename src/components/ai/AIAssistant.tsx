@@ -463,10 +463,26 @@ export default function AIAssistant() {
                 }
             } catch (err) {
                 console.error("Agent Backend Error", err);
-                responseMsgs.push({
-                    id: 'ai-err-local-' + Date.now(), sender: 'ai', text: "Network error. Using local fallback..."
-                });
-                // Optional: Fallback to old regex logic here if critical
+
+                // --- LOCAL FALLBACK ---
+                if (state.design) {
+                    const evolved = evolveDesignSystem(state.design, intent);
+                    newDesign = evolved;
+                    const paletteData = designStateToPalette(evolved);
+                    newContext.palette = paletteData.colors;
+
+                    responseMsgs.push({
+                        id: 'ai-fallback-' + Date.now(),
+                        sender: 'ai',
+                        text: evolved.explanation,
+                        type: 'palette',
+                        data: paletteData
+                    });
+                } else {
+                    responseMsgs.push({
+                        id: 'ai-err-local-' + Date.now(), sender: 'ai', text: "I couldn't process that refinement. Try 'Make it brighter' or 'Switch to Dark Mode'."
+                    });
+                }
             }
         }
 
