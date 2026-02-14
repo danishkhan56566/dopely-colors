@@ -18,7 +18,7 @@ export const ALL_TOOLS = [
         items: [
             { name: 'Generative Art Extractor', icon: Image, desc: 'Extract mood & remix palette', href: '/tools/art-extractor', badge: 'New' },
             { name: 'AI Color Prompt Lab', icon: Wand2, desc: 'Text-to-palette generator', href: '/tools/ai-prompt' },
-            { name: 'Semantic Color Generator', icon: Heart, desc: 'Emotion-based palettes', href: '/tools/semantic-gen', badge: 'New' },
+
             { name: 'Brand Palette Maker', icon: Wand2, desc: 'AI brand color system generator', href: '/tools/brand', badge: 'New' },
             { name: 'Gradient Generator', icon: Layers, desc: 'Create CSS gradients', href: '/gradients' },
             { name: 'Radial Gradient Maker', icon: Droplet, desc: 'Create radial gradients', href: '/gradients?type=radial' },
@@ -70,16 +70,16 @@ export const ALL_TOOLS = [
             { name: 'State Shade Generator', icon: Pointer, desc: 'Hover/Active/Focus states', href: '/tools/shade-generator' },
             { name: 'Responsive Theme Generator', icon: Layout, desc: 'Create responsive themes', href: '/tools/themes' },
             { name: 'Glassmorphism Optimizer', icon: Sparkles, desc: 'Generate frosted glass CSS', href: '/tools/glass' },
-            { name: 'Dark Mode Generator', icon: Moon, desc: 'Auto-convert to dark theme', href: '/tools/dark-mode', badge: 'New' },
-            { name: 'Data Visualization Palette', icon: BarChart3, desc: 'Perceptually uniform scales', href: '/tools/data-viz' },
+
+
         ]
     },
     {
         category: 'AI Innovations (2026)',
         items: [
             { name: 'AI Color Trend Predictor', icon: BarChart3, desc: 'Predict upcoming trends', href: '/tools/trend-predictor', badge: 'AI' },
-            { name: 'Semantic Color Generator', icon: Sparkles, desc: 'Generate by emotion/brand', href: '/tools/semantic-gen', badge: 'AI' },
-            { name: 'Context-Aware Optimizer', icon: Settings2, desc: 'Industry-specific tuning', href: '/tools/context-optimizer', badge: 'AI' },
+
+
         ]
     },
     {
@@ -87,14 +87,14 @@ export const ALL_TOOLS = [
         items: [
             { name: 'Dynamic Contrast Adjuster', icon: Eye, desc: 'Real-time contrast fix', href: '/tools/dynamic-contrast' },
             { name: 'Cognitive Load Analyzer', icon: Cpu, desc: 'Measure info processing', href: '/tools/cognitive-load', badge: 'New' },
-            { name: 'Neurodiversity Optimizer', icon: Accessibility, desc: 'For ADHD/Autism friendly UI', href: '/tools/neurodiversity' },
+
         ]
     },
     {
         category: 'Immersive & 3D Design',
         items: [
-            { name: '3D Color Space Visualizer', icon: Move3D, desc: 'Interactive 3D color model explorer', href: '/tools/3d-space', badge: '3D' },
-            { name: 'Holographic Material Studio', icon: Sparkles, desc: 'Advanced 3D material & shader lab', href: '/tools/holographic', badge: '2.0' },
+
+
             { name: 'Lighting Simulator', icon: Sun, desc: 'Test OLED/E-ink/Projection', href: '/tools/lighting-sim' },
         ]
     },
@@ -108,7 +108,7 @@ export const ALL_TOOLS = [
     {
         category: 'Data Visualization 2.0',
         items: [
-            { name: 'Animated Data Story', icon: LineChart, desc: 'For scrolling narratives', href: '/tools/data-story' },
+
             { name: 'Multi-Variable Encoder', icon: Combine, desc: 'Complex dataset systems', href: '/tools/multi-variable' },
             { name: 'Temporal Color Scales', icon: Clock, desc: 'Time-based variations', href: '/tools/temporal' },
         ]
@@ -117,7 +117,7 @@ export const ALL_TOOLS = [
         category: 'Developer Tools',
         items: [
             { name: 'Design Token Generator', icon: Code2, desc: 'Export palette to CSS/Swift/XML', href: '/tools/design-tokens', badge: 'New' },
-            { name: 'Real-Time Palette Lab', icon: FlaskConical, desc: 'Experiment with color mixing', href: '/tools/lab' },
+
             { name: 'Design System Migrator', icon: ArrowRightLeft, desc: 'Transfer colors between systems', href: '/tools/migrator' },
             { name: 'Cross-Platform Checker', icon: Smartphone, desc: 'iOS vs Android consistency', href: '/tools/cross-platform' },
         ]

@@ -291,11 +291,13 @@ export default function AIAssistant() {
                 }));
 
                 try {
-                    const response = await fetch('/api/generate/text-to-palette', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ prompt: newContext.appDescription || 'Modern app', count: 5 })
-                    });
+                    // Cost Optimization: AI Disabled
+                    // const response = await fetch('/api/generate/text-to-palette', {
+                    //     method: 'POST',
+                    //     headers: { 'Content-Type': 'application/json' },
+                    //     body: JSON.stringify({ prompt: newContext.appDescription || 'Modern app', count: 5 })
+                    // });
+                    const response = { ok: false } as Response; // Mock failed response
 
                     // Remove loading message
                     setState(prev => ({
@@ -388,16 +390,18 @@ export default function AIAssistant() {
                 const storedUserId = localStorage.getItem('dopely_user_id') || 'guest';
 
                 // Use relative path '/api/chat' which works in Prod (Vercel) and Dev (Next.js Rewrite)
-                const chatResponse = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: input,
-                        current_state: newContext,
-                        current_design: newDesign, // Pass full design state for stateless processing
-                        user_id: storedUserId
-                    })
-                });
+                // Cost Optimization: AI Disabled
+                // const chatResponse = await fetch('/api/chat', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({
+                //         message: input,
+                //         current_state: newContext,
+                //         current_design: newDesign, // Pass full design state for stateless processing
+                //         user_id: storedUserId
+                //     })
+                // });
+                const chatResponse = { ok: false } as Response;
 
                 if (chatResponse.ok) {
                     const data = await chatResponse.json();
@@ -553,10 +557,12 @@ export default function AIAssistant() {
                     let seedColor = '';
 
                     try {
-                        const response = await fetch('/api/generate/image-to-palette', {
-                            method: 'POST',
-                            body: formData,
-                        });
+                        // Cost Optimization: AI Disabled
+                        // const response = await fetch('/api/generate/image-to-palette', {
+                        //     method: 'POST',
+                        //     body: formData,
+                        // });
+                        const response = { ok: false } as Response;
 
                         if (response.ok) {
                             const data = await response.json();

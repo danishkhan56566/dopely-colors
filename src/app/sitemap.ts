@@ -3,6 +3,8 @@ import { getAllPosts } from '@/lib/blog';
 import { COLOR_NAMES, getSystematicColors } from '@/lib/color-utils';
 import chroma from 'chroma-js';
 
+export const revalidate = 3600; // Cache sitemap for 1 hour
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://dopelycolors.com';
 

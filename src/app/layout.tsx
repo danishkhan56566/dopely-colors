@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/react";
 
 import { CommandPalette } from "@/components/CommandPalette";
+import { CookieConsent } from "@/components/layout/CookieConsent";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { ErrorSuppressorScript } from '@/components/ErrorSuppressorScript';
 import Script from "next/script";
@@ -34,10 +35,22 @@ export const metadata: Metadata = {
   },
   title: "Dopely Colors – AI Color Palette Generator for Designers & Developers",
   description: "Dopely Colors is an AI-powered color and design toolkit for designers and developers. Generate color palettes, gradients, Tailwind colors, and complete design systems instantly.",
-  keywords: ["Dopely Colors", "dopely", "dopely.top", "colors.dopely.top", "AI color palette generator", "color palettes", "gradient generator", "Tailwind colors", "design system builder", "WCAG contrast checker", "color picker for designers"],
+  keywords: ["Dopely Colors", "dopely", "AI color palette generator", "color palettes", "gradient generator", "Tailwind colors", "design system builder", "WCAG contrast checker", "color picker for designers"],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     title: "Dopely Colors – AI Color Tools for Designers & Developers",
     description: "Create beautiful color palettes, gradients, Tailwind color systems, and accessible design tokens using AI. Built for modern designers and developers.",
+    url: 'https://dopelycolors.com',
     siteName: "Dopely Colors",
     locale: "en_US",
     type: "website",
@@ -46,10 +59,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Dopely Colors – AI Color Tools for Designers & Developers",
     description: "Create beautiful color palettes, gradients, Tailwind color systems, and accessible design tokens using AI. Built for modern designers and developers.",
+    site: "@dopelycolors",
+    creator: "@dopelycolors",
   },
   applicationName: "Dopely Colors",
   appleWebApp: {
-    title: "Dopely Colors App Icon",
+    title: "Dopely Colors",
     statusBarStyle: "default",
   },
   verification: {
@@ -139,6 +154,7 @@ export default function RootLayout({
         {children}
         <CommandPalette />
         <Toaster position="top-center" richColors />
+        <CookieConsent />
         <ServiceWorkerRegister />
       </body>
     </html>
