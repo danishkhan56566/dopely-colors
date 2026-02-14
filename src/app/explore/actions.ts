@@ -12,9 +12,11 @@ export async function fetchPalettesAction(page = 0, filter: string | null = null
             .select('*', { count: 'exact' })
             .eq('status', 'published');
 
-        // Apply Tag Filter
+        // Apply Tag Filter (Search in Category array OR Name)
         if (filter && filter !== 'all') {
-            query = query.contains('category', [filter]);
+            // Use 'or' to search in both array column 'category' AND text column 'name'
+            // Syntax: category.cs.{filter},name.ilike.%{filter}%
+            query = query.or(`category.cs.{${filter}},name.ilike.%${filter}%`);
         }
 
         // Apply Sorting

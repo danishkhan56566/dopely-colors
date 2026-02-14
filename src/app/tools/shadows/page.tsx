@@ -1,128 +1,255 @@
 'use client';
 
-import { useState } from 'react';
-import chroma from 'chroma-js';
+import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Layers, Copy, Sun, Moon } from 'lucide-react';
+import { ShadowsGuide } from '@/components/content/AdvancedGuides';
+import { Layers, Sun, Moon, Wand2, Copy, Move, Zap, RotateCcw } from 'lucide-react';
+import chroma from 'chroma-js';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
-export default function ShadowGenerator() {
-    const [color, setColor] = useState('#000000');
-    const [layers, setLayers] = useState(6);
-    const [finalAlpha, setFinalAlpha] = useState(0.07);
-    const [yOffset, setYOffset] = useState(100);
-    const [blurRadius, setBlurRadius] = useState(80);
-    const [spread, setSpread] = useState(-20);
-    const [reverse, setReverse] = useState(false); // Inner shadow? No, typically just curve direction.
+export default function ShadowsPage() {
+    // State
+    const [color, setColor] = useState('#6366f1');
+    const [bgColor, setBgColor] = useState('#f8fafc');
+    const [lightAngle, setLightAngle] = useState(45); // Degrees
+    const [lightDistance, setLightDistance] = useState(20);
+    const [elevation, setElevation] = useState(4); // 1-5 scale
+    const [isColored, setIsColored] = useState(true);
+    const [ambient, setAmbient] = useState(true);
 
-    const generateShadows = () => {
-        const shadows = [];
-        for (let i = 1; i <= layers; i++) {
-            const progress = i / layers;
-            // Ease-in curve for smooth stacking
-            const y = Math.round(yOffset * progress);
-            const blur = Math.round(blurRadius * progress);
-            // Non-linear opacity for realistic falloff
-            const alpha = +(finalAlpha * (1 - Math.pow(progress - 1, 2))).toFixed(3);
-            // Better algorithm: Easing function
-            // Let's use a standard polynomial ease for more "Google/Apple" feel
-            const ease = (t: number) => t * t; // Quadratic
+    // Physics Engine
+    const shadowCSS = useMemo(() => {
+        // Convert polar to cartesian for light direction
+        const rad = (lightAngle * Math.PI) / 180;
+        const xDir = Math.cos(rad);
+        const yDir = Math.sin(rad);
 
-            const currentY = Math.round(yOffset * ease(progress));
-            const currentBlur = Math.round(blurRadius * ease(progress));
-            const currentAlpha = +(finalAlpha * (1 - ease(progress)) + (finalAlpha / layers)).toFixed(3); // heuristic
+        const layers = [];
+        const baseColor = chroma(color);
+        const shadowColor = isColored ? baseColor.darken(1).saturate(1) : chroma('#000');
 
-            shadows.push(`0 ${currentY}px ${currentBlur}px ${spread * ease(progress)}px ${chroma(color).alpha(currentAlpha).css()}`);
+        // Generate layers based on elevation
+        // Logic: Higher elevation = more layers, larger spread, lower opacity
+        const numLayers = Math.max(2, elevation + 1);
+
+        for (let i = 1; i <= numLayers; i++) {
+            const step = i / numLayers; // 0 to 1
+
+            // Physics Simulation
+            const y = Math.round((yDir * lightDistance * elevation * 0.5) * step * step);
+            const x = Math.round((xDir * lightDistance * elevation * 0.5) * step * step);
+            const blur = Math.round((elevation * 10) * step);
+            const spread = Math.round((elevation * -2) * (1 - step));
+            const opacity = (0.5 / elevation) * (1 - step) + 0.02; // Decay
+
+            const css = `${x}px ${y}px ${blur}px ${spread}px ${shadowColor.alpha(opacity).css()}`;
+            layers.push(css);
         }
-        return shadows.join(',\n  ');
-    };
 
-    const shadowCSS = `box-shadow: \n  ${generateShadows()};`;
+        // Add Ambient Occlusion layer (tight, dark, grounded)
+        if (ambient) {
+            const aoOpacity = 0.1 + (elevation * 0.02);
+            layers.unshift(`0px ${elevation}px ${elevation * 2}px 0px ${shadowColor.alpha(aoOpacity).css()}`);
+        }
+
+        return layers.join(', ');
+    }, [color, lightAngle, lightDistance, elevation, isColored, ambient]);
+
+    // Presets
+    const presets = [
+        { name: 'Flat', elev: 0 },
+        { name: 'Float', elev: 2 },
+        { name: 'Lift', elev: 4 },
+        { name: 'Soar', elev: 8 },
+    ];
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 md:p-10">
-                <div className="text-center max-w-2xl mb-12">
-                    <h1 className="text-4xl font-black text-gray-900 mb-4 flex items-center justify-center gap-3">
-                        <div className="p-3 bg-indigo-100 rounded-2xl text-indigo-600">
-                            <Layers size={32} />
+            <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
+
+                {/* Header */}
+                <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-30">
+                    <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-200">
+                                <Layers size={20} />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold tracking-tight">Atmosphere <span className="text-slate-400 font-light">Lab</span></h1>
+                            </div>
                         </div>
-                        Smooth Shadow Generator
-                    </h1>
-                    <p className="text-gray-500 text-lg">
-                        Create beautiful, layered, hyper-realistic shadows using curve-based stacking.
-                    </p>
-                </div>
-
-                <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-
-                    {/* Controls */}
-                    <div className="md:col-span-4 space-y-6">
-                        <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-xl space-y-6">
-
-                            <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">Shadow Color</label>
-                                <div className="flex gap-2">
-                                    <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-10 h-10 rounded-lg cursor-pointer" />
-                                    <input type="text" value={color} onChange={(e) => setColor(e.target.value)} className="flex-1 px-3 bg-gray-50 rounded-lg border border-gray-200 font-mono text-sm" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase mb-2 block flex justify-between">Layers <span>{layers}</span></label>
-                                <input type="range" min="1" max="10" value={layers} onChange={(e) => setLayers(Number(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg accent-indigo-600" />
-                            </div>
-
-                            <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase mb-2 block flex justify-between">Final Opacity <span>{Math.round(finalAlpha * 100)}%</span></label>
-                                <input type="range" min="0.01" max="1" step="0.01" value={finalAlpha} onChange={(e) => setFinalAlpha(Number(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg accent-indigo-600" />
-                            </div>
-
-                            <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase mb-2 block flex justify-between">Vertical Distance <span>{yOffset}px</span></label>
-                                <input type="range" min="0" max="200" value={yOffset} onChange={(e) => setYOffset(Number(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg accent-indigo-600" />
-                            </div>
-
-                            <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase mb-2 block flex justify-between">Blur Radius <span>{blurRadius}px</span></label>
-                                <input type="range" min="0" max="300" value={blurRadius} onChange={(e) => setBlurRadius(Number(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg accent-indigo-600" />
-                            </div>
-
-                            <div>
-                                <label className="text-xs font-bold text-gray-400 uppercase mb-2 block flex justify-between">Spread <span>{spread}px</span></label>
-                                <input type="range" min="-100" max="100" value={spread} onChange={(e) => setSpread(Number(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg accent-indigo-600" />
-                            </div>
-
-                        </div>
-                    </div>
-
-                    {/* Preview */}
-                    <div className="md:col-span-8 space-y-8">
-                        <div className="bg-gray-50 flex items-center justify-center min-h-[500px] border border-gray-200 rounded-[2rem] overflow-hidden relative">
-                            {/* Background Grid */}
-                            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-
-                            <div
-                                className="w-48 h-48 bg-white rounded-3xl transition-all duration-300"
-                                style={{ boxShadow: generateShadows() }}
-                            />
-                        </div>
-
-                        {/* Code */}
-                        <div className="bg-[#1e1e1e] p-6 rounded-2xl shadow-lg relative group">
-                            <pre className="font-mono text-xs text-gray-300 whitespace-pre-wrap">{shadowCSS}</pre>
+                        <div className="flex gap-2">
                             <button
                                 onClick={() => {
-                                    navigator.clipboard.writeText(shadowCSS);
-                                    toast.success("Copied CSS");
+                                    navigator.clipboard.writeText(`box-shadow: ${shadowCSS};`);
+                                    toast.success("CSS Copied!");
                                 }}
-                                className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                                className="px-4 py-2 bg-slate-900 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-slate-800 transition-colors flex items-center gap-2"
                             >
-                                <Copy size={16} />
+                                <Copy size={14} /> Copy CSS
                             </button>
                         </div>
                     </div>
+                </header>
 
+                <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 mt-6">
+
+                    {/* Left: Controls */}
+                    <div className="lg:col-span-4 space-y-6">
+
+                        {/* Elevation & Presets */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Elevation (Z-Index)</h3>
+                                <span className="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-500">{elevation}px</span>
+                            </div>
+                            <input
+                                type="range" min="0" max="12" step="1"
+                                value={elevation} onChange={(e) => setElevation(Number(e.target.value))}
+                                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-600 mb-6"
+                            />
+                            <div className="grid grid-cols-4 gap-2">
+                                {presets.map(p => (
+                                    <button
+                                        key={p.name}
+                                        onClick={() => setElevation(p.elev)}
+                                        className={cn("py-2 rounded-lg text-xs font-bold transition-all border", elevation === p.elev ? "bg-indigo-50 border-indigo-200 text-indigo-700" : "bg-white border-slate-100 text-slate-500 hover:border-slate-300")}
+                                    >
+                                        {p.name}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Light Source (Sun Dial) */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <Sun size={14} /> Light Source
+                            </h3>
+
+                            {/* Radial Control Mockup */}
+                            <div className="relative w-48 h-48 mx-auto rounded-full border-2 border-slate-100 bg-slate-50 mb-6 flex items-center justify-center shadow-inner">
+                                <div className="absolute inset-0 rounded-full border border-slate-200 border-dashed opacity-50" />
+
+                                {/* The "Object" center */}
+                                <div className="w-8 h-8 bg-slate-300 rounded-lg shadow-sm z-10" />
+
+                                {/* The Sun Dial Knob */}
+                                <div
+                                    className="absolute w-6 h-6 bg-yellow-400 rounded-full shadow-md border-2 border-white cursor-pointer hover:scale-110 transition-transform z-20"
+                                    style={{
+                                        transform: `rotate(${lightAngle}deg) translate(${lightDistance * 2}px) rotate(-${lightAngle}deg)`, // Simple orbit logic
+                                        left: 'calc(50% - 12px)',
+                                        top: 'calc(50% - 12px)'
+                                    }}
+                                // In a real app, drag logic here. For now, we simulate with sliders.
+                                />
+
+                                {/* Ray Helpers */}
+                                <div className="absolute w-full h-[1px] bg-yellow-400/20" style={{ transform: `rotate(${lightAngle}deg)` }} />
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="flex justify-between text-xs font-bold text-slate-400 mb-2">Angle</div>
+                                    <input type="range" min="0" max="360" value={lightAngle} onChange={e => setLightAngle(Number(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg accent-yellow-500" />
+                                </div>
+                                <div>
+                                    <div className="flex justify-between text-xs font-bold text-slate-400 mb-2">Distance</div>
+                                    <input type="range" min="0" max="50" value={lightDistance} onChange={e => setLightDistance(Number(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg accent-yellow-500" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Color & Tint */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Environment</h3>
+                                <button onClick={() => setIsColored(!isColored)} className={cn("text-[10px] font-bold uppercase px-2 py-1 rounded border transition-colors", isColored ? "bg-indigo-50 text-indigo-600 border-indigo-200" : "text-slate-400 border-slate-200")}>
+                                    {isColored ? 'Colored Shadows' : 'Grayscale'}
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase mb-2 block">Object Color</label>
+                                    <div className="flex items-center gap-2 group">
+                                        <input type="color" value={color} onChange={e => setColor(e.target.value)} className="w-8 h-8 rounded-lg cursor-pointer border-none bg-transparent" />
+                                        <input type="text" value={color} onChange={e => setColor(e.target.value)} className="w-full text-xs font-mono font-bold text-slate-600 outline-none uppercase bg-transparent" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase mb-2 block">Background</label>
+                                    <div className="flex items-center gap-2 group">
+                                        <input type="color" value={bgColor} onChange={e => setBgColor(e.target.value)} className="w-8 h-8 rounded-lg cursor-pointer border-none bg-transparent" />
+                                        <input type="text" value={bgColor} onChange={e => setBgColor(e.target.value)} className="w-full text-xs font-mono font-bold text-slate-600 outline-none uppercase bg-transparent" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    {/* Right: Viewport */}
+                    <div className="lg:col-span-8 flex flex-col gap-6">
+
+                        {/* 3D Viewport */}
+                        <div
+                            className="flex-1 min-h-[500px] rounded-3xl border border-slate-200 shadow-inner flex items-center justify-center relative overflow-hidden transition-colors duration-500"
+                            style={{ backgroundColor: bgColor }}
+                        >
+                            {/* Grid overlay */}
+                            <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
+
+                            {/* The Floating Object */}
+                            <motion.div
+                                className="w-48 h-48 rounded-[2rem] flex items-center justify-center relative z-10 cursor-pointer"
+                                style={{
+                                    backgroundColor: color,
+                                    boxShadow: shadowCSS
+                                }}
+                                drag
+                                dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <div className="text-white/50 mix-blend-overlay">
+                                    <Move size={32} />
+                                </div>
+                            </motion.div>
+
+                            {/* Info Badge */}
+                            <div className="absolute bottom-6 left-6 flex gap-2">
+                                <div className="px-3 py-1.5 bg-white/80 backdrop-blur-md rounded-full shadow-sm text-xs font-bold text-slate-500 border border-slate-100 flex items-center gap-2">
+                                    <Zap size={12} className="text-yellow-500" />
+                                    {shadowCSS.split(',').length} Layers
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {/* Code Output */}
+                        <div className="bg-slate-900 rounded-2xl p-6 text-slate-300 font-mono text-xs shadow-xl flex flex-col gap-4 relative group">
+                            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onClick={() => { navigator.clipboard.writeText(`box-shadow: ${shadowCSS};`); toast.success('Copied!'); }} className="p-2 hover:bg-white/10 rounded-lg text-white">
+                                    <Copy size={16} />
+                                </button>
+                            </div>
+                            <div className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">Generated CSS</div>
+                            <div className="break-all leading-relaxed opacity-80 select-all">
+                                box-shadow: {shadowCSS};
+                            </div>
+                        </div>
+
+                    </div>
+
+                </main>
+
+                <div className="max-w-7xl mx-auto px-6 mt-12 mb-20">
+                    <ShadowsGuide />
                 </div>
             </div>
         </DashboardLayout>

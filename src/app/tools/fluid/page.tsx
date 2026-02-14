@@ -5,6 +5,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Waves, Copy, Shuffle, Play, Pause } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { FluidGuide } from '@/components/content/GenerativeGuides';
 
 export default function FluidGradientGenerator() {
     const [colors, setColors] = useState(['#ff80b5', '#9089fc', '#ff0000']);

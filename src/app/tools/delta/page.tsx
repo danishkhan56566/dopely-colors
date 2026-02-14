@@ -4,6 +4,7 @@ import { useState } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Ruler, RefreshCw, Info } from 'lucide-react';
+import { DeltaGuide } from '@/components/content/DevGuides';
 import clsx from 'clsx';
 
 export default function DeltaECalculator() {
@@ -120,6 +121,7 @@ export default function DeltaECalculator() {
                     </div>
 
                 </div>
+                <DeltaGuide />
             </div>
             <style jsx>{`
                 @keyframes spin-slow { to { transform: rotate(360deg); } }

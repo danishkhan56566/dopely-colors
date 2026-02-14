@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { TemporalGuide } from '@/components/content/UtilityGuides';
 import { Clock, Play, Pause, RotateCcw, Sun, Moon, Sunrise, Sunset } from 'lucide-react';
 import chroma from 'chroma-js';
 import { motion } from 'framer-motion';
@@ -153,6 +154,7 @@ export default function TemporalPage() {
                     </div>
 
                 </div>
+                <TemporalGuide />
             </div>
         </DashboardLayout>
     );

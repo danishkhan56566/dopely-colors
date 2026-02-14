@@ -4,6 +4,7 @@ import { X, Globe, Lock, Copy, Check, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { usePaletteStore, SavedPalette } from '@/store/usePaletteStore';
 import { toast } from 'sonner';
+import { createPortal } from 'react-dom';
 
 interface ShareModalProps {
     isOpen: boolean;
@@ -17,6 +18,7 @@ export const ShareModal = ({ isOpen, onClose, palette }: ShareModalProps) => {
     const [copied, setCopied] = useState(false);
 
     if (!isOpen) return null;
+    if (typeof document === 'undefined') return null;
 
     const isPublic = !!palette.is_public;
     const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/p/${palette.id}` : '';
@@ -44,7 +46,7 @@ export const ShareModal = ({ isOpen, onClose, palette }: ShareModalProps) => {
         toast.success('Link copied to clipboard');
     };
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
             <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -99,6 +101,7 @@ export const ShareModal = ({ isOpen, onClose, palette }: ShareModalProps) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };

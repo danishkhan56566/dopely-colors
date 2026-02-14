@@ -39,8 +39,8 @@ export default function ImageExtractorPage() {
 
         try {
             // Extract colors using custom high-perf extractor
-            const colors = await extractPalette(objectUrl);
-            setExtractedPalette(colors); // Extractor already sorts and filters
+            const result = await extractPalette(objectUrl);
+            setExtractedPalette(result.palette); // Extractor already sorts and filtering
         } catch (error) {
             console.error("Extraction failed", error);
         } finally {

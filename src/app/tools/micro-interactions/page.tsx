@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { MousePointerClick, Check, X } from 'lucide-react';
+
 import chroma from 'chroma-js';
+import { MicroInteractionGuide } from '@/components/content/UtilityGuides';
 
 export default function MicroInteractionsPage() {
     const [baseColor, setBaseColor] = useState('#3b82f6');

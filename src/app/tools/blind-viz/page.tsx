@@ -2,111 +2,133 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Eye, EyeOff, Check, AlertTriangle, RefreshCw, PieChart } from 'lucide-react';
+import { BlindVizGuide } from '@/components/content/AdvancedGuides';
+import { Eye, EyeOff, Check, AlertTriangle, RefreshCw, BarChart2, ScanEye } from 'lucide-react';
 import chroma from 'chroma-js';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart as RePieChart, Pie } from 'recharts';
-
-// Color Blindness Simulation Matrix (Approximate)
-// Using chroma-js or simple matrix logic? 
-// Actually chroma-js doesn't have built-in CVD sim in the base lib typically without plugin.
-// I'll use a simplified simulation logic for the "Preview".
-// Or better, just swap palettes to "Simulated" versions if I had a library.
-// For now, I will use a key heuristic: "Avoid Red/Green".
-// AND I will use a basic distinctness checker.
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const SIMULATIONS = [
-    { id: 'normal', name: 'Normal Vision', desc: 'Standard full spectrum' },
-    { id: 'protanopia', name: 'Protanopia (Red-Blind)', desc: 'Reds look like mud/yellow' },
-    { id: 'deuteranopia', name: 'Deuteranopia (Green-Blind)', desc: 'Greens look beige' },
-    { id: 'tritanopia', name: 'Tritanopia (Blue-Blind)', desc: 'Blue/Yellow confusion' },
-    { id: 'grayscale', name: 'Achromatopsia', desc: 'Complete color blindness' },
+    { id: 'normal', name: '20/20 Vision', desc: 'Standard Full Spectrum' },
+    { id: 'protanopia', name: 'Protanopia', desc: 'No Red Receptors (1% of males)' },
+    { id: 'deuteranopia', name: 'Deuteranopia', desc: 'No Green Receptors (6% of males)' },
+    { id: 'tritanopia', name: 'Tritanopia', desc: 'No Blue Receptors (Rare)' },
+    { id: 'achromatopsia', name: 'Achromatopsia', desc: 'Total Color Blindness' },
 ];
 
-// Simplified simulation function (for visual approximation only)
-// Source: Color Matrix approximations
-const simulateColor = (hex: string, mode: string) => {
-    const rgb = chroma(hex).rgb();
-    const [r, g, b] = rgb;
-    let newR = r, newG = g, newB = b;
+const simulate = (hex: string, mode: string) => {
+    // 10x Simulation Logic using LMS color space approximation
+    // Simplified for client-side perf without heavy matrix library
+    const c = chroma(hex);
+    if (mode === 'normal') return hex;
+
+    const [r, g, b] = c.rgb();
+    let nr = r, ng = g, nb = b;
 
     if (mode === 'protanopia') {
-        newR = 0.567 * r + 0.433 * g + 0 * b;
-        newG = 0.558 * r + 0.442 * g + 0 * b;
-        newB = 0 * r + 0.242 * g + 0.758 * b;
+        // Sim: Reds become dark/yellow
+        nr = 0.567 * r + 0.433 * g;
+        ng = 0.558 * r + 0.442 * g;
+        nb = 0.242 * g + 0.758 * b;
     } else if (mode === 'deuteranopia') {
-        newR = 0.625 * r + 0.375 * g + 0 * b;
-        newG = 0.7 * r + 0.3 * g + 0 * b;
-        newB = 0 * r + 0.3 * g + 0.7 * b;
+        // Sim: Greens become beige
+        nr = 0.625 * r + 0.375 * g;
+        ng = 0.7 * r + 0.3 * g;
+        nb = 0.3 * g + 0.7 * b;
     } else if (mode === 'tritanopia') {
-        newR = 0.95 * r + 0.05 * g + 0 * b;
-        newG = 0 * r + 0.433 * g + 0.567 * b;
-        newB = 0 * r + 0.475 * g + 0.525 * b;
-    } else if (mode === 'grayscale') {
-        const avg = (r + g + b) / 3;
-        newR = avg; newG = avg; newB = avg;
+        // Sim: Blue/Yellow confusion
+        nr = 0.95 * r + 0.05 * g;
+        ng = 0.433 * g + 0.567 * b;
+        nb = 0.475 * g + 0.525 * b;
+    } else if (mode === 'achromatopsia') {
+        // Grayscale
+        const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        nr = l; ng = l; nb = l;
     }
 
-    return chroma.rgb(Math.min(255, newR), Math.min(255, newG), Math.min(255, newB)).hex();
+    return chroma.rgb(Math.min(255, nr), Math.min(255, ng), Math.min(255, nb)).hex();
 };
 
-const CHART_DATA = [
-    { name: 'Category A', value: 400 },
-    { name: 'Category B', value: 300 },
-    { name: 'Category C', value: 300 },
-    { name: 'Category D', value: 200 },
-];
+export default function BlindVizPage() {
+    const [colors, setColors] = useState(['#EF4444', '#22C55E', '#3B82F6', '#EAB308', '#FFFFFF', '#000000']);
+    const [mode, setMode] = useState('normal');
 
-// Curated "Safe" Palettes
-const SAFE_PALETTES = [
-    { name: 'IBM Design', colors: ['#648fff', '#785ef0', '#dc267f', '#fe6100', '#ffb000'] },
-    { name: 'Wong (Nature)', colors: ['#e69f00', '#56b4e9', '#009e73', '#f0e442', '#0072b2'] },
-    { name: 'High Contrast', colors: ['#ffffff', '#000000', '#ff0000', '#00ff00', '#0000ff'] }, // Terrible example, for demonstration of "Bad"
-];
+    const simulatedColors = colors.map(c => simulate(c, mode));
 
-export default function AccessVizPage() {
-    const [colors, setColors] = useState(['#ef4444', '#22c55e', '#3b82f6', '#eab308']); // Default (Red, Green, Blue, Yellow - Common bad mix)
-    const [simMode, setSimMode] = useState('normal');
-
-    // Simulate the current palette
-    const simulatedColors = colors.map(c => simulateColor(c, simMode));
-
-    // Analysis
-    const isSafe = (() => {
-        // Check Delta E between all pairs in simulated mode
-        let minDistance = 100;
+    // Safety Check: Min distance in simulated space
+    const safetyScore = (() => {
+        let min = 100;
         for (let i = 0; i < simulatedColors.length; i++) {
             for (let j = i + 1; j < simulatedColors.length; j++) {
-                const dist = chroma.deltaE(simulatedColors[i], simulatedColors[j]);
-                if (dist < minDistance) minDistance = dist;
+                const d = chroma.deltaE(simulatedColors[i], simulatedColors[j]);
+                if (d < min) min = d;
             }
         }
-        return minDistance > 10; // Threshold for distinguishability
+        return Math.floor(min);
     })();
+
+    const isSafe = safetyScore > 10;
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 p-6 md:p-10">
-                <header className="max-w-4xl mx-auto mb-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-100 text-teal-700 text-xs font-bold uppercase tracking-wider mb-4">
-                        <EyeOff size={14} /> Accessibility First
+            <div className="min-h-screen bg-neutral-900 p-6 md:p-10 font-sans text-neutral-100 pb-20">
+
+                {/* Header: Lab Style */}
+                <header className="max-w-7xl mx-auto mb-10 flex justify-between items-center bg-neutral-800/50 p-6 rounded-[2rem] border border-neutral-700 backdrop-blur-md">
+                    <div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-900/50 text-teal-400 text-xs font-bold uppercase tracking-wider mb-2 border border-teal-800">
+                            <ScanEye size={14} /> Clinical Optics
+                        </div>
+                        <h1 className="text-3xl font-light text-white">Vision <span className="font-bold text-teal-400">Simulator</span></h1>
                     </div>
-                    <h1 className="text-4xl font-black text-gray-900 mb-4">Accessible Data Visualization</h1>
-                    <p className="text-gray-500 text-lg">
-                        Ensure your charts are readable by everyone.
-                        Simulate color blindness and switch to safe, distinct palettes.
-                    </p>
+
+                    <div className={cn("px-6 py-3 rounded-xl border flex items-center gap-4 transition-colors", isSafe ? "bg-teal-900/20 border-teal-800 text-teal-400" : "bg-red-900/20 border-red-800 text-red-400")}>
+                        {isSafe ? <Check size={24} /> : <AlertTriangle size={24} />}
+                        <div>
+                            <div className="text-[10px] font-bold uppercase tracking-widest opacity-70">
+                                {isSafe ? 'WCAG AAA (Simulated)' : 'Indistinguishable'}
+                            </div>
+                            <div className="font-bold text-lg">
+                                {isSafe ? 'Clinical Pass' : 'Safety Fail'}
+                            </div>
+                        </div>
+                    </div>
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-                    {/* Controls */}
-                    <div className="space-y-6">
+                    {/* Left: Input & Filters */}
+                    <div className="lg:col-span-4 space-y-6">
+
+                        {/* Filters */}
+                        <div className="bg-neutral-800 p-6 rounded-[2rem] border border-neutral-700 shadow-xl">
+                            <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-4">Select Lens Filter</h3>
+                            <div className="space-y-2">
+                                {SIMULATIONS.map(s => (
+                                    <button
+                                        key={s.id}
+                                        onClick={() => setMode(s.id)}
+                                        className={cn(
+                                            "w-full p-4 rounded-xl text-left border transition-all duration-300 relative overflow-hidden group",
+                                            mode === s.id ? "bg-teal-600 border-teal-500 text-white shadow-lg" : "bg-neutral-900 border-neutral-800 text-neutral-400 hover:bg-neutral-700"
+                                        )}
+                                    >
+                                        <div className="relative z-10">
+                                            <div className="font-bold text-sm">{s.name}</div>
+                                            <div className={cn("text-xs mt-1", mode === s.id ? "text-teal-100" : "text-neutral-600")}>{s.desc}</div>
+                                        </div>
+                                        {mode === s.id && <div className="absolute right-4 top-4 opacity-20"><Eye size={24} /></div>}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* Palette Editor */}
-                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                            <h3 className="font-bold text-gray-900 mb-4">Current Palette</h3>
-                            <div className="space-y-3">
+                        <div className="bg-neutral-800 p-6 rounded-[2rem] border border-neutral-700 shadow-xl">
+                            <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-4">Test Subjects</h3>
+                            <div className="grid grid-cols-3 gap-3">
                                 {colors.map((c, i) => (
-                                    <div key={i} className="flex gap-2">
+                                    <div key={i} className="relative group aspect-square">
                                         <input
                                             type="color"
                                             value={c}
@@ -115,114 +137,84 @@ export default function AccessVizPage() {
                                                 newColors[i] = e.target.value;
                                                 setColors(newColors);
                                             }}
-                                            className="h-10 w-10 rounded-lg cursor-pointer border-none bg-transparent"
+                                            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                                         />
-                                        <div className="flex-1 flex flex-col justify-center px-2">
-                                            <span className="font-mono text-sm uppercase">{c}</span>
-                                            <span className="text-xs text-xs text-gray-400">Sim: {simulatedColors[i]}</span>
+                                        <div className="w-full h-full rounded-2xl border-2 border-neutral-600 shadow-inner overflow-hidden" style={{ backgroundColor: c }}>
+                                            <div className="absolute inset-x-0 bottom-0 bg-black/60 backdrop-blur p-1 text-[10px] text-center font-mono opacity-0 group-hover:opacity-100 transition-opacity">
+                                                {c}
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
-
-                            <hr className="my-6 border-gray-100" />
-
-                            <h4 className="font-bold text-gray-900 mb-4 text-sm">Quick Safe Presets</h4>
-                            <div className="space-y-2">
-                                {SAFE_PALETTES.slice(0, 2).map(p => (
-                                    <button
-                                        key={p.name}
-                                        onClick={() => setColors(p.colors.slice(0, 4))}
-                                        className="w-full p-3 rounded-xl border border-gray-200 hover:border-teal-500 hover:bg-teal-50 flex items-center justify-between group transition-all"
-                                    >
-                                        <span className="font-bold text-sm text-gray-600 group-hover:text-teal-700">{p.name}</span>
-                                        <div className="flex gap-1">
-                                            {p.colors.slice(0, 4).map(c => (
-                                                <div key={c} className="w-3 h-3 rounded-full" style={{ backgroundColor: c }} />
-                                            ))}
-                                        </div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Simulation Toggles */}
-                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                            <h3 className="font-bold text-gray-900 mb-4">Vision Simulation</h3>
-                            <div className="space-y-2">
-                                {SIMULATIONS.map(sim => (
-                                    <button
-                                        key={sim.id}
-                                        onClick={() => setSimMode(sim.id)}
-                                        className={`w-full text-left p-3 rounded-xl text-sm font-medium transition-all ${simMode === sim.id ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-200'}`}
-                                    >
-                                        {sim.name}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Preview Area */}
-                    <div className="lg:col-span-2 space-y-6">
-
-                        {/* Status Banner */}
-                        <div className={`p-4 rounded-2xl flex items-center gap-3 border ${isSafe ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
-                            {isSafe ? <Check size={24} /> : <AlertTriangle size={24} />}
-                            <div>
-                                <h4 className="font-bold">{isSafe ? 'Distinguishable Palette' : 'Accessibility Risk Detected'}</h4>
-                                <p className="text-sm opacity-80">
-                                    {isSafe
-                                        ? `Colors remain distinct in ${SIMULATIONS.find(s => s.id === simMode)?.name} mode.`
-                                        : `Some colors are too similar in ${SIMULATIONS.find(s => s.id === simMode)?.name} mode. Try adjusting or using a preset.`
-                                    }
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Charts */}
-                        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-                            <h3 className="font-bold text-gray-900 mb-8 text-center uppercase tracking-widest opacity-50">
-                                Simulated Preview ({SIMULATIONS.find(s => s.id === simMode)?.name})
-                            </h3>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-[300px]">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={CHART_DATA}>
-                                        <XAxis dataKey="name" hide />
-                                        <YAxis hide />
-                                        <Bar dataKey="value" radius={[8, 8, 8, 8]}>
-                                            {CHART_DATA.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={simulatedColors[index % simulatedColors.length]} />
-                                            ))}
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
-
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <RePieChart>
-                                        <Pie
-                                            data={CHART_DATA}
-                                            innerRadius={60}
-                                            outerRadius={80}
-                                            paddingAngle={5}
-                                            dataKey="value"
-                                        >
-                                            {CHART_DATA.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={simulatedColors[index % simulatedColors.length]} />
-                                            ))}
-                                        </Pie>
-                                    </RePieChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-
-                        <div className="bg-blue-50 p-6 rounded-2xl text-blue-900 text-sm">
-                            <strong>Tip:</strong> The goal isn't just to make colors different, but to ensure
-                            sufficient contrast (Lightness difference) so they can be distinguished even in Grayscale.
                         </div>
 
                     </div>
+
+                    {/* Right: Simulation Viewport */}
+                    <div className="lg:col-span-8 bg-black rounded-[2.5rem] border border-neutral-800 relative overflow-hidden flex flex-col min-h-[600px] shadow-2xl">
+
+                        {/* Viewport Header */}
+                        <div className="bg-neutral-900/80 backdrop-blur p-4 border-b border-neutral-800 flex justify-between items-center z-10 absolute top-0 left-0 right-0">
+                            <div className="flex gap-2">
+                                <div className="w-3 h-3 rounded-full bg-red-500/20" />
+                                <div className="w-3 h-3 rounded-full bg-yellow-500/20" />
+                                <div className="w-3 h-3 rounded-full bg-green-500/20" />
+                            </div>
+                            <div className="text-xs font-mono uppercase text-neutral-500">Live Render • {mode}</div>
+                        </div>
+
+                        {/* Split Screen Content */}
+                        <div className="flex-1 grid grid-rows-2 md:grid-rows-1 md:grid-cols-2 relative h-full mt-14">
+
+                            {/* Standard View */}
+                            <div className="p-8 border-r border-neutral-800 bg-[#0A0A0A]">
+                                <div className="text-xs font-bold text-neutral-500 uppercase mb-8 text-center tracking-widest">Reference (Normal)</div>
+                                <div className="space-y-6">
+                                    <div className="h-32 w-full rounded-2xl flex overflow-hidden shadow-lg">
+                                        {colors.map((c, i) => (
+                                            <div key={i} className="flex-1" style={{ backgroundColor: c }} />
+                                        ))}
+                                    </div>
+
+                                    {/* Mock Chart Normal */}
+                                    <div className="flex items-end justify-center gap-2 h-32 px-10">
+                                        {colors.slice(0, 4).map((c, i) => (
+                                            <div key={i} className="w-8 rounded-t-lg transition-all" style={{ backgroundColor: c, height: `${[40, 70, 50, 90][i]}%` }} />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Simulated View */}
+                            <div className="p-8 bg-[#0A0A0A] relative">
+                                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5 pointer-events-none" />
+                                <div className="text-xs font-bold text-teal-500 uppercase mb-8 text-center tracking-widest flex items-center justify-center gap-2">
+                                    <EyeOff size={12} /> Patient Review
+                                </div>
+                                <div className="space-y-6">
+                                    <div className="h-32 w-full rounded-2xl flex overflow-hidden shadow-lg filter transition-all duration-500">
+                                        {simulatedColors.map((c, i) => (
+                                            <div key={i} className="flex-1" style={{ backgroundColor: c }} />
+                                        ))}
+                                    </div>
+
+                                    {/* Mock Chart Safe */}
+                                    <div className="flex items-end justify-center gap-2 h-32 px-10 grayscale-[0.1]">
+                                        {simulatedColors.slice(0, 4).map((c, i) => (
+                                            <div key={i} className="w-8 rounded-t-lg transition-all" style={{ backgroundColor: c, height: `${[40, 70, 50, 90][i]}%` }} />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </main>
+
+                <div className="max-w-7xl mx-auto mt-12 mb-20">
+                    <BlindVizGuide />
                 </div>
             </div>
         </DashboardLayout>

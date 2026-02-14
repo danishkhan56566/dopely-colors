@@ -146,7 +146,8 @@ export const usePaletteStore = create<PaletteState>()(persist((set, get) => ({
 
   initFromUrl: (hexCodes) =>
     set((state) => {
-      if (hexCodes.length !== 5) return state;
+      // Remove strict length check to allow 2-10 colors
+      if (hexCodes.length < 2) return state;
       const newColors = hexCodes.map((hex, i) => ({
         id: state.colors[i]?.id || crypto.randomUUID(),
         hex: hex.startsWith('#') ? hex : '#' + hex,

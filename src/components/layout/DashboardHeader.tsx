@@ -39,11 +39,11 @@ export const DashboardHeader = () => {
                                 <Wand2 size={16} className="text-purple-500" />
                                 Generate Palette
                             </Link>
-                            <Link href="/gradients" className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-lg text-sm text-gray-700 transition-colors">
+                            <Link href="/tools/fluid" className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-lg text-sm text-gray-700 transition-colors">
                                 <Layers size={16} className="text-blue-500" />
                                 Create Gradient
                             </Link>
-                            <Link href="/image" className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-lg text-sm text-gray-700 transition-colors">
+                            <Link href="/tools/art-extractor" className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-lg text-sm text-gray-700 transition-colors">
                                 <Image size={16} className="text-pink-500" />
                                 Extract from Image
                             </Link>

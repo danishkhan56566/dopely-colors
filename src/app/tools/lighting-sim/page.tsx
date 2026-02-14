@@ -2,122 +2,251 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Sun, Monitor, Projector, Book, Smartphone } from 'lucide-react';
-import chroma from 'chroma-js';
-import { motion } from 'framer-motion';
+import { Sun, Monitor, Projector, Book, Smartphone, Eye, Battery, CheckCircle2, AlertTriangle, CloudRain, Cpu, Settings2, Sliders } from 'lucide-react';
+import { LightingSimGuide } from '@/components/content/AdvancedGuides';
+import { cn } from '@/lib/utils';
 
-const LIGHTING_MODES = [
-    { id: 'standard', name: 'Standard LCD', icon: Monitor, filter: 'none', desc: 'Typical sRGB monitor output.' },
-    { id: 'oled', name: 'Vibrant OLED', icon: Smartphone, filter: 'saturate(1.2) contrast(1.1)', desc: 'High saturation and infinite contrast.' },
-    { id: 'eink', name: 'E-Ink / Paper', icon: Book, filter: 'grayscale(100%) contrast(1.2) brightness(0.9)', desc: 'Monochrome high-contrast reflection.' },
-    { id: 'projector', name: 'Projector', icon: Projector, filter: 'brightness(1.1) contrast(0.8) blur(0.5px)', desc: 'Washed out darker tones, light bleed.' },
-    { id: 'blue-light', name: 'Night Shift', icon: Sun, filter: 'sepia(0.5) hue-rotate(-10deg) saturate(1.5)', desc: 'Blue light filter enabled (Warmer).' },
+const HARDWARE_PROFILES = [
+    { id: 'retina', name: 'Pro Display XDR', nits: 1000, contrast: 1000000, gamut: 'Display P3', icon: Monitor },
+    { id: 'office', name: 'Standard Office LCD', nits: 250, contrast: 1000, gamut: 'sRGB', icon: Monitor },
+    { id: 'eink', name: 'E-Ink Tablet', nits: 0, contrast: 12, gamut: 'Monochrome', icon: Book },
+    { id: 'mobile', name: 'Mobile (Outdoors)', nits: 2000, contrast: 2000000, gamut: 'OLED', icon: Smartphone },
+    { id: 'projector', name: 'Meeting Projector', nits: 1500, contrast: 500, gamut: 'Rec. 709', icon: Projector },
 ];
 
 export default function LightingSimPage() {
-    const [palette, setPalette] = useState(['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6']);
-    const [mode, setMode] = useState(LIGHTING_MODES[0]);
+    const [profile, setProfile] = useState(HARDWARE_PROFILES[0]);
+    const [brightness, setBrightness] = useState(100); // %
+    const [ambientLight, setAmbientLight] = useState(500); // lux
+    const [warmth, setWarmth] = useState(6500); // Kelvin
+
+    // Simulation Physics
+    const getSimulationFilter = () => {
+        // Kelvin to Sepia/Hue approx
+        const tempFactor = (6500 - warmth) / 5000;
+
+        // Lux to Dimming
+        const glareOpacity = Math.min(0.8, ambientLight / 10000);
+
+        // Profile Hardware Baseline
+        const contrastMult = Math.log10(profile.contrast) / 6; // 6 = 1,000,000 => 1.0
+
+        return {
+            filter: `brightness(${brightness}%) contrast(${contrastMult * 100}%) sepia(${tempFactor > 0 ? tempFactor : 0}) hue-rotate(${tempFactor * -10}deg)`,
+            glare: glareOpacity
+        };
+    };
+
+    const sim = getSimulationFilter();
+    const isWcagCompliant = (profile.contrast > 500 && brightness > 50 && ambientLight < 5000);
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-900 text-white p-6 md:p-10">
-                <header className="max-w-4xl mx-auto mb-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold uppercase tracking-wider mb-4 border border-blue-500/30">
-                        <Sun size={14} /> Hardware Simulation
-                    </div>
-                    <h1 className="text-4xl font-black mb-4">Lighting & Tech Simulator</h1>
-                    <p className="text-lg text-gray-400">
-                        Test how your colors render on different display technologies, from E-Ink readers to washed-out projectors.
-                    </p>
-                </header>
+            <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 pb-20">
 
-                <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-                    {/* Sidebar */}
-                    <div className="lg:col-span-1 space-y-4">
-                        {LIGHTING_MODES.map((m) => (
-                            <button
-                                key={m.id}
-                                onClick={() => setMode(m)}
-                                className={`w-full p-4 rounded-xl border flex items-start gap-4 transition-all text-left ${mode.id === m.id ? 'bg-white text-black border-white' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
-                            >
-                                <m.icon size={20} className="shrink-0 mt-0.5" />
-                                <div>
-                                    <div className="font-bold text-sm">{m.name}</div>
-                                    <div className="text-[10px] opacity-60 mt-1 leading-tight">{m.desc}</div>
-                                </div>
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Preview */}
-                    <div className="lg:col-span-3">
-                        <div className="bg-black rounded-3xl overflow-hidden border border-white/10 shadow-2xl relative min-h-[500px] flex flex-col">
-
-                            {/* Toolbar */}
-                            <div className="bg-white/5 border-b border-white/5 p-4 flex gap-4">
-                                {palette.map((c, i) => (
-                                    <input
-                                        key={i}
-                                        type="color"
-                                        value={c}
-                                        onChange={(e) => {
-                                            const newP = [...palette];
-                                            newP[i] = e.target.value;
-                                            setPalette(newP);
-                                        }}
-                                        className="w-8 h-8 rounded cursor-pointer bg-transparent border-none"
-                                    />
-                                ))}
+                {/* 1. Header (System Config Style) */}
+                <header className="bg-white border-b border-gray-200 px-8 py-6 mb-8">
+                    <div className="max-w-7xl mx-auto flex items-center justify-between">
+                        <div>
+                            <div className="flex items-center gap-2 text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">
+                                <Settings2 size={16} /> System Configuration
                             </div>
-
-                            {/* Simulated Screen */}
-                            <div className="flex-1 p-10 flex items-center justify-center relative overlow-hidden">
-                                {/* The Filter Layer */}
-                                <div
-                                    className="absolute inset-0 z-10 pointer-events-none transition-all duration-500 bg-white/0"
-                                    style={{
-                                        backdropFilter: mode.filter,
-                                        WebkitBackdropFilter: mode.filter
-                                    }}
-                                />
-
-                                {/* E-Ink Texture Overlay */}
-                                {mode.id === 'eink' && (
-                                    <div className="absolute inset-0 z-20 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/paper.png')] pointer-events-none mix-blend-multiply" />
-                                )}
-
-                                {/* Content */}
-                                <div className="max-w-lg w-full bg-white text-black rounded-xl overflow-hidden shadow-lg transform transition-transform duration-500 scale-100">
-                                    <div className="h-32" style={{ backgroundColor: palette[0] }} />
-                                    <div className="p-6">
-                                        <div className="flex gap-2 mb-4">
-                                            <span className="px-2 py-1 rounded text-xs font-bold text-white" style={{ backgroundColor: palette[1] }}>New</span>
-                                            <span className="px-2 py-1 rounded text-xs font-bold text-white" style={{ backgroundColor: palette[2] }}>Active</span>
-                                        </div>
-                                        <h2 className="text-2xl font-bold mb-2">Interface Preview</h2>
-                                        <p className="text-gray-500 mb-6">
-                                            This is how your content aims to look. The simulation layer above alters the rendering to match hardware characteristics.
-                                        </p>
-                                        <div className="flex gap-4">
-                                            <button className="flex-1 py-3 rounded-lg font-bold text-white" style={{ backgroundColor: palette[4] }}>
-                                                Primary Action
-                                            </button>
-                                            <button className="flex-1 py-3 rounded-lg font-bold border-2" style={{ borderColor: palette[3], color: palette[3] }}>
-                                                Secondary
-                                            </button>
-                                        </div>
-                                    </div>
+                            <h1 className="text-3xl font-black text-gray-900">Display Calibrator <span className="text-gray-300 font-light">v4.0</span></h1>
+                        </div>
+                        <div className="flex items-center gap-6">
+                            <div className="text-right">
+                                <div className="text-xs font-bold text-gray-400 uppercase">Status</div>
+                                <div className="flex items-center gap-2 font-mono text-sm font-bold text-green-600">
+                                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                    ONLINE
                                 </div>
-
                             </div>
-
-                            <div className="bg-white/5 border-t border-white/5 p-4 text-xs font-mono text-center opacity-50">
-                                Simulated Output: {mode.filter}
+                            <div className="text-right">
+                                <div className="text-xs font-bold text-gray-400 uppercase">Hardware ID</div>
+                                <div className="font-mono text-sm font-bold text-gray-600">
+                                    {profile.id.toUpperCase()}-X99
+                                </div>
                             </div>
                         </div>
                     </div>
+                </header>
 
+                <main className="max-w-7xl mx-auto px-4 md:px-8 grid lg:grid-cols-12 gap-8">
+
+                    {/* 2. Configuration Wizard (Left) */}
+                    <div className="lg:col-span-4 space-y-8">
+
+                        {/* Hardware Selection */}
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                            <h3 className="text-sm font-bold text-gray-400 uppercase mb-6 flex items-center gap-2">
+                                <Cpu size={16} /> Select Hardware Profile
+                            </h3>
+                            <div className="space-y-3">
+                                {HARDWARE_PROFILES.map(p => (
+                                    <button
+                                        key={p.id}
+                                        onClick={() => setProfile(p)}
+                                        className={cn(
+                                            "w-full flex items-center gap-4 p-4 rounded-xl border transition-all text-left group",
+                                            profile.id === p.id
+                                                ? "bg-blue-50 border-blue-200 shadow-sm"
+                                                : "bg-white border-gray-100 hover:border-gray-300 hover:bg-gray-50"
+                                        )}
+                                    >
+                                        <div className={cn("p-2 rounded-lg transition-colors", profile.id === p.id ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500")}>
+                                            <p.icon size={20} />
+                                        </div>
+                                        <div>
+                                            <div className={cn("font-bold text-sm", profile.id === p.id ? "text-blue-900" : "text-gray-700")}>{p.name}</div>
+                                            <div className="text-[10px] text-gray-400 font-mono mt-0.5">
+                                                {p.contrast}:1 • {p.gamut}
+                                            </div>
+                                        </div>
+                                        {profile.id === p.id && <CheckCircle2 size={16} className="ml-auto text-blue-500" />}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Environment Sliders */}
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                            <h3 className="text-sm font-bold text-gray-400 uppercase mb-6 flex items-center gap-2">
+                                <Sliders size={16} /> Environment Constraints
+                            </h3>
+
+                            <div className="space-y-8">
+                                <div className="space-y-3">
+                                    <div className="flex justify-between">
+                                        <label className="text-xs font-bold text-gray-600 flex items-center gap-2"><Sun size={14} /> Screen Brightness</label>
+                                        <span className="text-xs font-mono bg-blue-50 text-blue-600 px-2 rounded">{brightness}%</span>
+                                    </div>
+                                    <input
+                                        type="range" min="0" max="120" value={brightness}
+                                        onChange={(e) => setBrightness(Number(e.target.value))}
+                                        className="w-full h-2 bg-gray-100 rounded-lg accent-blue-600"
+                                    />
+                                    <div className="flex justify-between text-[10px] text-gray-400 font-mono">
+                                        <span>OFF</span>
+                                        <span>MAX (NITS)</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="flex justify-between">
+                                        <label className="text-xs font-bold text-gray-600 flex items-center gap-2"><CloudRain size={14} /> Ambient Light (Lux)</label>
+                                        <span className="text-xs font-mono bg-blue-50 text-blue-600 px-2 rounded">{ambientLight} lx</span>
+                                    </div>
+                                    <input
+                                        type="range" min="0" max="10000" step="100" value={ambientLight}
+                                        onChange={(e) => setAmbientLight(Number(e.target.value))}
+                                        className="w-full h-2 bg-gray-100 rounded-lg accent-blue-600"
+                                    />
+                                    <div className="flex justify-between text-[10px] text-gray-400 font-mono">
+                                        <span>DARK ROOM</span>
+                                        <span>DIRECT SUN</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="flex justify-between">
+                                        <label className="text-xs font-bold text-gray-600 flex items-center gap-2"><Eye size={14} /> Color Temp (Kelvin)</label>
+                                        <span className="text-xs font-mono bg-blue-50 text-blue-600 px-2 rounded">{warmth}K</span>
+                                    </div>
+                                    <input
+                                        type="range" min="2000" max="10000" step="100" value={warmth}
+                                        onChange={(e) => setWarmth(Number(e.target.value))}
+                                        className="w-full h-2 bg-gradient-to-r from-orange-300 via-white to-blue-300 rounded-lg appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md border border-gray-200"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/* 3. Simulation viewport (Right) */}
+                    <div className="lg:col-span-8 space-y-6">
+
+                        {/* Validation Alert */}
+                        <div className={cn(
+                            "rounded-2xl p-4 flex items-start gap-4 border transition-colors",
+                            isWcagCompliant
+                                ? "bg-green-50 border-green-200 text-green-900"
+                                : "bg-amber-50 border-amber-200 text-amber-900"
+                        )}>
+                            <div className={cn("mt-1 p-1 rounded-full text-white", isWcagCompliant ? "bg-green-500" : "bg-amber-500")}>
+                                {isWcagCompliant ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-sm mb-1">
+                                    {isWcagCompliant ? "Optimization Complete" : "Readability Warning"}
+                                </h4>
+                                <p className="text-sm opacity-90 leading-relaxed">
+                                    {isWcagCompliant
+                                        ? "System parameters are within optimal ranges for extended readability and color accuracy."
+                                        : "Current environmental factors (Glare/Contrast) may degrade user experience. Recommend increasing brightness or switching contrast modes."}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Viewport */}
+                        <div className="bg-gray-900 rounded-[2.5rem] border-[12px] border-gray-800 shadow-2xl relative overflow-hidden aspect-[16/10] group">
+
+                            {/* "Physical" Screen Layer */}
+                            <div
+                                className="absolute inset-0 bg-white transition-all duration-300"
+                                style={{
+                                    filter: sim.filter
+                                }}
+                            >
+                                {/* Sample Interface content */}
+                                <div className="h-full w-full p-12 flex flex-col items-center justify-center text-center">
+                                    <div className="w-24 h-24 rounded-3xl bg-blue-600 mb-8 shadow-xl flex items-center justify-center">
+                                        <Sun className="text-white" size={40} />
+                                    </div>
+                                    <h2 className="text-4xl font-black text-slate-900 mb-4">Interface Preview</h2>
+                                    <p className="text-xl text-slate-500 max-w-lg mx-auto leading-relaxed">
+                                        This simulates how your design components render on the selected hardware.
+                                    </p>
+                                    <div className="mt-8 flex gap-4">
+                                        <button className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold">Primary</button>
+                                        <button className="px-6 py-3 bg-slate-100 text-slate-900 rounded-xl font-bold">Secondary</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Glare/Reflection Overlay */}
+                            <div
+                                className="absolute inset-0 pointer-events-none mix-blend-screen bg-gradient-to-tr from-transparent via-white/50 to-transparent transition-opacity duration-300"
+                                style={{ opacity: sim.glare }}
+                            />
+
+                            {/* E-Ink Texture */}
+                            {profile.id === 'eink' && (
+                                <div className="absolute inset-0 z-20 opacity-30 bg-noise pointer-events-none mix-blend-multiply" />
+                            )}
+
+                        </div>
+
+                        {/* Technical Readout */}
+                        <div className="grid grid-cols-3 gap-4">
+                            {[
+                                { label: 'Effective Contrast', value: `${(profile.contrast * (brightness / 100)).toFixed(0)}:1` },
+                                { label: 'P3 Coverage', value: profile.gamut === 'Display P3' ? '99.8%' : '72.4%' },
+                                { label: 'Power Draw', value: `${Math.round(brightness * 0.8)}W` },
+                            ].map((stat, i) => (
+                                <div key={i} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase mb-1">{stat.label}</div>
+                                    <div className="text-lg font-mono font-bold text-gray-900">{stat.value}</div>
+                                </div>
+                            ))}
+                        </div>
+
+                    </div>
+
+                </main>
+
+                <div className="max-w-7xl mx-auto px-8 mt-12">
+                    <LightingSimGuide />
                 </div>
             </div>
         </DashboardLayout>

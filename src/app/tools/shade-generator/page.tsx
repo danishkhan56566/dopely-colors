@@ -5,6 +5,7 @@ import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Pointer, Copy, Code2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ShadeGuide } from '@/components/content/UtilityGuides';
 
 export default function StateGenerator() {
     const [baseColor, setBaseColor] = useState('#3b82f6');
@@ -168,6 +169,7 @@ export default function StateGenerator() {
 
                     </div>
                 </div>
+                <ShadeGuide />
             </div>
         </DashboardLayout>
     );

@@ -84,7 +84,19 @@ export default function WebsiteScraper() {
                                         {result.url} <ExternalLink size={12} />
                                     </a>
                                 </div>
-                                <button className="text-sm font-bold text-gray-500 hover:text-gray-900 flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-200">
+                                <button
+                                    onClick={() => {
+                                        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(result, null, 2));
+                                        const downloadAnchorNode = document.createElement('a');
+                                        downloadAnchorNode.setAttribute("href", dataStr);
+                                        downloadAnchorNode.setAttribute("download", `palette-${new URL(result.url).hostname}.json`);
+                                        document.body.appendChild(downloadAnchorNode);
+                                        downloadAnchorNode.click();
+                                        downloadAnchorNode.remove();
+                                        toast.success('Palette JSON exported!');
+                                    }}
+                                    className="text-sm font-bold text-gray-500 hover:text-gray-900 flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-200"
+                                >
                                     <Download size={14} /> Export JSON
                                 </button>
                             </div>
@@ -125,23 +137,69 @@ export default function WebsiteScraper() {
                                 ))}
                             </div>
 
-                            {/* Stats */}
-                            <div className="bg-gray-900 text-white p-8 rounded-3xl overflow-hidden relative">
-                                <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
-                                    <div className="text-center md:text-left">
-                                        <h3 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-                                            Dominant Colors
-                                        </h3>
-                                        <p className="text-gray-400 mt-2">Based on frequency analysis of the source code.</p>
-                                    </div>
-                                    <div className="flex -space-x-4">
+                            {/* Stats & Frameworks */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-gray-900 text-white p-8 rounded-3xl overflow-hidden relative">
+                                    <h3 className="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                                        Dominant Colors
+                                    </h3>
+                                    <div className="flex -space-x-4 mb-6">
                                         {result.colors.slice(0, 5).map((c: any) => (
                                             <div
                                                 key={c.hex}
-                                                className="w-16 h-16 rounded-full border-4 border-gray-900 shadow-xl relative"
+                                                className="w-12 h-12 rounded-full border-2 border-gray-900 shadow-xl"
                                                 style={{ backgroundColor: c.hex }}
+                                                title={`${c.count} occurrences`}
                                             />
                                         ))}
+                                    </div>
+                                    <div className="space-y-2">
+                                        {result.colors.slice(0, 4).map((c: any) => (
+                                            <div key={c.hex} className="flex items-center gap-2 text-xs">
+                                                <div className="w-16 text-right font-mono text-gray-500">{c.hex}</div>
+                                                <div className="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
+                                                    <div className="h-full bg-white opacity-20" style={{ width: `${Math.min(100, (c.count / result.colors[0].count) * 100)}%` }} />
+                                                </div>
+                                                <div className="w-8 text-gray-500">{Math.round((c.count / result.colors[0].count) * 100)}%</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                                    <h3 className="text-xl font-bold text-gray-900 mb-4">Site Intelligence</h3>
+
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Detected Tech Stack</label>
+                                            <div className="flex flex-wrap gap-2">
+                                                {result.frameworks && result.frameworks.length > 0 ? (
+                                                    result.frameworks.map((f: string) => (
+                                                        <span key={f} className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-sm font-bold border border-indigo-100">
+                                                            {f}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-gray-400 italic text-sm">No frameworks detected</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Asset Analysis</label>
+                                            <div className="grid grid-cols-2 gap-2 text-sm">
+                                                <div className="p-3 bg-gray-50 rounded-xl flex flex-col">
+                                                    <span className="text-2xl font-black text-gray-900">{result.colors.length}</span>
+                                                    <span className="text-gray-500">Colors Found</span>
+                                                </div>
+                                                <div className="p-3 bg-gray-50 rounded-xl flex flex-col">
+                                                    <span className="text-2xl font-black text-gray-900">
+                                                        {result.colors.reduce((acc: number, c: any) => acc + c.count, 0)}
+                                                    </span>
+                                                    <span className="text-gray-500">Total Samples</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -113,6 +113,7 @@ export const VisualizerView = ({
                 onFontChange={setCurrentFont}
                 simulationMode={simulationMode}
                 onSimulationChange={setSimulationMode}
+                colorMapping={colorMapping}
                 isEmbedded={!!externalTemplate}
             />
         </div>

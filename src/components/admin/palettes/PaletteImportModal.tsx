@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { X, Plus, Globe, Sparkles, Loader2, Link as LinkIcon, CheckCircle } from 'lucide-react';
 import chroma from 'chroma-js';
 import { toast } from 'sonner';
+import { createPortal } from 'react-dom';
 
 interface PaletteImportModalProps {
     isOpen: boolean;
@@ -26,6 +27,7 @@ export default function PaletteImportModal({ isOpen, onClose, onSuccess }: Palet
     const [fetchCount, setFetchCount] = useState(5);
 
     if (!isOpen) return null;
+    if (typeof document === 'undefined') return null;
 
     // --- LOGIC: HELPER FUNCTIONS ---
 
@@ -120,7 +122,7 @@ export default function PaletteImportModal({ isOpen, onClose, onSuccess }: Palet
         }
     };
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100">
                 {/* Header */}
@@ -242,6 +244,7 @@ export default function PaletteImportModal({ isOpen, onClose, onSuccess }: Palet
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { GamifiedGuide } from '@/components/content/UtilityGuides';
 import { Gamepad2, Trophy, Star, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -108,6 +109,7 @@ export default function GamifiedPage() {
                     </div>
                 </div>
 
+                <GamifiedGuide />
             </div>
         </DashboardLayout>
     );

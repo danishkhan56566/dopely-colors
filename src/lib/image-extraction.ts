@@ -12,12 +12,13 @@ export interface ExtractedColor {
 }
 
 // --- Configuration ---
-const MAX_DIMENSION = 256; // Resize large images to this max dimension
-const SAMPLING_RATE = 10;   // Process 1 out of every N pixels to speed it up significantly
+// --- Configuration ---
+const MAX_DIMENSION = 600;
+const SAMPLING_RATE = 1;
 
 // --- Core Extraction Function ---
 
-export async function extractPalette(imageSrc: string): Promise<ExtractedColor[]> {
+export async function extractPalette(imageSrc: string): Promise<{ palette: ExtractedColor[], stats: any }> {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.crossOrigin = 'Anonymous';
@@ -128,7 +129,19 @@ export async function extractPalette(imageSrc: string): Promise<ExtractedColor[]
                     if (finalPalette.length >= 10) break;
                 }
 
-                resolve(finalPalette);
+                // 6. Calculate Mood Stats
+                const totalPixels = finalPalette.length;
+                const avgTemp = finalPalette.reduce((acc, c) => acc + (c.hue < 180 ? 1 : 0), 0) / totalPixels; // Simplified temp
+                const avgVib = finalPalette.reduce((acc, c) => acc + c.saturation, 0) / totalPixels;
+                const avgLum = finalPalette.reduce((acc, c) => acc + c.lightness, 0) / totalPixels;
+
+                const stats = {
+                    temperature: avgTemp > 0.5 ? 'Warm' : 'Cool', // >0.5 means more warm hues (approx)
+                    vibrancy: Math.round(avgVib * 100),
+                    contrast: Math.round(Math.abs(0.5 - avgLum) * 200) // Distance from grey
+                };
+
+                resolve({ palette: finalPalette, stats });
 
             } catch (e) {
                 reject(e);

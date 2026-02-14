@@ -27,6 +27,7 @@ interface VisualizerToolbarProps {
     onFontChange: (font: string) => void;
     simulationMode: VisionSimulation;
     onSimulationChange: (mode: VisionSimulation) => void;
+    colorMapping?: number[];
 
     // Style
     isEmbedded?: boolean;
@@ -61,11 +62,15 @@ export const VisualizerToolbar = ({
     onFontChange,
     simulationMode,
     onSimulationChange,
+    colorMapping,
     isEmbedded = false
 }: VisualizerToolbarProps) => {
 
-    // Helper to safely get color at index
-    const getColor = (index: number) => colors[index] || colors[0];
+    // Helper to safely get color at index, respecting mapping if provided
+    const getColor = (roleIndex: number) => {
+        const actualIndex = colorMapping ? colorMapping[roleIndex] : roleIndex;
+        return colors[actualIndex] || colors[0];
+    };
 
     return (
         <div className={clsx(

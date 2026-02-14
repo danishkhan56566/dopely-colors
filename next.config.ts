@@ -48,11 +48,6 @@ const nextConfig: NextConfig = {
       { source: '/saved', destination: '/favorites' },
       { source: '/&', destination: '/' },
 
-      // Development Proxy for Python Backend (Vercel handles this automatically in prod via vercel.json)
-      {
-        source: '/api/:path*',
-        destination: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000/:path*' : '/api/:path*'
-      },
     ];
   },
 };

@@ -2,27 +2,30 @@ import {
     Palette, Wand2, Search, Type, Droplet,
     Layers, Grid, RefreshCw, Blend, Printer,
     Eye, Monitor, Cpu, Code2, BookOpen,
-    Image, Zap, Shuffle, Pointer,
+    Zap, Shuffle, Pointer, Move3D,
     Settings2, Layout, FileJson, Accessibility,
     ArrowRight, RotateCw, Moon, BarChart3, Waves,
     Ruler, Sparkles, Globe, Spline, Aperture, Figma,
     Sun, Leaf, LineChart, Combine, Clock, Users, ArrowLeftRight,
     Smartphone, Mic, Hand, MousePointerClick, Watch, Fingerprint,
-    Box, Gamepad2, EyeOff, Globe2, Calendar
+    Box, Gamepad2, EyeOff, Globe2, Calendar, Heart,
+    FlaskConical, ArrowRightLeft, Image
 } from 'lucide-react';
 
 export const ALL_TOOLS = [
     {
-        category: 'Generators',
+        category: 'AI & Generative Tools',
         items: [
-            { name: 'AI Color Prompt Lab', icon: Wand2, desc: 'Text-to-Palette with AI', href: '/tools/ai-prompt', badge: 'New' },
-            { name: 'Website Color Scraper', icon: Globe, desc: 'Extract colors from URL', href: '/tools/scraper', badge: 'New' },
-            { name: 'Brand Palette Maker', icon: Wand2, desc: 'AI brand color system generator', href: '/ai', badge: 'AI' },
+            { name: 'Generative Art Extractor', icon: Image, desc: 'Extract mood & remix palette', href: '/tools/art-extractor', badge: 'New' },
+            { name: 'AI Color Prompt Lab', icon: Wand2, desc: 'Text-to-palette generator', href: '/tools/ai-prompt' },
+            { name: 'Semantic Color Generator', icon: Heart, desc: 'Emotion-based palettes', href: '/tools/semantic-gen', badge: 'New' },
+            { name: 'Brand Palette Maker', icon: Wand2, desc: 'AI brand color system generator', href: '/tools/brand', badge: 'New' },
             { name: 'Gradient Generator', icon: Layers, desc: 'Create CSS gradients', href: '/gradients' },
             { name: 'Radial Gradient Maker', icon: Droplet, desc: 'Create radial gradients', href: '/gradients?type=radial' },
             { name: 'Conic Gradient Maker', icon: RotateCw, desc: 'Create sweep gradients', href: '/gradients?type=conic', badge: 'New' },
-            { name: 'Fluid Gradient Maker', icon: Waves, desc: 'Animated mesh backgrounds', href: '/tools/fluid' },
-            { name: 'Mesh Gradient Maker', icon: Grid, desc: 'Create mesh gradients', href: '/gradients?type=mesh' },
+            { name: 'Fluid Gradient Maker', icon: Waves, desc: 'Organic moving gradients', href: '/tools/fluid' },
+            { name: 'Mesh Gradient Studio', icon: Grid, desc: 'Draggable color mesh', href: '/tools/mesh', badge: 'New' },
+            { name: 'Mesh Gradient Maker', icon: Grid, desc: 'Create mesh gradients', href: '/tools/fluid' },
             { name: 'Random Color Generator', icon: Shuffle, desc: 'Generate random colors', href: '/explore?sort=random' },
             { name: 'Quick Palette Generator', icon: Zap, desc: 'Instant palette creation', href: '/generate' },
             { name: 'Advanced Harmony Generator', icon: Palette, desc: 'Complex harmonies', href: '/generate?mode=advanced' },
@@ -35,7 +38,7 @@ export const ALL_TOOLS = [
             { name: 'Contrast Checker', icon: Eye, desc: 'Check accessibility', href: '/contrast' },
             { name: 'Contrast Grid', icon: Grid, desc: 'Check all palette combinations', href: '/tools/contrast-grid' },
             { name: 'Color Blindness Simulator', icon: Accessibility, desc: 'Test accessibility', href: '/tools/blindness' },
-            { name: 'Color Analyzer', icon: Monitor, desc: 'Analyze color properties', href: '/tools/converter' },
+            { name: 'Color Analyzer', icon: Monitor, desc: 'Analyze color properties', href: '/colors' },
         ]
     },
     {
@@ -43,7 +46,7 @@ export const ALL_TOOLS = [
         items: [
             { name: 'Color Converter', icon: RefreshCw, desc: 'Convert color formats', href: '/tools/converter' },
             { name: 'Color Mixer', icon: Blend, desc: 'Mix colors with ratios', href: '/tools/mixer' },
-            { name: 'Color Blender', icon: Droplet, desc: 'Blend color transitions', href: '/tools/mixer' },
+            { name: 'Color Blender', icon: Droplet, desc: 'Blend color transitions', href: '/tools/mixer?view=steps' },
             { name: 'Color Toner', icon: Printer, desc: 'Generate tints & shades', href: '/tools/toner' },
             { name: 'Color Harmony Wheel', icon: RefreshCw, desc: 'Explore color relationships', href: '/tools/wheel' },
         ]
@@ -53,7 +56,7 @@ export const ALL_TOOLS = [
         items: [
             { name: 'Color Names', icon: BookOpen, desc: 'Explore vast library of colors', href: '/colors' },
             { name: 'Color Name Finder', icon: Search, desc: 'Find names for any color', href: '/colors' },
-            { name: 'Color Name Generator', icon: Type, desc: 'Generate creative names', href: '/ai' },
+            { name: 'Color Name Generator', icon: Type, desc: 'Generate creative names', href: '/colors' },
             { name: 'Contrast Grid', icon: Grid, desc: 'Check all palette combinations', href: '/tools/contrast-grid' },
             { name: 'Zombie Color Linter', icon: Search, desc: 'Find duplicate/similar colors', href: '/tools/linter', badge: 'Dev' },
             { name: 'Color Distance (Delta E)', icon: Ruler, desc: 'Calculate color difference', href: '/tools/delta' },
@@ -90,15 +93,15 @@ export const ALL_TOOLS = [
     {
         category: 'Immersive & 3D Design',
         items: [
-            { name: '3D Space Color System', icon: Globe, desc: 'VR/AR depth perception', href: '/tools/3d-space', badge: '3D' },
-            { name: 'Holographic Generator', icon: Sparkles, desc: 'Iridescent & metallic effects', href: '/tools/holographic' },
+            { name: '3D Color Space Visualizer', icon: Move3D, desc: 'Interactive 3D color model explorer', href: '/tools/3d-space', badge: '3D' },
+            { name: 'Holographic Material Studio', icon: Sparkles, desc: 'Advanced 3D material & shader lab', href: '/tools/holographic', badge: '2.0' },
             { name: 'Lighting Simulator', icon: Sun, desc: 'Test OLED/E-ink/Projection', href: '/tools/lighting-sim' },
         ]
     },
     {
         category: 'Sustainability Focus',
         items: [
-            { name: 'Energy-Efficient Palette', icon: Leaf, desc: 'Reduce screen energy usage', href: '/tools/eco-palette', badge: 'Eco' },
+            { name: 'Sustainability & OLED Suite', icon: Leaf, desc: 'Energy efficiency & dark mode lab', href: '/tools/eco-palette', badge: '2.0' },
             { name: 'Print-to-Digital Analyzer', icon: Printer, desc: 'Environmental impact check', href: '/tools/eco-impact' },
         ]
     },
@@ -111,11 +114,18 @@ export const ALL_TOOLS = [
         ]
     },
     {
+        category: 'Developer Tools',
+        items: [
+            { name: 'Design Token Generator', icon: Code2, desc: 'Export palette to CSS/Swift/XML', href: '/tools/design-tokens', badge: 'New' },
+            { name: 'Real-Time Palette Lab', icon: FlaskConical, desc: 'Experiment with color mixing', href: '/tools/lab' },
+            { name: 'Design System Migrator', icon: ArrowRightLeft, desc: 'Transfer colors between systems', href: '/tools/migrator' },
+            { name: 'Cross-Platform Checker', icon: Smartphone, desc: 'iOS vs Android consistency', href: '/tools/cross-platform' },
+        ]
+    },
+    {
         category: 'Collaborative Workflow',
         items: [
             { name: 'Real-Time Palette Lab', icon: Users, desc: 'Multi-user editing', href: '/tools/collab-lab', badge: 'Beta' },
-            { name: 'Design System Migrator', icon: ArrowLeftRight, desc: 'Material to Apple HIG', href: '/tools/migrator' },
-            { name: 'Cross-Platform Checker', icon: Smartphone, desc: 'iOS vs Android consistency', href: '/tools/cross-platform' },
         ]
     },
     {
@@ -123,7 +133,7 @@ export const ALL_TOOLS = [
         items: [
             { name: 'Voice Color Control', icon: Mic, desc: '"Make it warmer"', href: '/tools/voice-color', badge: 'Exp' },
             { name: 'Gesture Color Mixer', icon: Hand, desc: 'Webcam gesture control', href: '/tools/gesture-mix' },
-            { name: 'Generative Art Extractor', icon: Palette, desc: 'Colors from AI art', href: '/tools/gen-art' },
+            { name: 'Generative Art Extractor', icon: Palette, desc: 'Colors from AI art', href: '/image' },
         ]
     },
     {

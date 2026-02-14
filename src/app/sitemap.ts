@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 import { getAllPosts } from '@/lib/blog';
-import { COLOR_NAMES } from '@/lib/color-utils';
+import { COLOR_NAMES, getSystematicColors } from '@/lib/color-utils';
 import chroma from 'chroma-js';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -78,23 +78,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
 
     // B. Generated Popular Colors (Systematic sampling of the color wheel)
-    // ~1000 colors ensuring coverage of standard palette
-    for (let h = 0; h < 360; h += 10) { // 36 hues
-        for (let s = 0.2; s <= 1.0; s += 0.2) { // 5 saturations (0.2, 0.4, 0.6, 0.8, 1.0)
-            for (let l = 0.1; l <= 0.9; l += 0.1) { // 9 lightnesses
-                const hex = chroma.hsl(h, s, l).hex().replace('#', '').toUpperCase();
-                if (!seenColors.has(hex)) {
-                    colorRoutes.push({
-                        url: `${baseUrl}/colors/${hex}/about`,
-                        lastModified: new Date(),
-                        changeFrequency: 'yearly',
-                        priority: 0.5,
-                    });
-                    seenColors.add(hex);
-                }
-            }
+    // Uses centralized logic from lib/color-utils to ensure sitemap matches allowed specific/static pages
+    const systematicColors = getSystematicColors();
+
+    systematicColors.forEach(color => {
+        const cleanHex = color.hex.replace('#', '').toUpperCase();
+        if (!seenColors.has(cleanHex)) {
+            colorRoutes.push({
+                url: `${baseUrl}/colors/${cleanHex}/about`,
+                lastModified: new Date(),
+                changeFrequency: 'yearly',
+                priority: 0.5,
+            });
+            seenColors.add(cleanHex);
         }
-    }
+    });
 
     // Combine all
     const staticRoutes = [

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { CrossPlatformGuide } from '@/components/content/UtilityGuides';
 import { Smartphone, Monitor } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -20,9 +21,15 @@ export default function CrossPlatformPage() {
                 </header>
 
                 <div className="flex justify-center mb-8 gap-4">
-                    <div className="flex items-center gap-2 bg-white p-2 rounded-xl shadow-sm">
-                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: primary }} />
-                        <input type="color" value={primary} onChange={(e) => setPrimary(e.target.value)} />
+                    <div className="relative flex items-center gap-2 bg-white p-2 rounded-xl shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow">
+                        <div className="w-8 h-8 rounded-full shadow-inner ring-1 ring-black/5" style={{ backgroundColor: primary }} />
+                        <span className="text-sm font-mono font-bold text-gray-600 uppercase">{primary}</span>
+                        <input
+                            type="color"
+                            value={primary}
+                            onChange={(e) => setPrimary(e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
                     </div>
                 </div>
 
@@ -104,6 +111,7 @@ export default function CrossPlatformPage() {
                     </div>
 
                 </div>
+                <CrossPlatformGuide />
             </div>
         </DashboardLayout>
     );

@@ -1,6 +1,10 @@
 'use client';
 
-import { Search, Menu, X, Plus, TrendingUp, Clock, Shuffle, Heart, Wand2, Image, Contrast, Pipette, Smartphone, FileCode, Sparkles, Layers, Layout, Palette, PanelLeftClose, PanelLeftOpen, LayoutGrid } from 'lucide-react';
+import {
+    Search, Menu, X, Plus, TrendingUp, Clock, Shuffle, Heart, Wand2, Image, Contrast, Pipette,
+    Smartphone, FileCode, Sparkles, Layers, Layout, Palette, PanelLeftClose, PanelLeftOpen, LayoutGrid,
+    EyeOff, Brain, Leaf, Activity, Fingerprint, Watch, Sun, Box, Shield, BarChart, Terminal
+} from 'lucide-react';
 import { useState, ReactNode, Suspense } from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
@@ -10,24 +14,53 @@ import { UserButton } from '@/components/auth/UserButton';
 import { Footer } from '@/components/layout/Footer';
 import { ToolsNavbarItem } from '@/components/layout/ToolsNavbarItem';
 
+const TOOL_CATEGORIES = [
+    {
+        title: "Generative & AI",
+        items: [
+            { icon: Wand2, label: 'Generate Palettes', href: '/' },
+            { icon: Sparkles, label: 'AI Generator', href: '/ai' },
+            { icon: Image, label: 'Gallery Lens', href: '/tools/art-extractor' },
+            { icon: Terminal, label: 'Prompt Lab', href: '/tools/ai-prompt' },
+            { icon: TrendingUp, label: 'Trend Predictor', href: '/tools/trend-predictor' },
+        ]
+    },
+    {
+        title: "Simulation & FX",
+        items: [
+            { icon: Smartphone, label: 'Context Sim', href: '/tools/context-optimizer' },
+            { icon: Sun, label: 'Atmosphere (Shadows)', href: '/tools/shadows' },
+            { icon: Box, label: '3D Space', href: '/tools/3d-space' },
+            { icon: Watch, label: 'Wearable Display', href: '/tools/wearable' },
+            { icon: Layers, label: 'Lighting Sim', href: '/tools/lighting-sim' },
+        ]
+    },
+    {
+        title: "Science & Analysis",
+        items: [
+            { icon: Contrast, label: 'Dynamic Contrast', href: '/tools/dynamic-contrast' },
+            { icon: EyeOff, label: 'Blind Viz', href: '/tools/blind-viz' },
+            { icon: Brain, label: 'Cognitive Load', href: '/tools/cognitive-load' },
+            { icon: Leaf, label: 'Eco Impact', href: '/tools/eco-palette' },
+            { icon: Activity, label: 'Biometrics', href: '/tools/biometric' },
+        ]
+    },
+    {
+        title: "System & Data",
+        items: [
+            { icon: Shield, label: 'Brand Center', href: '/tools/brand' },
+            { icon: FileCode, label: 'Design Tokens', href: '/tools/design-tokens' },
+            { icon: BarChart, label: 'Data Viz', href: '/tools/data-viz' },
+            { icon: Layout, label: 'System Builder', href: '/design-system' },
+        ]
+    }
+];
+
 const SIDEBAR_LINKS = [
     { icon: Clock, label: 'New', href: '/explore?sort=new' },
     { icon: Shuffle, label: 'Random', href: '/explore?sort=random' },
     { icon: Heart, label: 'Favorites', href: '/favorites' },
-];
-
-const TOOL_LINKS = [
-    { icon: LayoutGrid, label: 'All Tools', href: '/tools' },
-    { icon: Wand2, label: 'Generate Palettes', href: '/' },
-    { icon: TrendingUp, label: 'Explore Popular', href: '/explore?sort=popular' },
-    { icon: Image, label: 'Extract from Image', href: '/image' },
-    { icon: Sparkles, label: 'AI Palette Generator', href: '/ai' },
-    { icon: Contrast, label: 'Contrast Checker', href: '/contrast' },
-    { icon: Smartphone, label: 'Preview on Designs', href: '/generate?view=visualize' },
-    { icon: Pipette, label: 'Color Picker', href: '/picker' },
-    { icon: Layers, label: 'Gradient Generator', href: '/gradients' },
-    { icon: FileCode, label: 'Tailwind Colors', href: '/tailwind' },
-    { icon: Layout, label: 'Design System Builder', href: '/design-system' },
+    { icon: LayoutGrid, label: 'View All Tools', href: '/tools' },
 ];
 
 const TAGS = ['Pastel', 'Neon', 'Vintage', 'Retro', 'Dark', 'Light', 'Warm', 'Cold', 'Summer', 'Winter'];
@@ -35,55 +68,59 @@ const TAGS = ['Pastel', 'Neon', 'Vintage', 'Retro', 'Dark', 'Light', 'Warm', 'Co
 // Sidebar Content Component
 const SidebarContent = () => {
     return (
-        <div className="flex-1 overflow-y-auto p-6 space-y-8">
-            {/* Main Nav */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-8 no-scrollbar">
+            {/* Quick Links */}
             <nav className="space-y-1">
                 {SIDEBAR_LINKS.map((link) => (
                     <Link
                         key={link.label}
                         href={link.href}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all text-gray-600 hover:bg-purple-50/50 group"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all text-gray-600 hover:bg-purple-50/50 group"
                     >
                         <div className="transition-all duration-300 group-hover:scale-125 group-hover:rotate-12 group-hover:text-purple-600">
-                            <link.icon size={20} />
+                            <link.icon size={18} />
                         </div>
-                        <span className="transition-all group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-pink-600 group-hover:font-bold">
+                        <span className="text-sm transition-all group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-pink-600 group-hover:font-bold">
                             {link.label}
                         </span>
                     </Link>
                 ))}
             </nav>
 
-            {/* Tools Section */}
-            <div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-4">Tools</h3>
-                <nav className="space-y-1">
-                    {TOOL_LINKS.map((link) => (
-                        <Link
-                            key={link.label}
-                            href={link.href}
-                            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-gray-600 transition-all text-sm group hover:bg-purple-50/50"
-                        >
-                            <div className="transition-all duration-300 group-hover:scale-125 group-hover:rotate-12 group-hover:text-purple-600">
-                                <link.icon size={18} />
-                            </div>
-                            <span className="transition-all group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-pink-600 group-hover:font-bold">
-                                {link.label}
-                            </span>
-                        </Link>
-                    ))}
-                </nav>
+            {/* Categorized Tools */}
+            <div className="space-y-6">
+                {TOOL_CATEGORIES.map((category) => (
+                    <div key={category.title}>
+                        <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-3 opacity-80">{category.title}</h3>
+                        <nav className="space-y-0.5">
+                            {category.items.map((link) => (
+                                <Link
+                                    key={link.label}
+                                    href={link.href}
+                                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-gray-500 transition-all text-[13px] group hover:bg-purple-50/50 hover:text-gray-900"
+                                >
+                                    <div className="transition-all duration-300 text-gray-400 group-hover:scale-110 group-hover:text-purple-600">
+                                        <link.icon size={16} />
+                                    </div>
+                                    <span className="text-ellipsis overflow-hidden whitespace-nowrap">
+                                        {link.label}
+                                    </span>
+                                </Link>
+                            ))}
+                        </nav>
+                    </div>
+                ))}
             </div>
 
             {/* Tags */}
             <div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-4">Styles</h3>
-                <div className="flex flex-wrap gap-2 px-2">
+                <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3 px-3 opacity-80">Popular Tags</h3>
+                <div className="flex flex-wrap gap-1.5 px-1">
                     {TAGS.map(tag => (
                         <Link
                             key={tag}
                             href={`/explore?tag=${tag.toLowerCase()}`}
-                            className="px-3 py-1.5 rounded-lg text-sm border transition-colors bg-gray-50 hover:bg-gray-100 text-gray-600 border-transparent hover:border-gray-200"
+                            className="px-2.5 py-1 rounded-md text-xs border transition-colors bg-white hover:bg-gray-50 text-gray-500 border-gray-100 hover:border-gray-200"
                         >
                             {tag}
                         </Link>

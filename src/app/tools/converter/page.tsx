@@ -6,6 +6,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Copy, RefreshCw, Check } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { ConverterGuide } from '@/components/content/ScienceGuides';
 
 export default function ColorConverter() {
     const [input, setInput] = useState('#3B82F6');
@@ -126,6 +127,7 @@ export default function ColorConverter() {
                         </div>
                     </div>
                 </div>
+                <ConverterGuide />
             </div>
         </DashboardLayout>
     );

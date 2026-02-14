@@ -1,18 +1,30 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { RefreshCw, Copy, ArrowRight, Blend } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { MixerGuide } from '@/components/content/ScienceGuides';
 
-export default function ColorMixerPage() {
+function ColorMixerContent() {
+    const searchParams = useSearchParams();
+    const view = searchParams.get('view');
+    const stepsRef = useRef<HTMLDivElement>(null);
+
     const [color1, setColor1] = useState('#3b82f6');
     const [color2, setColor2] = useState('#ec4899');
     const [ratio, setRatio] = useState(50);
     const [mode, setMode] = useState<'rgb' | 'lch' | 'lab' | 'hsl'>('lch');
     const [steps, setSteps] = useState(11);
+
+    useEffect(() => {
+        if (view === 'steps' && stepsRef.current) {
+            stepsRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [view]);
 
     const mixedColor = useMemo(() => {
         try {
@@ -151,7 +163,7 @@ export default function ColorMixerPage() {
                         </div>
 
                         {/* Breakdown Steps */}
-                        <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+                        <div ref={stepsRef} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="font-bold text-gray-900">Gradient Steps</h3>
                                 <div className="flex items-center gap-3">
@@ -186,7 +198,18 @@ export default function ColorMixerPage() {
 
                     </div>
                 </div>
+                <MixerGuide />
             </div>
         </DashboardLayout>
+    );
+}
+
+export default function ColorMixerPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        </div>}>
+            <ColorMixerContent />
+        </Suspense>
     );
 }

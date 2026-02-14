@@ -614,15 +614,15 @@ export function LandingPage() {
                         </Link>
 
                         {/* Image Extractor - White Card */}
-                        <Link href="/image" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
+                        <Link href="/tools/art-extractor" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
                             <div className="absolute top-0 right-0 p-32 bg-orange-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
                             <div className="relative z-10">
                                 <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                                     <ImageIcon size={28} />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Image Extractor</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Gallery Lens</h3>
                                 <p className="text-gray-500 font-medium leading-relaxed">
-                                    Upload any photo or design mockup to automatically isolate dominant colors and build a cohesive palette based on the visual data.
+                                    Upload any photo or masterpiece. Our AI extracts "Mood DNA" and dominant pigments using advanced clustering.
                                 </p>
                             </div>
                             <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 group-hover:translate-x-2 transition-transform self-end">
@@ -631,15 +631,15 @@ export function LandingPage() {
                         </Link>
 
                         {/* Contrast Checker - White Card */}
-                        <Link href="/contrast" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
+                        <Link href="/tools/dynamic-contrast" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
                             <div className="absolute top-0 right-0 p-32 bg-emerald-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
                             <div className="relative z-10">
                                 <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                                     <CheckCircle2 size={28} />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Contrast Checker</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Dynamic Contrast</h3>
                                 <p className="text-gray-500 font-medium leading-relaxed">
-                                    Validate your foreground and background pairings against WCAG 2.1 standards to ensure your designs are accessible to everyone.
+                                    Beyond WCAG. Test legibility against different font weights, textures, and environmental glare.
                                 </p>
                             </div>
                             <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:translate-x-2 transition-transform self-end">
@@ -648,15 +648,15 @@ export function LandingPage() {
                         </Link>
 
                         {/* Pro Picker - UNIFIED White Card (Previously Pink) */}
-                        <Link href="/picker" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
+                        <Link href="/tools/mixer" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
                             <div className="absolute top-0 right-0 p-32 bg-pink-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
                             <div className="relative z-10">
                                 <div className="w-14 h-14 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                                     <Droplet size={28} />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Pro Picker</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Color Mixer</h3>
                                 <p className="text-gray-500 font-medium leading-relaxed">
-                                    Fine-tune colors with professional precision using HSL, RGB, and CMYK inputs, complete with harmony rule suggestions.
+                                    Simulate real-world pigment mixing (Subtractive) vs screen light (Additive).
                                 </p>
                             </div>
                             <div className="w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 group-hover:translate-x-2 transition-transform self-end">
@@ -665,15 +665,15 @@ export function LandingPage() {
                         </Link>
 
                         {/* Gradient Studio - White Card */}
-                        <Link href="/gradients" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
+                        <Link href="/tools/fluid" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
                             <div className="absolute top-0 right-0 p-32 bg-cyan-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
                             <div className="relative z-10">
                                 <div className="w-14 h-14 bg-cyan-50 rounded-2xl flex items-center justify-center text-cyan-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                                     <Layers size={28} />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Gradient Studio</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Fluid Gradients</h3>
                                 <p className="text-gray-500 font-medium leading-relaxed">
-                                    Design complex, multi-stop linear and radial gradients with an intuitive visual builder and export clean CSS instantly.
+                                    Create organic, moving gradient meshes that feel alive. Export as CSS or SVG.
                                 </p>
                             </div>
                             <div className="w-12 h-12 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-600 group-hover:translate-x-2 transition-transform self-end">
@@ -682,7 +682,7 @@ export function LandingPage() {
                         </Link>
 
                         {/* Design System Builder - Feature Card (Dark) */}
-                        <Link href="/design-system" className="lg:col-span-2 group relative overflow-hidden rounded-[2.5rem] bg-[#0f172a] p-8 md:p-12 text-white shadow-xl transition-all hover:shadow-2xl hover:scale-[1.01] min-h-[360px] flex flex-col justify-between">
+                        <Link href="/tools/design-tokens" className="lg:col-span-2 group relative overflow-hidden rounded-[2.5rem] bg-[#0f172a] p-8 md:p-12 text-white shadow-xl transition-all hover:shadow-2xl hover:scale-[1.01] min-h-[360px] flex flex-col justify-between">
                             {/* Grid Pattern Background */}
                             <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
                             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-[100px] group-hover:bg-blue-500/30 transition-colors" />
@@ -693,13 +693,13 @@ export function LandingPage() {
                                         <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/10 shadow-inner">
                                             <Layout size={32} className="text-blue-400" />
                                         </div>
-                                        <h3 className="text-3xl font-bold mb-4 tracking-tight">Design System Builder</h3>
+                                        <h3 className="text-3xl font-bold mb-4 tracking-tight">Design Token Engine</h3>
                                         <p className="text-xl text-gray-400 font-medium max-w-lg leading-relaxed mb-8">
-                                            Visualize your color tokens, typography scales, and UI components in a live environment. Ensure consistency across your entire product suite.
+                                            Manage semantic tokens, aliases, and component values in one place. Export to JSON, CSS, or Swift.
                                         </p>
                                     </div>
                                     <div className="inline-flex items-center gap-2 font-bold px-6 py-3 bg-blue-600 rounded-xl hover:bg-blue-500 transition-colors shadow-lg shadow-blue-900/20 w-max">
-                                        Start Building <ArrowRight size={18} />
+                                        Manage Tokens <ArrowRight size={18} />
                                     </div>
                                 </div>
 
@@ -723,18 +723,18 @@ export function LandingPage() {
                         </Link>
 
                         {/* Tailwind Generator - White Card */}
-                        <Link href="/tailwind" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
-                            <div className="absolute top-0 right-0 p-32 bg-blue-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
+                        <Link href="/tools/shadows" className="group relative overflow-hidden rounded-[2.5rem] bg-white p-8 md:p-10 shadow-lg border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-1 min-h-[360px] flex flex-col justify-between">
+                            <div className="absolute top-0 right-0 p-32 bg-purple-50/50 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100" />
                             <div className="relative z-10">
-                                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform duration-300">
                                     <Wind size={28} />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Tailwind Generator</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Atmosphere Lab</h3>
                                 <p className="text-gray-500 font-medium leading-relaxed">
-                                    Export your custom color palette directly as a Tailwind CSS configuration file, ready to drop into your tailwind.config.js.
+                                    Design physically accurate shadows with colored light dispersion and multi-layer depth.
                                 </p>
                             </div>
-                            <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:translate-x-2 transition-transform self-end">
+                            <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 group-hover:translate-x-2 transition-transform self-end">
                                 <ArrowRight size={20} />
                             </div>
                         </Link>

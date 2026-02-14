@@ -1,14 +1,23 @@
 import { ColorDetailView } from '@/components/colors/ColorDetailView';
 import { supabase } from '@/lib/supabase';
-import { getNearestColorName, getFullConversions } from '@/lib/color-utils';
+import { getNearestColorName, getFullConversions, isCanonicalColor, getSystematicColors } from '@/lib/color-utils';
 import { Metadata, ResolvingMetadata } from 'next';
+import { notFound } from 'next/navigation';
 
-// Stop ISR Writes (Vercel Limit Fix)
-export const dynamic = 'force-dynamic';
+// Allow On-Demand ISR, but strict validation prevents infinite generation
+export const revalidate = 86400; // Cache valid colors for 24h
 
 type Props = {
     params: Promise<{ hex: string }>
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+// 1. Generate Static Params for Canonical Colors (SEO + Performance)
+export async function generateStaticParams() {
+    const colors = getSystematicColors();
+    return colors.map((c) => ({
+        hex: c.hex.replace('#', '')
+    }));
 }
 
 async function getColorData(hexParam: string) {
@@ -20,6 +29,14 @@ async function getColorData(hexParam: string) {
 
     const normalized = hex.replace('#', '').toUpperCase();
 
+    // 1. Check validity (Security Check)
+    // If it's not a canonical color (mathematically standard) AND not likely in DB...
+    // We check DB first to be safe, or check canonical first?
+    // Canonical check is cheaper (CPU) than DB (Network).
+    // But DB contains user colors that might NOT be canonical.
+    // So if it's NOT canonical, we MUST check DB.
+    // If it IS canonical, it's valid, but we still check DB for overrides (description etc).
+
     // Attempt to fetch from DB
     const { data } = await supabase
         .from('colors')
@@ -27,7 +44,13 @@ async function getColorData(hexParam: string) {
         .ilike('hex', `%${normalized}%`)
         .maybeSingle();
 
-    return { hex, data };
+    // 2. Strict Validation to prevent "Spider Trap"
+    // If not in DB AND not a canonical systematic color -> 404
+    if (!data && !isCanonicalColor(normalized)) {
+        return { hex, data: null, isValid: false };
+    }
+
+    return { hex, data, isValid: true };
 }
 
 export async function generateMetadata(
@@ -35,7 +58,9 @@ export async function generateMetadata(
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     const { hex } = await params;
-    const { hex: formattedHex, data } = await getColorData(hex);
+    const { hex: formattedHex, data, isValid } = await getColorData(hex);
+
+    if (!isValid) return { title: 'Color Not Found' };
 
     const colorName = data?.name || getNearestColorName(formattedHex);
     const conversions = getFullConversions(formattedHex);
@@ -68,7 +93,11 @@ export async function generateMetadata(
 
 export default async function Page({ params }: Props) {
     const { hex } = await params;
-    const { hex: formattedHex, data } = await getColorData(hex);
+    const { hex: formattedHex, data, isValid } = await getColorData(hex);
+
+    if (!isValid) {
+        notFound();
+    }
 
     const jsonLd = {
         "@context": "https://schema.org",

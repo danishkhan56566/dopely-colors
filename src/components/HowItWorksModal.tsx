@@ -1,4 +1,5 @@
 import { X, RefreshCcw, Lock, Sparkles } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 interface HowItWorksModalProps {
     isOpen: boolean;
@@ -7,8 +8,9 @@ interface HowItWorksModalProps {
 
 export const HowItWorksModal = ({ isOpen, onClose }: HowItWorksModalProps) => {
     if (!isOpen) return null;
+    if (typeof document === 'undefined') return null;
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
@@ -75,6 +77,7 @@ export const HowItWorksModal = ({ isOpen, onClose }: HowItWorksModalProps) => {
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };

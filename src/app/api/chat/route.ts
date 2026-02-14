@@ -1,79 +1,185 @@
 import { NextResponse } from 'next/server';
-import { parseUserIntent, evolveDesignSystem, DesignState } from '@/lib/ai-assistant';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { createClient } from '@supabase/supabase-js';
+import { generateCorePalette } from '@/lib/color-engine';
 
-export async function POST(req: Request) {
+// Initialize Services
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+const SYSTEM_INSTRUCTION = `
+You are "PaletteAI," an expert UI/UX Design Assistant.
+Your goal is to help users create color palettes and answer design questions.
+
+CONTEXT AWARENESS:
+Always review the 'history' provided to understand previous requests.
+
+STRICT OUTPUT FORMAT:
+You MUST return a single valid JSON object. Do not include markdown formatting.
+
+JSON SCHEMA:
+{
+  "type": "action" | "chat" | "refusal",
+  "message": "Reasoning for the colors OR the answer to the question.",
+  "parameters": {
+    "primary_hex": "#HEXCODE",
+    "secondary_hex": "#HEXCODE" (optional),
+    "tertiary_hex": "#HEXCODE" (optional),
+    "mood": "string" (optional)
+  }
+}
+
+RULES:
+1. ACTION MODE: If user wants colors (e.g. "blue finance app", "make it darker"):
+   - "type": "action"
+   - "message": Explain WHY you chose these colors.
+   - "parameters": Set primary_hex based on color theory.
+
+2. CHAT MODE: If user asks about design (e.g. "What is contrast?"):
+   - "type": "chat"
+   - "message": Answer helpfully.
+   - "parameters": {}
+
+3. REFUSAL MODE: If user asks about non-design topics:
+   - "type": "refusal"
+   - "message": "I specialize only in UI/UX Design and Color Systems."
+   - "parameters": {}
+`;
+
+export async function POST(request: Request) {
     try {
-        const body = await req.json();
-        const { message, current_design } = body;
+        const body = await request.json();
+        const { message, user_id = 'guest', current_state } = body;
 
-        if (!current_design) {
+        // 1. Fallback if no Key
+        if (!process.env.GOOGLE_API_KEY) {
+            console.warn("No GOOGLE_API_KEY found. Using regex fallback.");
+            const msgLower = message.toLowerCase();
+
+            if (msgLower.includes('palette') || msgLower.includes('color') || msgLower.includes('design')) {
+                return NextResponse.json({
+                    type: "action",
+                    message: "Generating palette (Dev Mock - No Gemini Key)...",
+                    data: generateCorePalette("#6200ea")
+                });
+            }
             return NextResponse.json({
-                type: 'chat',
-                message: "I'm ready to help. Please start a design first."
+                type: "chat",
+                message: "This is a Dev Mode answer (No Gemini Key). I specialize in UI/UX.",
+                data: current_state
             });
         }
 
-        // 1. Analyze Intent using the shared logic
-        const intent = parseUserIntent(message);
+        // 2. Fetch History from Supabase
+        let historyForGemini: { role: string; parts: { text: any; }[]; }[] = [];
+        try {
+            // Save User Message
+            await supabase.from('chat_messages').insert({
+                user_id,
+                role: 'user',
+                content: message
+            });
 
-        console.log("API /chat intent:", intent);
+            // Get last 10 megs
+            const { data: histData } = await supabase
+                .from('chat_messages')
+                .select('role, content')
+                .eq('user_id', user_id)
+                .order('created_at', { ascending: false })
+                .limit(10);
 
-        // 2. Handle specific non-visual intents
-        if (intent.type === 'UNKNOWN') {
-            // If we can't parse a clear design instruction, fallback to chat
-            // In a real agent, this would use an LLM to chat. 
-            // Here, we provide helpful guidance.
+            if (histData) {
+                // Reverse to chronological order
+                historyForGemini = histData.reverse().map(record => ({
+                    role: record.role === 'user' ? 'user' : 'model',
+                    parts: [{ text: record.content }]
+                }));
+            }
+        } catch (e) {
+            console.error("Supabase History Error:", e);
+        }
+
+        // 3. Call Gemini
+        let aiMessageText = "";
+        let intentType = "chat";
+        let aiData: any = {};
+
+        try {
+            const model = genAI.getGenerativeModel({
+                model: "gemini-1.5-flash",
+                systemInstruction: SYSTEM_INSTRUCTION,
+                generationConfig: { responseMimeType: "application/json" }
+            });
+
+            const chat = model.startChat({ history: historyForGemini });
+            const result = await chat.sendMessage(message);
+            const responseText = result.response.text();
+            aiData = JSON.parse(responseText);
+
+            aiMessageText = aiData.message || "Processed request.";
+            intentType = aiData.type || "chat";
+
+        } catch (apiError) {
+            console.error("Gemini API Error:", apiError);
+            console.warn("Falling back to regex logic.");
+
+            // Fallback Logic
+            const msgLower = message.toLowerCase();
+            if (msgLower.includes('palette') || msgLower.includes('color') || msgLower.includes('design')) {
+                return NextResponse.json({
+                    type: "action",
+                    message: "Generating palette (Fallback - API Error)...",
+                    data: generateCorePalette("#6200ea")
+                });
+            }
             return NextResponse.json({
-                type: 'chat',
-                message: "I can verify contrast, switch to dark mode, or adjust brightness. Try saying 'Make it punchy' or 'Dark mode'."
+                type: "chat",
+                message: "I'm having trouble connecting to my brain right now, but I can still help you design! (Fallback Mode)",
+                data: current_state
             });
         }
 
-        if (intent.type === 'FEEDBACK') {
+        // 4. Save AI Response (only if successful API call)
+        if (intentType) {
+            try {
+                await supabase.from('chat_messages').insert({
+                    user_id,
+                    role: 'model',
+                    content: aiMessageText
+                });
+            } catch (e) { console.error("Supabase Save Error:", e); }
+        }
+
+        // 5. Handle Action Intent
+        if (intentType === 'action') {
+            const params = aiData.parameters || {};
+            const seedHex = params.primary_hex || '#3B82F6';
+
+            // Generate System
+            const paletteSystem = generateCorePalette(seedHex);
+
             return NextResponse.json({
-                type: 'chat',
-                message: "I'm listening. You can ask for specific colors like 'indigo' or styles like 'modern'."
+                type: "action",
+                message: aiMessageText,
+                data: paletteSystem
             });
         }
 
-        if (intent.type === 'EXPORT') {
-            return NextResponse.json({
-                type: 'export-ui',
-                data: current_design, // Pass the design state back so UI can render it
-                message: "Here are your Design Tokens and Export options. You can download for Web, iOS, and Android."
-            });
-        }
-
-        if (intent.type === 'RESET') {
-            // Evolution doesn't strictly handle reset (that's usually a clear state wipe)
-            // But let's see if we can just trigger a chat response, 
-            // as the client might have its own reset handler?
-            // Actually client has 'RESET' intent check? No, client side check is just for FEEDBACK.
-            // If user says "Reset", we might want to tell client to reset.
-            // But for now, let's just return a message.
-            return NextResponse.json({
-                type: 'chat',
-                message: "To start over, you can refresh the page or ask for a specific new style."
-            });
-        }
-
-        // 3. Evolve the Design
-        // We cast the current_design to DesignState. 
-        // Note: we trust the client passed a valid shape.
-        const newDesign = evolveDesignSystem(current_design as DesignState, intent);
-
-        // 4. Return the new System
+        // 6. Return Chat Response
         return NextResponse.json({
-            type: 'action',
-            data: newDesign.system,
-            message: newDesign.explanation || "I've updated the design based on your feedback."
+            type: intentType,
+            message: aiMessageText,
+            data: current_state
         });
 
     } catch (error) {
-        console.error('AI Chat Error:', error);
-        return NextResponse.json({
-            type: 'chat',
-            message: "I encountered a neural link error. Please try a different command."
-        }, { status: 500 });
+        console.error("Chat API Error:", error);
+        return NextResponse.json(
+            { status: 'error', message: 'Internal Server Error' },
+            { status: 500 }
+        );
     }
 }

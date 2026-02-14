@@ -9,6 +9,7 @@ import {
     Hash
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
 
 export function CommandPalette() {
     const [open, setOpen] = React.useState(false);
@@ -35,7 +36,9 @@ export function CommandPalette() {
     const [search, setSearch] = React.useState('');
     const isHex = /^#?([0-9A-F]{3}|[0-9A-F]{6})$/i.test(search);
 
-    return (
+    if (typeof document === 'undefined') return null;
+
+    return createPortal(
         <AnimatePresence>
             {open && (
                 <div className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] px-4">
@@ -193,7 +196,8 @@ export function CommandPalette() {
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }
 

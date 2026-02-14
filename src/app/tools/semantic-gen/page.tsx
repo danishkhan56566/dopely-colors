@@ -5,6 +5,8 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Sparkles, Wand2, Copy, RefreshCw, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import chroma from 'chroma-js';
+import { toast } from 'sonner';
+import { SemanticGuide } from '@/components/content/GenerativeGuides';
 
 // --- SEMANTIC ENGINE (Simulated AI) ---
 const KEYWORDS: Record<string, string[]> = {
@@ -153,7 +155,10 @@ export default function SemanticGenPage() {
                                         {color}
                                     </span>
                                     <button
-                                        onClick={() => navigator.clipboard.writeText(color)}
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(color);
+                                            toast.success(`Copied ${color} to clipboard!`);
+                                        }}
                                         className="p-2 bg-white/20 hover:bg-white/40 rounded-full text-white backdrop-blur transition-colors"
                                     >
                                         <Copy size={16} />
@@ -180,13 +185,21 @@ export default function SemanticGenPage() {
                         </div>
 
                         <div className="flex gap-4">
-                            <button className="px-6 py-3 border border-gray-200 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors">
+                            <button
+                                onClick={() => {
+                                    const text = `Semantic Palette for "${prompt}": ${palette.join(', ')}`;
+                                    navigator.clipboard.writeText(text);
+                                    toast.success('Palette exported to clipboard!');
+                                }}
+                                className="px-6 py-3 border border-gray-200 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors"
+                            >
                                 <Share2 size={18} /> Export
                             </button>
                         </div>
                     </div>
 
                 </div>
+                <SemanticGuide />
             </div>
         </DashboardLayout>
     );

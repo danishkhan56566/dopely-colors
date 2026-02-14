@@ -2,6 +2,7 @@ import { Color } from '@/store/usePaletteStore';
 import { X, Copy, Check, Download } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
+import { createPortal } from 'react-dom';
 
 interface ExportModalProps {
     isOpen: boolean;
@@ -14,7 +15,12 @@ export type Format = 'css' | 'tailwind' | 'scss' | 'json' | 'image';
 
 export const ExportModal = ({ isOpen, onClose, colors, initialFormat = 'css' }: ExportModalProps) => {
     const [format, setFormat] = useState<Format>(initialFormat);
+    const [mounted, setMounted] = useState(false);
     const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Reset format when modal opens
     useEffect(() => {
@@ -23,7 +29,7 @@ export const ExportModal = ({ isOpen, onClose, colors, initialFormat = 'css' }: 
         }
     }, [isOpen, initialFormat]);
 
-    if (!isOpen) return null;
+    if (!isOpen || !mounted) return null;
 
     const getCode = () => {
         switch (format) {
@@ -130,7 +136,7 @@ export const ExportModal = ({ isOpen, onClose, colors, initialFormat = 'css' }: 
         }, 'image/png');
     };
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
@@ -211,6 +217,7 @@ export const ExportModal = ({ isOpen, onClose, colors, initialFormat = 'css' }: 
                     )}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };

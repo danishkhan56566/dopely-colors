@@ -616,3 +616,58 @@ export function getFullConversions(hex: string): ColorConversions {
         luv
     };
 }
+
+// --- Systematic Color Generation (Canonical Colors) ---
+
+export function getSystematicColors() {
+    const colors: { name: string; hex: string }[] = [];
+    const seenHexes = new Set<string>();
+
+    // 1. Add Named Colors (Highest Priority)
+    Object.entries(COLOR_NAMES).forEach(([hex, name]) => {
+        const normalized = hex.toUpperCase();
+        if (!seenHexes.has(normalized)) {
+            colors.push({ name, hex: normalized });
+            seenHexes.add(normalized);
+        }
+    });
+
+    // 2. Generate Systematic Gradient Coverage
+    // 36 Hues * 5 Saturations * 9 Lightnesses = ~1620 colors
+    for (let h = 0; h < 360; h += 10) {
+        for (let s = 0.2; s <= 1.0; s += 0.2) {
+            for (let l = 0.1; l <= 0.9; l += 0.1) {
+                const hex = chroma.hsl(h, s, l).hex().toUpperCase();
+                if (!seenHexes.has(hex)) {
+                    colors.push({
+                        name: getNearestColorName(hex),
+                        hex: hex
+                    });
+                    seenHexes.add(hex);
+                }
+            }
+        }
+    }
+
+    return colors;
+}
+
+export function isCanonicalColor(hex: string): boolean {
+    if (!hex) return false;
+    const normalized = hex.startsWith('#') ? hex.toUpperCase() : `#${hex.toUpperCase()}`;
+
+    // Check named colors
+    if (COLOR_NAMES[normalized]) return true;
+
+    // Check systematic generation
+    // We could re-generate to check membership, or approximate.
+    // Since the set is small (~2000), regenerating is fine for now, 
+    // but ideally we'd use a mathematical check if the steps were cleaner.
+    // Given the slight floating point variance in chroma-js, 
+    // exact match might be tricky without regenerating the exact same way.
+    // Let's regenerate for correctness.
+
+    // Optimization: memoize this if impactful, but for distinct page builds it's negligible.
+    const systemColors = getSystematicColors();
+    return systemColors.some(c => c.hex === normalized);
+}

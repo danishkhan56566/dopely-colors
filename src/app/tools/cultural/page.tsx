@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { CulturalGuide } from '@/components/content/UtilityGuides';
 import { Globe2, Map } from 'lucide-react';
 
 const CULTURES = [
@@ -78,6 +79,8 @@ export default function CulturalPage() {
                     </div>
 
                 </div>
+                <CulturalGuide />
+                <CulturalGuide />
             </div>
         </DashboardLayout>
     );

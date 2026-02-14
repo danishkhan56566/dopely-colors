@@ -6,6 +6,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Search, TriangleAlert, CircleCheck, ArrowRight } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { LinterGuide } from '@/components/content/DevGuides';
 
 export default function ColorLinter() {
     const [input, setInput] = useState('#ffffff, #fcfcfc, #fefefe, #000000, #3b82f6, #3b83f6');

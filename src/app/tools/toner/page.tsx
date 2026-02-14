@@ -6,6 +6,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Printer, Copy, Droplet } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { TonerGuide } from '@/components/content/ScienceGuides';
 
 export default function ColorTonerPage() {
     const [color, setColor] = useState('#3b82f6');
@@ -113,6 +114,7 @@ export default function ColorTonerPage() {
                         <ToneRow title="Tones" colors={tones} desc="Mixed with Gray (Saturation ↓)" />
                     </div>
                 </div>
+                <TonerGuide />
             </div>
         </DashboardLayout>
     );

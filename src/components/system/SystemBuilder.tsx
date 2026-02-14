@@ -5,6 +5,7 @@ import chroma from 'chroma-js';
 import { useState, useMemo } from 'react';
 import { Check, Copy, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { createPortal } from 'react-dom';
 
 interface SystemBuilderProps {
     colors: Color[];
@@ -14,6 +15,7 @@ interface SystemBuilderProps {
 
 export const SystemBuilder = ({ colors, isOpen, onClose }: SystemBuilderProps) => {
     if (!isOpen) return null;
+    if (typeof document === 'undefined') return null;
 
     // Generate scales (50-950) for a base color
     const generateScale = (hex: string) => {
@@ -63,7 +65,7 @@ export const SystemBuilder = ({ colors, isOpen, onClose }: SystemBuilderProps) =
         toast.success('Copied!');
     };
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-[60] bg-white overflow-auto animate-in slide-in-from-bottom duration-300">
             {/* Header */}
             <div className="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-100 px-8 py-4 flex items-center justify-between z-10">
@@ -167,6 +169,7 @@ export const SystemBuilder = ({ colors, isOpen, onClose }: SystemBuilderProps) =
                     </pre>
                 </section>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };

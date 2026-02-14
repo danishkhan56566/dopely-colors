@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { MultiVariableGuide } from '@/components/content/UtilityGuides';
 import { Combine, RefreshCw, Info } from 'lucide-react';
 import chroma from 'chroma-js';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -204,6 +205,7 @@ export default function MultiVariablePage() {
                     </div>
                 </div>
 
+                <MultiVariableGuide />
             </div>
         </DashboardLayout>
     );

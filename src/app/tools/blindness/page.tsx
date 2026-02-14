@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Upload, Image as ImageIcon, X, Eye, EyeOff } from 'lucide-react';
+import { BlindVizGuide } from '@/components/content/AdvancedGuides';
 import clsx from 'clsx';
 
 // Color Blindness Simulation Matrices (SVG ColorMatrix)
@@ -135,7 +136,7 @@ export default function ColorBlindnessPage() {
                                 <div className="flex-1 rounded-2xl overflow-hidden relative group bg-gray-50 border border-gray-100">
                                     <div className="absolute top-4 left-4 z-10 bg-black/50 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">Original</div>
                                     {previewImage ? (
-                                        <img src={previewImage} className="w-full h-full object-cover" alt="Original" />
+                                        <img src={previewImage} className="w-full h-full object-contain" alt="Original" />
                                     ) : (
                                         <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center space-y-4">
                                             <div className="grid grid-cols-2 gap-2 w-32 h-32 rotate-12 opacity-80">
@@ -150,14 +151,14 @@ export default function ColorBlindnessPage() {
                                 </div>
 
                                 {/* Simulated */}
-                                <div className="flex-1 rounded-2xl overflow-hidden relative group bg-gray-50 border border-gray-100">
+                                <div className="flex-1 rounded-2xl overflow-hidden relative group bg-gray-50 border border-gray-100 flex items-center justify-center">
                                     <div className="absolute top-4 left-4 z-10 bg-blue-600/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full capitalize">
                                         {SIMULATIONS.find(s => s.id === activeSim)?.name}
                                     </div>
                                     {previewImage ? (
                                         <img
                                             src={previewImage}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-contain"
                                             style={{ filter: activeSim !== 'normal' ? `url(#${activeSim})` : 'none' }}
                                             alt="Simulated"
                                         />
@@ -182,6 +183,7 @@ export default function ColorBlindnessPage() {
                     </div>
 
                 </div>
+                <BlindVizGuide />
             </div>
         </DashboardLayout>
     );

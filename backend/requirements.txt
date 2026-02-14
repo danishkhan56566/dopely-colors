@@ -1,9 +1,0 @@
-
-fastapi
-python-multipart
-Pillow
-numpy
-material-color-utilities-python==0.1.5
-requests
-google-generativeai
-supabase

@@ -1,172 +1,237 @@
 'use client';
 
-import { useState, useRef, Suspense } from 'react';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { useState, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Stars, Text, Float, ContactShadows, Environment } from '@react-three/drei';
-import { motion } from 'framer-motion';
-import { Globe, Box, Maximize, RotateCcw } from 'lucide-react';
+import { OrbitControls, Stars, Plane, Line } from '@react-three/drei';
 import * as THREE from 'three';
+import chroma from 'chroma-js';
+import { usePaletteStore } from '@/store/usePaletteStore';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { Box, Circle, Move3D, Settings2, Share2, Sparkles, Cuboid, Expand } from 'lucide-react';
+import { ThreeDSpaceGuide } from '@/components/content/AdvancedGuides';
+import clsx from 'clsx';
+import { cn } from '@/lib/utils';
 
-// --- COMPONENTS ---
+type SpaceMode = 'RGB' | 'HSL' | 'OKLCH';
 
-function ColorOrb({ position, color, label }: { position: [number, number, number], color: string, label: string }) {
-    const meshRef = useRef<THREE.Mesh>(null);
-    const [hovered, setHover] = useState(false);
+// --- 3D Components ---
 
-    useFrame((state) => {
-        if (meshRef.current) {
-            // Gentle floating animation
-            meshRef.current.rotation.x += 0.01;
-            meshRef.current.rotation.y += 0.01;
-        }
-    });
+function ColorSphere({ color, position, size = 0.3, exploded }: { color: string; position: [number, number, number], size?: number, exploded: boolean }) {
+    const ref = { current: { position: new THREE.Vector3(...position) } }; // Mock ref for logic simpler than full useRef
+
+    // Explode logic would ideally be in useFrame, but for this "10x" implementation we'll do simple position scaling
+    const finalPos = exploded ? [position[0] * 1.5, position[1] * 1.5, position[2] * 1.5] as [number, number, number] : position;
 
     return (
-        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            <group position={position}>
-                <mesh
-                    ref={meshRef}
-                    onPointerOver={() => setHover(true)}
-                    onPointerOut={() => setHover(false)}
-                    scale={hovered ? 1.2 : 1}
-                >
-                    <sphereGeometry args={[0.5, 32, 32]} />
-                    <meshStandardMaterial
-                        color={color}
-                        roughness={0.1}
-                        metalness={0.4}
-                        emissive={color}
-                        emissiveIntensity={hovered ? 0.5 : 0.1}
-                    />
-                </mesh>
-                {hovered && (
-                    <Text
-                        position={[0, 0.8, 0]}
-                        fontSize={0.3}
-                        color="white"
-                        anchorX="center"
-                        anchorY="middle"
-                        outlineWidth={0.02}
-                        outlineColor="#000000"
-                    >
-                        {label}
-                    </Text>
-                )}
-            </group>
-        </Float>
-    );
-}
-
-function GridFloor() {
-    return (
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
-            <planeGeometry args={[20, 20]} />
-            <meshStandardMaterial color="#1a1a1a" transparent opacity={0.5} />
-            <gridHelper args={[20, 20, 0x444444, 0x222222]} rotation={[-Math.PI / 2, 0, 0]} />
+        <mesh position={finalPos}>
+            <sphereGeometry args={[size, 32, 32]} />
+            <meshStandardMaterial
+                color={color}
+                emissive={color}
+                emissiveIntensity={0.8}
+                roughness={0.1}
+                metalness={0.9}
+            />
+            {/* Glow Halo */}
+            <pointLight distance={1} intensity={0.5} color={color} />
         </mesh>
     );
 }
 
-// --- MAIN PAGE ---
+function GridGuide({ mode, showWireframe }: { mode: SpaceMode; showWireframe: boolean }) {
+    if (!showWireframe) return null;
 
-export default function ThreeDSpacePage() {
-    const [envPreset, setEnvPreset] = useState<'city' | 'sunset' | 'dawn'>('city');
+    return (
+        <group>
+            {mode === 'RGB' && (
+                <group>
+                    <mesh position={[0, 0, 0]}>
+                        <boxGeometry args={[4, 4, 4]} />
+                        <meshBasicMaterial color="#4f46e5" wireframe transparent opacity={0.1} />
+                    </mesh>
+                    <gridHelper args={[8, 20, '#333', '#111']} position={[0, -2, 0]} />
+                </group>
+            )}
+            {(mode === 'HSL' || mode === 'OKLCH') && (
+                <group>
+                    <mesh position={[0, 0, 0]}>
+                        <cylinderGeometry args={[2, 2, 4, 24, 1, true]} />
+                        <meshBasicMaterial color="#4f46e5" wireframe transparent opacity={0.1} />
+                    </mesh>
+                    <gridHelper args={[8, 20, '#333', '#111']} position={[0, -2, 0]} />
+                </group>
+            )}
+        </group>
+    );
+}
 
-    const MOCK_PALETTE = [
-        { color: '#FF3B30', pos: [-2, 0, 0], name: 'Neon Red' },
-        { color: '#4CD964', pos: [0, 1.5, -1], name: 'Cyber Green' },
-        { color: '#007AFF', pos: [2, 0, 0], name: 'Electric Blue' },
-        { color: '#FFD700', pos: [0, -1, 1], name: 'Gold Dust' },
-        { color: '#FF2D55', pos: [-1.5, 1, 1.5], name: 'Laser Pink' },
-        { color: '#5856D6', pos: [1.5, -1, -1.5], name: 'Deep Void' },
-    ];
+function Scene({ mode, colors, exploded, showWireframe }: { mode: SpaceMode; colors: string[]; exploded: boolean; showWireframe: boolean }) {
+    const points = useMemo(() => {
+        return colors.map((hex) => {
+            try {
+                const c = chroma(hex);
+                if (mode === 'RGB') {
+                    const [r, g, b] = c.rgb();
+                    return {
+                        pos: [(r / 255) * 4 - 2, (g / 255) * 4 - 2, (b / 255) * 4 - 2] as [number, number, number],
+                        hex
+                    };
+                } else if (mode === 'HSL') {
+                    const [h, s, l] = c.hsl();
+                    const radius = (s || 0) * 2;
+                    const angle = (h || 0) * (Math.PI / 180);
+                    return {
+                        pos: [radius * Math.cos(angle), (l * 4) - 2, radius * Math.sin(angle)] as [number, number, number],
+                        hex
+                    };
+                } else {
+                    const [l, chromaVal, h] = c.oklch();
+                    const radius = (chromaVal || 0.2) * 8; // Scale up for visibility
+                    const angle = (h || 0) * (Math.PI / 180);
+                    return {
+                        pos: [radius * Math.cos(angle), (l * 4) - 2, radius * Math.sin(angle)] as [number, number, number],
+                        hex
+                    };
+                }
+            } catch (e) {
+                return { pos: [0, 0, 0] as [number, number, number], hex: '#000000' };
+            }
+        });
+    }, [mode, colors]);
+
+    return (
+        <>
+            <ambientLight intensity={0.2} />
+            <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffffff" />
+            <pointLight position={[-10, -5, -10]} intensity={1} color="#4f46e5" />
+
+            <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={0.5} />
+
+            <GridGuide mode={mode} showWireframe={showWireframe} />
+
+            {points.map((p, i) => (
+                <ColorSphere key={i} color={p.hex} position={p.pos} size={0.25} exploded={exploded} />
+            ))}
+
+            <OrbitControls
+                makeDefault
+                enableDamping
+                dampingFactor={0.05}
+                minDistance={3}
+                maxDistance={15}
+                autoRotate
+                autoRotateSpeed={0.5}
+            />
+        </>
+    );
+}
+
+export default function Space3DPage() {
+    const { colors } = usePaletteStore();
+    const [mode, setMode] = useState<SpaceMode>('RGB');
+    const [exploded, setExploded] = useState(false);
+    const [showWireframe, setShowWireframe] = useState(true);
+
+    // Fallback if store empty
+    const activeColors = colors.length > 0 ? colors.map(c => c.hex) : ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
 
     return (
         <DashboardLayout>
-            <div className="h-[calc(100vh-64px)] w-full bg-black relative overflow-hidden flex flex-col">
+            <div className="relative h-[calc(100vh-64px)] w-full bg-[#030712] overflow-hidden font-sans">
 
-                {/* Header Overlay */}
-                <div className="absolute top-6 left-6 z-10 pointer-events-none">
-                    <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-black/50 backdrop-blur-md p-6 rounded-2xl border border-white/10"
-                    >
-                        <h1 className="text-3xl font-black text-white mb-2 flex items-center gap-3">
-                            <span className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                                <Box size={24} className="text-white" />
-                            </span>
-                            3D Space System
-                        </h1>
-                        <p className="text-gray-400 max-w-sm">
-                            Visualize distinct colors in a spatial environment.
-                            Rotate and zoom to understand depth relationships.
-                        </p>
-                    </motion.div>
+                {/* 1. HUD: Title Block */}
+                <div className="absolute top-6 left-6 z-10">
+                    <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] shadow-2xl flex items-center gap-4">
+                        <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg shadow-indigo-500/20">
+                            <Move3D size={24} className="text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-black text-white tracking-tighter">Holographic Field</h1>
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                                <p className="text-white/40 text-[10px] uppercase font-bold tracking-widest">System Online</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Controls Overlay */}
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex gap-4 pointer-events-auto">
-                    <button
-                        onClick={() => setEnvPreset('city')}
-                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${envPreset === 'city' ? 'bg-white text-black' : 'bg-black/50 text-white hover:bg-white/20'}`}
-                    >
-                        Night City
-                    </button>
-                    <button
-                        onClick={() => setEnvPreset('sunset')}
-                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${envPreset === 'sunset' ? 'bg-white text-black' : 'bg-black/50 text-white hover:bg-white/20'}`}
-                    >
-                        Sunset
-                    </button>
-                    <button
-                        onClick={() => setEnvPreset('dawn')}
-                        className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${envPreset === 'dawn' ? 'bg-white text-black' : 'bg-black/50 text-white hover:bg-white/20'}`}
-                    >
-                        Dawn
-                    </button>
+                {/* 2. HUD: Controls */}
+                <div className="absolute top-32 left-6 z-10 flex flex-col gap-2">
+                    <div className="bg-black/60 backdrop-blur-md border border-white/5 p-2 rounded-[1.5rem] flex flex-col gap-1 w-64 shadow-xl">
+                        {(['RGB', 'HSL', 'OKLCH'] as SpaceMode[]).map((m) => (
+                            <button
+                                key={m}
+                                onClick={() => setMode(m)}
+                                className={cn(
+                                    "px-4 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-between group",
+                                    mode === m ? "bg-white text-black shadow-lg" : "text-white/50 hover:bg-white/5 hover:text-white"
+                                )}
+                            >
+                                <span className="flex items-center gap-3">
+                                    {m === 'RGB' && <Cuboid size={14} />}
+                                    {m === 'HSL' && <Circle size={14} />}
+                                    {m === 'OKLCH' && <Sparkles size={14} />}
+                                    {m} Space
+                                </span>
+                                {mode === m && <div className="w-1.5 h-1.5 rounded-full bg-indigo-600" />}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="bg-black/60 backdrop-blur-md border border-white/5 p-2 rounded-[1.5rem] flex flex-col gap-1 w-64 shadow-xl mt-4">
+                        <button
+                            onClick={() => setExploded(!exploded)}
+                            className={cn(
+                                "px-4 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-3 group",
+                                exploded ? "bg-indigo-500 text-white" : "text-white/50 hover:bg-white/5 hover:text-white"
+                            )}
+                        >
+                            <Expand size={14} /> Exploded View
+                        </button>
+                        <button
+                            onClick={() => setShowWireframe(!showWireframe)}
+                            className={cn(
+                                "px-4 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-3 group",
+                                showWireframe ? "bg-indigo-500 text-white" : "text-white/50 hover:bg-white/5 hover:text-white"
+                            )}
+                        >
+                            <Box size={14} /> Show Wireframe
+                        </button>
+                    </div>
                 </div>
 
-                {/* 3D Scene */}
-                <Canvas shadows camera={{ position: [0, 0, 6], fov: 50 }}>
-                    <Suspense fallback={<Text color="white" position={[0, 0, 0]}>Loading 3D Engine...</Text>}>
-
-                        {/* Lighting */}
-                        <ambientLight intensity={0.5} />
-                        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
-
-                        {/* Environment */}
-                        <Environment preset={envPreset} background blur={0.6} />
-                        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-
-                        {/* Objects */}
-                        <group>
-                            {MOCK_PALETTE.map((item, idx) => (
-                                <ColorOrb
-                                    key={idx}
-                                    // @ts-ignore
-                                    position={item.pos}
-                                    color={item.color}
-                                    label={item.name}
-                                />
-                            ))}
-                        </group>
-
-                        {/* Controls */}
-                        <OrbitControls
-                            minDistance={4}
-                            maxDistance={12}
-                            enablePan={false}
-                            autoRotate={true}
-                            autoRotateSpeed={0.5}
-                        />
-
-                        {/* Effects */}
-                        <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={10} blur={2.5} far={4} />
-
+                {/* 3. Canvas */}
+                <div className="absolute inset-0 z-0">
+                    <Suspense fallback={
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-[#030712] gap-4">
+                            <div className="w-16 h-16 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+                            <p className="text-indigo-400 text-xs font-mono lowercase animate-pulse">initializing_webgl...</p>
+                        </div>
+                    }>
+                        <Canvas shadows gl={{ antialias: true }} dpr={[1, 2]} camera={{ position: [5, 5, 10], fov: 45 }}>
+                            <Scene mode={mode} colors={activeColors} exploded={exploded} showWireframe={showWireframe} />
+                        </Canvas>
                     </Suspense>
-                </Canvas>
+                </div>
+
+                {/* 4. Bottom Guide Trigger (Simplified for Redesign) */}
+                <div className="absolute bottom-8 left-8 right-8 pointer-events-none flex justify-center">
+                    <div className="pointer-events-auto max-w-2xl w-full">
+                        {/* We can put a minimized guide toggle here if we want, or rely on the standard layout which might put it below content. 
+                             In this Full Screen implementation, we'll use a modal or overlay for the guide if needed, but for now we'll stick to the DashboardLayout structure 
+                             Wait, DashboardLayout wraps this. The Guide is essentially hidden behind the absolute positioning unless we add it to a sidebar or overlay.
+                             For 10x UX, let's put it in a drawer or modal. 
+                             For simplicity/compatibility, let's let the user scroll DOWN to see it? No, h-screen prevents scroll.
+                             Let's make it a drawer.
+                          */}
+                        <div className="bg-black/90 backdrop-blur-2xl border border-white/10 p-1 rounded-2xl flex items-center justify-between shadow-2xl">
+                            <div className="px-6 py-4 flex-1">
+                                <ThreeDSpaceGuide />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </DashboardLayout>
     );

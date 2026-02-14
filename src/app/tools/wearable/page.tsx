@@ -2,219 +2,262 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Watch, Sun, Moon, Battery, Zap, CheckCircle, Smartphone } from 'lucide-react';
+import { WearableGuide } from '@/components/content/AdvancedGuides';
+import { Watch, Sun, Moon, Battery, Zap, Timer, Activity, MessageCircle, MoreHorizontal } from 'lucide-react';
 import chroma from 'chroma-js';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils'; // Ensure utils are imported for 'cn'
 
-const WATCH_FACES = [
-    { id: 'minimal', name: 'Minimal Digital' },
-    { id: 'data', name: 'Data Rich' },
-    { id: 'artistic', name: 'Artistic Gradient' },
+const BANDS = [
+    { id: 'silicone-orange', name: 'Solar Flare', color: '#f97316', texture: 'dots' },
+    { id: 'silicone-black', name: 'Midnight', color: '#171717', texture: 'dots' },
+    { id: 'leather-brown', name: 'Saddle Leather', color: '#78350f', texture: 'leather' },
+    { id: 'nylon-olive', name: 'Alpine Loop', color: '#3f6212', texture: 'weave' },
 ];
 
 const ENVIRONMENTS = [
-    { id: 'indoor', name: 'Indoor (Normal)', brightness: 1, glare: 0 },
-    { id: 'outdoor', name: 'Outdoor (Sunny)', brightness: 1.5, glare: 0.3 },
-    { id: 'night', name: 'Night Mode', brightness: 0.6, glare: 0 },
+    { id: 'indoor', name: 'Indoor', brightness: 1, glare: 0 },
+    { id: 'outdoor', name: 'Sunlight', brightness: 1.2, glare: 0.4 },
+    { id: 'night', name: 'Night', brightness: 0.8, glare: 0 },
 ];
 
 export default function WearablePage() {
-    const [color, setColor] = useState('#3b82f6');
-    const [accent, setAccent] = useState('#A855F7');
-    const [environment, setEnvironment] = useState(ENVIRONMENTS[0]);
-    const [face, setFace] = useState(WATCH_FACES[0].id);
+    const [accent, setAccent] = useState('#F59E0B');
+    const [bg, setBg] = useState('#000000');
+    const [isAOD, setIsAOD] = useState(false);
+    const [selectedBand, setSelectedBand] = useState(BANDS[0]);
+    const [env, setEnv] = useState(ENVIRONMENTS[0]);
 
-    // Analysis Logic
-    const bgLuminance = chroma(color).luminance();
-    const isOledFriendly = chroma(color).hex() === '#000000';
-    const contrast = chroma.contrast(color, '#ffffff'); // Assuming white text
-
-    // Battery Impact Calc (Simplified)
-    // OLED: Black = 0 energy. White = 100 energy.
-    // Sum of luminance * active pixels.
-    // Here we just estimate based on background color luminance.
-    const batteryScore = Math.max(0, 100 - (bgLuminance * 100));
+    // Metrics
+    const contrast = chroma.contrast(accent, bg); // assuming text is accent on bg
+    const isOled = chroma(bg).hex() === '#000000';
+    const glanceScore = Math.max(0, 100 - (200 / contrast)); // Higher contrast = faster glance
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 p-6 md:p-10 flex flex-col items-center">
+            <div className="min-h-screen bg-gray-50 p-6 md:p-10 font-sans text-slate-900 pb-20">
 
-                <header className="max-w-2xl text-center mb-12">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wider mb-4">
-                        <Watch size={14} /> Wearable OS
+                {/* Header */}
+                <header className="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wider mb-2">
+                            <Watch size={14} /> Micro-Display Lab
+                        </div>
+                        <h1 className="text-4xl font-black text-slate-900">Wearable Optimizer</h1>
                     </div>
-                    <h1 className="text-4xl font-black text-gray-900 mb-4">Wearable Display Optimizer</h1>
-                    <p className="text-gray-500 text-lg">
-                        Design for the wrist. Optimize for tiny OLED screens, outdoor glare, and battery life.
-                    </p>
-                </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-6xl w-full">
-
-                    {/* Controls */}
-                    <div className="lg:col-span-1 space-y-8">
-
-                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                            <h3 className="font-bold text-gray-900 mb-4">Display Colors</h3>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">Background</label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="color"
-                                            value={color}
-                                            onChange={(e) => setColor(e.target.value)}
-                                            className="h-10 w-10 rounded-lg cursor-pointer bg-transparent"
-                                        />
-                                        <button
-                                            onClick={() => setColor('#000000')}
-                                            className="flex-1 border border-gray-200 rounded-lg text-xs font-bold hover:bg-black hover:text-white transition-colors"
-                                        >
-                                            Set True Black (OLED)
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">Accent</label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="color"
-                                            value={accent}
-                                            onChange={(e) => setAccent(e.target.value)}
-                                            className="h-10 w-10 rounded-lg cursor-pointer bg-transparent"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={accent}
-                                            onChange={(e) => setAccent(e.target.value)}
-                                            className="flex-1 border border-gray-200 rounded-lg px-2 font-mono text-sm uppercase"
-                                        />
-                                    </div>
-                                </div>
+                    {/* Metrics Pill */}
+                    <div className="flex gap-4">
+                        <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3">
+                            <Zap size={20} className={isOled ? "text-green-500 fill-green-500" : "text-gray-300"} />
+                            <div>
+                                <div className="text-[10px] uppercase font-bold text-gray-400">Battery Eff.</div>
+                                <div className="font-bold text-slate-900">{isOled ? 'Max (OLED)' : 'Standard'}</div>
                             </div>
                         </div>
+                        <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3">
+                            <Timer size={20} className={contrast > 7 ? "text-green-500" : "text-orange-500"} />
+                            <div>
+                                <div className="text-[10px] uppercase font-bold text-gray-400">Glance Time</div>
+                                <div className="font-bold text-slate-900">{contrast > 7 ? '< 500ms' : '~ 1.2s'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
 
-                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                            <h3 className="font-bold text-gray-900 mb-4">Environment Test</h3>
-                            <div className="space-y-2">
-                                {ENVIRONMENTS.map(env => (
+                <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                    {/* Left: Controls */}
+                    <div className="lg:col-span-4 space-y-6">
+
+                        {/* 1. Context Manager */}
+                        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Environment</h3>
+                            <div className="grid grid-cols-3 gap-2">
+                                {ENVIRONMENTS.map(e => (
                                     <button
-                                        key={env.id}
-                                        onClick={() => setEnvironment(env)}
-                                        className={`w-full p-3 rounded-xl text-left text-sm font-bold flex items-center gap-3 transition-colors ${environment.id === env.id ? 'bg-orange-600 text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                                        key={e.id}
+                                        onClick={() => setEnv(e)}
+                                        className={cn(
+                                            "p-3 rounded-xl flex flex-col items-center gap-2 transition-all border",
+                                            env.id === e.id ? "bg-orange-50 border-orange-200 text-orange-900" : "bg-gray-50 border-transparent hover:bg-gray-100 text-gray-500"
+                                        )}
                                     >
-                                        {env.id === 'indoor' && <Smartphone size={16} />}
-                                        {env.id === 'outdoor' && <Sun size={16} />}
-                                        {env.id === 'night' && <Moon size={16} />}
-                                        {env.name}
+                                        {e.id === 'indoor' && <Timer size={18} />}
+                                        {e.id === 'outdoor' && <Sun size={18} />}
+                                        {e.id === 'night' && <Moon size={18} />}
+                                        <span className="text-[10px] font-bold uppercase">{e.name}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                            <h3 className="font-bold text-gray-900 mb-4">Analysis</h3>
+                        {/* 2. Color Tuner */}
+                        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Display Colors</h3>
                             <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-gray-500">Readability</span>
-                                    <span className={`font-bold ${contrast > 4.5 ? 'text-green-500' : 'text-red-500'}`}>
-                                        {contrast.toFixed(2)}:1
-                                    </span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-gray-500">Battery Score</span>
-                                    <span className={`font-bold ${batteryScore > 80 ? 'text-green-500' : 'text-orange-500'}`}>
-                                        {batteryScore.toFixed(0)}/100
-                                    </span>
-                                </div>
-                                {isOledFriendly && (
-                                    <div className="flex items-center gap-2 text-xs font-bold text-green-600 bg-green-50 p-2 rounded-lg">
-                                        <Zap size={12} /> OLED Optimized (True Black)
+                                <div>
+                                    <div className="flex justify-between text-xs font-bold mb-2">
+                                        <span>Primary Accent</span>
+                                        <span className="font-mono text-gray-400">{accent}</span>
                                     </div>
-                                )}
+                                    <div className="flex gap-2">
+                                        {['#F59E0B', '#EF4444', '#10B981', '#3B82F6', '#8B5CF6'].map(c => (
+                                            <button
+                                                key={c}
+                                                onClick={() => setAccent(c)}
+                                                className={cn("w-8 h-8 rounded-full border-2 transition-transform hover:scale-110", accent === c ? "border-gray-900" : "border-transparent")}
+                                                style={{ backgroundColor: c }}
+                                            />
+                                        ))}
+                                        <input type="color" value={accent} onChange={e => setAccent(e.target.value)} className="w-8 h-8 rounded-full overflow-hidden cursor-pointer" />
+                                    </div>
+                                </div>
+                                <div className="pt-4 border-t border-gray-100">
+                                    <div className="flex justify-between text-xs font-bold mb-2">
+                                        <span>Background</span>
+                                        <span className="font-mono text-gray-400">{bg}</span>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => setBg('#000000')}
+                                            className={cn("px-4 py-2 rounded-lg text-xs font-bold border flex items-center gap-2", bg === '#000000' ? "bg-black text-white border-black" : "bg-white text-gray-900 border-gray-200")}
+                                        >
+                                            <Zap size={12} className={bg === '#000000' ? "fill-white" : ""} /> True Black
+                                        </button>
+                                        <button
+                                            onClick={() => setBg('#1F2937')}
+                                            className={cn("px-4 py-2 rounded-lg text-xs font-bold border", bg === '#1F2937' ? "bg-gray-800 text-white border-gray-800" : "bg-white text-gray-900 border-gray-200")}
+                                        >
+                                            Dark Grey
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 3. Band Studio */}
+                        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Band Studio</h3>
+                            <div className="space-y-2">
+                                {BANDS.map(b => (
+                                    <button
+                                        key={b.id}
+                                        onClick={() => setSelectedBand(b)}
+                                        className={cn(
+                                            "w-full p-2 rounded-xl flex items-center gap-3 border transition-all hover:bg-gray-50",
+                                            selectedBand.id === b.id ? "border-orange-200 bg-orange-50 ring-1 ring-orange-200" : "border-transparent"
+                                        )}
+                                    >
+                                        <div className="w-8 h-8 rounded-lg shadow-sm" style={{ backgroundColor: b.color }} />
+                                        <span className="text-sm font-bold text-slate-700">{b.name}</span>
+                                    </button>
+                                ))}
                             </div>
                         </div>
 
                     </div>
 
-                    {/* Simulator */}
-                    <div className="lg:col-span-2 flex items-center justify-center bg-gray-200 rounded-[50px] p-20 relative overflow-hidden">
+                    {/* Right: Simulator */}
+                    <div className="lg:col-span-8 flex items-center justify-center bg-gray-200 rounded-[3rem] min-h-[600px] relative overflow-hidden shadow-inner">
 
-                        {/* Background Environment Simulation */}
+                        {/* Environment Layer */}
                         <div
-                            className="absolute inset-0 transition-all duration-500"
+                            className="absolute inset-0 transition-opacity duration-700"
                             style={{
-                                backgroundColor: environment.id === 'night' ? '#0f172a' : environment.id === 'outdoor' ? '#fff7ed' : '#e5e7eb',
-                                opacity: 1 // Controlling container bg
+                                backgroundColor: env.id === 'night' ? '#111' : env.id === 'outdoor' ? '#fff' : '#e5e7eb',
+                                opacity: 1
                             }}
                         />
-
-                        {/* Sun Glare Overlay */}
+                        {/* Glare Layer */}
                         <div
-                            className="absolute inset-0 pointer-events-none transition-opacity duration-500"
-                            style={{
-                                background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 40%)',
-                                opacity: environment.glare
-                            }}
+                            className="absolute inset-0 pointer-events-none transition-opacity duration-700 bg-gradient-to-tr from-white/40 to-transparent"
+                            style={{ opacity: env.glare }}
                         />
 
-                        {/* Watch Device */}
-                        <motion.div
-                            layout
-                            className="relative w-[300px] h-[360px] bg-black rounded-[48px] border-[12px] border-gray-800 shadow-2xl flex items-center justify-center overflow-hidden"
-                            style={{ boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
-                        >
-                            {/* Screen */}
-                            <div
-                                className="absolute inset-0 flex flex-col items-center justify-center transition-colors duration-300"
-                                style={{
-                                    backgroundColor: color,
-                                    filter: `brightness(${environment.brightness})` // Simulate screen fighting ambient light
-                                }}
-                            >
-                                <AnimatePresence mode="wait">
-                                    {face === 'minimal' && (
-                                        <motion.div
-                                            key="minimal"
-                                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                            className="text-center"
-                                        >
-                                            <div className="text-6xl font-black text-white tracking-tighter" style={{ textShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
-                                                10:09
-                                            </div>
-                                            <div className="text-lg text-white/70 font-medium uppercase mt-2 tracking-widest">
-                                                WED 24
-                                            </div>
-                                            <div className="mt-8 flex justify-center gap-4 text-white/50">
-                                                <div className="flex flex-col items-center gap-1">
-                                                    <div className="w-10 h-1 rounded-full bg-white/20 overflow-hidden">
-                                                        <div className="w-2/3 h-full" style={{ backgroundColor: accent }} />
+                        {/* Watch Container */}
+                        <div className="relative group">
+
+                            {/* Band (Top) */}
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 w-[140px] h-[150px] rounded-t-[40px] -mb-10 z-0 shadow-lg"
+                                style={{ backgroundColor: selectedBand.color }} />
+
+                            {/* Band (Bottom) */}
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 w-[140px] h-[150px] rounded-b-[40px] -mt-10 z-0 shadow-lg"
+                                style={{ backgroundColor: selectedBand.color }} />
+
+                            {/* Case */}
+                            <div className="relative z-10 w-[240px] h-[280px] bg-[#1a1a1a] rounded-[3rem] shadow-[0_20px_40px_rgba(0,0,0,0.4)] border-[6px] border-[#333] flex items-center justify-center ring-4 ring-black/20">
+
+                                {/* Screen */}
+                                <div
+                                    className="w-[210px] h-[250px] bg-black rounded-[2.2rem] overflow-hidden relative"
+                                    onClick={() => setIsAOD(!isAOD)}
+                                >
+                                    {/* Display Content */}
+                                    <div
+                                        className="w-full h-full flex flex-col items-center justify-center transition-all duration-500"
+                                        style={{
+                                            backgroundColor: bg,
+                                            filter: isAOD ? 'brightness(0.3) grayscale(1)' : `brightness(${env.brightness})`,
+                                            opacity: isAOD ? 0.8 : 1
+                                        }}
+                                    >
+                                        <div className="text-5xl font-black tabular-nums tracking-tighter" style={{ color: isAOD ? '#fff' : '#fff' }}>
+                                            10:09
+                                        </div>
+
+                                        {!isAOD && (
+                                            <motion.div
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                className="mt-4 flex flex-col items-center gap-4 w-full px-6"
+                                            >
+                                                {/* Complication 1: Rings */}
+                                                <div className="relative w-16 h-16 flex items-center justify-center">
+                                                    <svg className="absolute inset-0 w-full h-full -rotate-90">
+                                                        <circle cx="32" cy="32" r="28" stroke="#333" strokeWidth="6" fill="none" />
+                                                        <circle cx="32" cy="32" r="28" stroke={accent} strokeWidth="6" fill="none" strokeDasharray="175" strokeDashoffset="40" strokeLinecap="round" />
+                                                        <circle cx="32" cy="32" r="18" stroke="#333" strokeWidth="6" fill="none" />
+                                                        <circle cx="32" cy="32" r="18" stroke={chroma(accent).brighten().hex()} strokeWidth="6" fill="none" strokeDasharray="113" strokeDashoffset="30" strokeLinecap="round" />
+                                                    </svg>
+                                                    <Activity size={16} style={{ color: accent }} />
+                                                </div>
+
+                                                {/* Complication 2: Status */}
+                                                <div className="flex gap-4 w-full justify-center">
+                                                    <div className="bg-white/10 rounded-full p-2">
+                                                        <MessageCircle size={16} className="text-white" />
                                                     </div>
-                                                    <span className="text-[10px] font-bold">ACT</span>
+                                                    <div className="bg-white/10 rounded-full p-2">
+                                                        <Battery size={16} className="text-green-500" />
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col items-center gap-1">
-                                                    <Battery size={16} />
-                                                    <span className="text-[10px] font-bold">82%</span>
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                                            </motion.div>
+                                        )}
+                                        {isAOD && (
+                                            <div className="text-[10px] font-bold text-gray-500 mt-2 uppercase tracking-widest">Always On</div>
+                                        )}
+                                    </div>
+
+                                    {/* Glass Reflection */}
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none rounded-[2.2rem]" />
+                                </div>
                             </div>
 
-                            {/* Bezel Gloss / Reflection */}
-                            <div className="absolute inset-0 rounded-[36px] border border-white/10 pointer-events-none" />
-                            <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-bl from-white/20 to-transparent opacity-50 rounded-tr-[36px] pointer-events-none" />
+                        </div>
 
-                        </motion.div>
-
-                        {/* Strap suggestions visual */}
-                        <div className="absolute -z-10 w-[200px] h-[600px] bg-gray-800 rounded-full opacity-0" /> {/* Just a placeholder */}
+                        {/* AOD Toggle Hint */}
+                        <div className="absolute bottom-8 text-xs font-bold text-gray-500 uppercase tracking-widest bg-white/50 px-4 py-2 rounded-full backdrop-blur">
+                            Tap Screen to Toggle AOD
+                        </div>
 
                     </div>
 
+                </main>
+
+                <div className="max-w-7xl mx-auto mt-12 mb-20">
+                    <WearableGuide />
                 </div>
             </div>
         </DashboardLayout>

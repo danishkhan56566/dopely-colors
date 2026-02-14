@@ -5,6 +5,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Layers, Copy, Image as ImageIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { GlassGuide } from '@/components/content/GenerativeGuides';
 
 export default function GlassmorphismGenerator() {
     const [color, setColor] = useState('#ffffff');
@@ -164,6 +165,7 @@ export default function GlassmorphismGenerator() {
                     </div>
 
                 </div>
+                <GlassGuide />
             </div>
         </DashboardLayout>
     );

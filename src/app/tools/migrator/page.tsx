@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ArrowRightLeft, FileJson, Apple, Palette, Smartphone } from 'lucide-react';
 import chroma from 'chroma-js';
+import { toast } from 'sonner';
+import { MigratorGuide } from '@/components/content/UtilityGuides';
 
 const SYSTEMS = [
     { id: 'tailwind', name: 'Tailwind CSS', icon: Palette },
@@ -115,8 +117,11 @@ export default function MigratorPage() {
                                 <FileJson size={20} /> Token Output
                             </h3>
                             <button
-                                onClick={() => navigator.clipboard.writeText(JSON.stringify(tokens, null, 2))}
-                                className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg transition-colors"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(JSON.stringify(tokens, null, 2));
+                                    toast.success('Tokens copied to clipboard!');
+                                }}
+                                className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg transition-colors cursor-pointer"
                             >
                                 Copy JSON
                             </button>
@@ -139,6 +144,7 @@ export default function MigratorPage() {
                     </div>
 
                 </div>
+                <MigratorGuide />
             </div>
         </DashboardLayout>
     );

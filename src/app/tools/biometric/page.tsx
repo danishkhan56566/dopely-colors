@@ -2,196 +2,215 @@
 
 import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Fingerprint, Heart, Activity, Brain } from 'lucide-react';
+import { BiometricGuide } from '@/components/content/AdvancedGuides';
+import { Fingerprint, Heart, Activity, Brain, Wind, Thermometer, AlertTriangle, Battery, ShieldCheck } from 'lucide-react';
 import chroma from 'chroma-js';
-import { motion } from 'framer-motion';
-
-// Simulate Bio-Data
-const STRESS_LEVELS = [
-    { label: 'Relaxed', value: 20, color: '#10b981' }, // Green
-    { label: 'Focused', value: 50, color: '#3b82f6' }, // Blue
-    { label: 'Stressed', value: 80, color: '#f59e0b' }, // Orange
-    { label: 'Panic', value: 95, color: '#ef4444' }, // Red
-];
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
 
 export default function BiometricPage() {
-    const [stress, setStress] = useState(50);
-    const [heartRate, setHeartRate] = useState(70);
-    const [isSimulating, setIsSimulating] = useState(false);
+    const [stress, setStress] = useState(45);
+    const [bpm, setBpm] = useState(72);
+    const [history, setHistory] = useState<{ time: number, val: number }[]>([]);
 
-    // Dynamic Palette Calculation
-    // As stress increases -> Shift to calming colors (Cool Blues/Greens) OR Alert colors?
-    // "Biophilic Design" theory suggests:
-    // High Stress -> Needs Calming (Low Saturation, Cool Hue)
-    // But typically apps MIRROR state. Let's do "Adaptive calming".
-    // Goal: Counteract stress.
-
-    // Low Stress (20) -> Vibrant, energetic allows.
-    // High Stress (90) -> Needs absolute calm (Pastels, Cool tones).
-
-    const AdaptivePalette = (stressLevel: number) => {
-        // Base Hue: Moves from Orange (Energy) to Blue/Teal (Calm)
-        const targetHue = 200 + (stressLevel * 0.5); // 210 (Blue) to 250 (Purple/Blue)
-
-        // Saturation: Drops as stress rises to reduce cognitive load
-        const targetSat = 1 - (stressLevel / 150);
-
-        // Lightness: Increases to feel "lighter"
-        const targetLight = 0.5 + (stressLevel / 300);
-
-        const primary = chroma.hsl(targetHue, targetSat, targetLight).hex();
-
-        return {
-            primary,
-            secondary: chroma(primary).set('hsl.h', '+30').hex(),
-            bg: chroma(primary).brighten(2.5).hex(),
-            text: chroma(primary).darken(3).hex()
-        };
+    // Theme Engine
+    const getTheme = (s: number) => {
+        if (s > 80) return { bg: '#FEF2F2', primary: '#EF4444', status: 'CRITICAL', text: 'text-red-900' };
+        if (s > 50) return { bg: '#FFFBEB', primary: '#F59E0B', status: 'ELEVATED', text: 'text-amber-900' };
+        return { bg: '#ECFDF5', primary: '#10B981', status: 'OPTIMAL', text: 'text-emerald-900' };
     };
 
-    const theme = AdaptivePalette(stress);
+    const theme = getTheme(stress);
 
-    // Heartbeat Simulation
+    // Simulation Loop
     useEffect(() => {
-        if (isSimulating) {
-            const interval = setInterval(() => {
-                setHeartRate(prev => {
-                    const target = 60 + (stress * 0.8); // 80 to 140
-                    const drift = (Math.random() - 0.5) * 5;
-                    return Math.round(prev + (target - prev) * 0.1 + drift);
-                });
-            }, 1000);
-            return () => clearInterval(interval);
-        }
-    }, [isSimulating, stress]);
+        const interval = setInterval(() => {
+            setHistory(prev => {
+                const noise = (Math.random() - 0.5) * 10;
+                const nextVal = Math.max(40, Math.min(180, bpm + noise));
+                const newHistory = [...prev, { time: Date.now(), val: nextVal }].slice(-50);
+                return newHistory;
+            });
+
+            // Drift BPM towards stress target
+            const targetBpm = 60 + (stress * 1.2);
+            setBpm(curr => Math.round(curr + (targetBpm - curr) * 0.1));
+
+        }, 500);
+        return () => clearInterval(interval);
+    }, [stress, bpm]);
 
     return (
         <DashboardLayout>
-            <div
-                className="min-h-screen transition-colors duration-1000 p-6 md:p-10 flex flex-col items-center"
-                style={{ backgroundColor: theme.bg, color: theme.text }}
-            >
-                <header className="max-w-4xl text-center mb-12">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/50 text-xs font-bold uppercase tracking-wider mb-4 backdrop-blur">
-                        <Fingerprint size={14} /> Bio-Adaptive Interface
+            <div className={`min-h-screen transition-colors duration-700 p-6 md:p-10 font-sans`} style={{ backgroundColor: theme.bg }}>
+
+                {/* Header */}
+                <header className="max-w-7xl mx-auto mb-12 flex justify-between items-center">
+                    <div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/60 text-xs font-bold uppercase tracking-wider mb-2 backdrop-blur border border-white/20 shadow-sm text-gray-500">
+                            <Fingerprint size={14} /> Medical Grade Simulation
+                        </div>
+                        <h1 className={cn("text-4xl font-black transition-colors duration-500", theme.text)}>Bio-Adaptive Engine</h1>
                     </div>
-                    <h1 className="text-4xl font-black mb-4">Biometric Analyzer</h1>
-                    <p className="opacity-70 text-lg max-w-xl mx-auto">
-                        Interfaces that feel. Simulating how color systems can adapt to physiological signals like heart rate and stress (HealthKit Integration Concept).
-                    </p>
+                    <div className="hidden md:flex items-center gap-4">
+                        <div className="bg-white/50 backdrop-blur p-4 rounded-2xl flex items-center gap-3 border border-white/50">
+                            <Battery size={20} className="text-gray-400" />
+                            <div className="text-xs font-bold text-gray-500">SENSOR ONLINE<br /><span className="text-green-600">98% BATTERY</span></div>
+                        </div>
+                    </div>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl w-full">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                    {/* Bio-Console */}
-                    <div className="bg-white/40 backdrop-blur-xl p-8 rounded-[40px] border border-white/50 shadow-xl">
+                    {/* Left: Vitals Monitor */}
+                    <div className="lg:col-span-4 space-y-6">
 
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="font-bold text-xl flex items-center gap-2">
-                                <Activity size={20} /> Live Vitals
-                            </h3>
-                            <div className={`w-3 h-3 rounded-full ${isSimulating ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
+                        {/* Main Monitor */}
+                        <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-xl border border-white/50 relative overflow-hidden">
+                            <div className="flex justify-between items-start mb-8">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-3 bg-red-100 text-red-600 rounded-2xl">
+                                        <Heart size={24} className="animate-pulse" />
+                                    </div>
+                                    <div>
+                                        <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Heart Rate</div>
+                                        <div className="text-4xl font-black text-gray-900 tabular-nums">{bpm}</div>
+                                    </div>
+                                </div>
+                                <div className={cn("px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest",
+                                    stress > 80 ? "bg-red-500 text-white animate-pulse" : "bg-gray-100 text-gray-400")}>
+                                    {theme.status}
+                                </div>
+                            </div>
+
+                            {/* Chart */}
+                            <div className="h-32 -mx-4">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={history}>
+                                        <YAxis domain={['auto', 'auto']} hide />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="val"
+                                            stroke={theme.primary}
+                                            strokeWidth={3}
+                                            fill={theme.primary}
+                                            fillOpacity={0.1}
+                                            isAnimationActive={false}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
 
-                        {/* Heart Rate Viz */}
-                        <div className="mb-8 text-center py-8 bg-white/40 rounded-3xl relative overflow-hidden">
-                            <motion.div
-                                animate={{ scale: [1, 1.2, 1] }}
-                                transition={{ repeat: Infinity, duration: 60 / heartRate }}
-                            >
-                                <Heart size={64} className="mx-auto text-red-500 fill-red-500/20" />
-                            </motion.div>
-                            <div className="text-5xl font-black mt-4 tabular-nums">{heartRate}</div>
-                            <div className="text-xs uppercase font-bold opacity-50">BPM</div>
-
-                            {/* ECG Line (Fake) */}
-                            <svg className="absolute bottom-0 left-0 w-full h-12 opacity-30" preserveAspectRatio="none">
-                                <path d="M0,20 L20,20 L30,5 L40,35 L50,20 L100,20 L110,5 L120,35 L130,20 L400,20" vectorEffect="non-scaling-stroke" stroke="currentColor" fill="none" />
-                            </svg>
-                        </div>
-
-                        {/* Stress Slider */}
-                        <div className="space-y-4">
-                            <div className="flex justify-between text-sm font-bold">
-                                <span>User Stress Level</span>
-                                <span>{stress}%</span>
+                        {/* Controls */}
+                        <div className="bg-white/60 backdrop-blur p-8 rounded-[2.5rem] shadow-lg border border-white/50">
+                            <div className="flex items-center gap-3 mb-6">
+                                <Wind size={20} className="text-gray-400" />
+                                <h3 className="font-bold text-gray-600">Simulate Stress Load</h3>
                             </div>
                             <input
                                 type="range"
-                                min="0"
-                                max="100"
+                                min="0" max="100"
                                 value={stress}
-                                onChange={(e) => { setStress(parseInt(e.target.value)); setIsSimulating(true); }}
-                                className="w-full h-4 bg-gray-200 rounded-full appearance-none cursor-pointer overflow-hidden"
+                                onChange={(e) => setStress(Number(e.target.value))}
+                                className="w-full h-8 bg-gray-200 rounded-full appearance-none cursor-pointer overflow-hidden mb-4"
                                 style={{ background: `linear-gradient(to right, #10b981 0%, #f59e0b 50%, #ef4444 100%)` }}
                             />
-                            <div className="flex justify-between text-xs opacity-50">
-                                <span>Zen</span>
-                                <span>Panic</span>
+                            <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
+                                <span>Resting</span>
+                                <span>Attack</span>
                             </div>
                         </div>
 
                     </div>
 
-                    {/* Adaptive UI Preview */}
-                    <div className="relative">
-                        <div className="absolute -inset-4 bg-white/20 blur-3xl rounded-full" style={{ backgroundColor: theme.primary }} />
+                    {/* Right: Adaptive Review */}
+                    <div className="lg:col-span-8">
+                        <div className="bg-white rounded-[3rem] shadow-2xl overflow-hidden min-h-[600px] border-[8px] border-white/40 ring-1 ring-black/5 relative">
 
-                        <motion.div
-                            layout
-                            className="relative bg-white rounded-[40px] shadow-2xl overflow-hidden min-h-[500px] flex flex-col"
-                        >
-                            <div className="p-8 pb-4">
-                                <div className="flex justify-between items-center mb-6">
-                                    <div className="w-10 h-10 rounded-full bg-gray-100" />
-                                    <Brain size={24} style={{ color: theme.primary }} />
+                            {/* Overlay for Critical State */}
+                            <AnimatePresence>
+                                {stress > 80 && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        className="absolute inset-0 bg-red-500/10 z-20 pointer-events-none mix-blend-multiply"
+                                    />
+                                )}
+                            </AnimatePresence>
+
+                            <div className="bg-gray-50 p-8 border-b border-gray-100 flex justify-between items-center">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center text-xl">🧘</div>
+                                    <div>
+                                        <h2 className="font-bold text-lg text-gray-900">Mindful OS</h2>
+                                        <p className="text-xs text-gray-500">v2.0 • Adaptive Mode ON</p>
+                                    </div>
                                 </div>
-                                <h2 className="text-3xl font-bold mb-2">
-                                    {stress > 70 ? 'Take a breath.' : stress > 40 ? 'Stay focused.' : 'You are flowing.'}
-                                </h2>
-                                <p className="opacity-60">
-                                    {stress > 70 ? 'Detecting high cognitive load. Reducing visual noise.' : 'System optimal. Standard contrast applied.'}
-                                </p>
+                                <div className="flex gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                                    <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                                    <div className="w-3 h-3 rounded-full bg-green-400" />
+                                </div>
                             </div>
 
-                            <div className="flex-1 bg-gray-50 p-6 space-y-4">
-                                {/* Simulated Cards */}
-                                <motion.div
-                                    className="p-6 rounded-3xl text-white shadow-lg transition-colors duration-500"
-                                    style={{ backgroundColor: theme.primary }}
-                                >
-                                    <div className="opacity-80 mb-2 font-medium">Next Task</div>
-                                    <div className="text-xl font-bold">Deep Work Session</div>
-                                    <div className="mt-4 flex gap-2">
-                                        <div className="h-2 w-12 bg-white/30 rounded-full" />
-                                        <div className="h-2 w-8 bg-white/10 rounded-full" />
-                                    </div>
-                                </motion.div>
+                            <div className="p-12 transition-all duration-700" style={{ backgroundColor: stress > 80 ? '#FEF2F2' : '#F9FAFB' }}>
 
-                                <div className="p-6 rounded-3xl bg-white shadow-sm border border-gray-100">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <div className="font-bold">Notifications</div>
-                                        {stress > 60 && <div className="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded-full font-bold">MUTED</div>}
-                                    </div>
-                                    {stress > 60 ? (
-                                        <div className="text-sm opacity-50 text-center py-4">
-                                            Notifications paused for calm.
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-3">
-                                            {[1, 2, 3].map(i => (
-                                                <div key={i} className="flex gap-3 items-center">
-                                                    <div className="w-8 h-8 rounded-full bg-gray-100" />
-                                                    <div className="h-2 w-24 bg-gray-100 rounded" />
+                                <div className="max-w-md mx-auto space-y-6">
+
+                                    {/* Primary Card */}
+                                    <motion.div
+                                        layout
+                                        className={cn("p-8 rounded-[2rem] shadow-xl text-white transition-colors duration-500 relative overflow-hidden group")}
+                                        style={{ backgroundColor: theme.primary }}
+                                    >
+                                        <div className="relative z-10">
+                                            <div className="opacity-80 mb-1 text-sm font-medium uppercase tracking-wider">Current Focus</div>
+                                            <div className="text-3xl font-black mb-6">
+                                                {stress > 80 ? "Breathe Deeply" : "Deep Work"}
+                                            </div>
+
+                                            {stress > 80 ? (
+                                                <button className="bg-white/20 backdrop-blur px-6 py-3 rounded-xl font-bold w-full hover:bg-white/30 transition-colors">
+                                                    Start Guided Breathing
+                                                </button>
+                                            ) : (
+                                                <div className="flex gap-2 items-center text-sm font-bold opacity-90">
+                                                    <ShieldCheck size={18} /> 45m Remaining
                                                 </div>
-                                            ))}
+                                            )}
                                         </div>
-                                    )}
+
+                                        {/* Background Decor */}
+                                        <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                                    </motion.div>
+
+                                    {/* Secondary Modules */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+                                            <div className="text-gray-400 mb-2"><Thermometer size={20} /></div>
+                                            <div className="text-2xl font-bold text-gray-900">98.6°</div>
+                                            <div className="text-xs text-gray-400 font-bold">STABLE</div>
+                                        </div>
+                                        <div className={cn("p-6 rounded-[2rem] shadow-sm border border-gray-100 transition-colors", stress > 60 ? "bg-gray-100 opacity-50" : "bg-white")}>
+                                            <div className="text-gray-400 mb-2"><Activity size={20} /></div>
+                                            <div className="text-2xl font-bold text-gray-900">1,240</div>
+                                            <div className="text-xs text-gray-400 font-bold">STEPS</div>
+                                        </div>
+                                    </div>
+
                                 </div>
+
                             </div>
-                        </motion.div>
+                        </div>
                     </div>
 
+                </div>
+
+                <div className="max-w-7xl mx-auto mt-12 mb-20">
+                    <BiometricGuide />
                 </div>
             </div>
         </DashboardLayout>

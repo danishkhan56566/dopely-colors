@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { SpatialGuide } from '@/components/content/AdvancedGuides';
 import { Box, Layers, Move3d, Sparkles, Maximize2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { motion } from 'framer-motion';
@@ -171,6 +172,8 @@ export default function SpatialPage() {
                     </div>
 
                 </div>
+                <SpatialGuide />
+                <SpatialGuide />
             </div>
         </DashboardLayout>
     );

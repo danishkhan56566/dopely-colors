@@ -18,12 +18,12 @@ export const ToolsNavbarItem = () => {
     // Also maybe specific tools the user mentioned or key ones
     // Let's just hardcode a nice selection if finding is brittle
     const FEATURED_TOOLS = [
-        { name: 'AI Palette Generator', icon: Sparkles, desc: 'Text to color, instantly', href: '/ai' },
-        { name: 'Image Picker', icon: Image, desc: 'Extract from photos', href: '/image' },
-        { name: 'Contrast Checker', icon: Eye, desc: 'WCAG Accessibility', href: '/contrast' },
-        { name: 'Gradient Studio', icon: Layers, desc: 'Build complex gradients', href: '/gradients' },
-        { name: 'Explore Palettes', icon: Grid, desc: 'Browse the library', href: '/colors' },
-        { name: 'Palette Generator', icon: Wand2, desc: 'Classic generator', href: '/generate' },
+        { name: 'Fluid Gradients', icon: Layers, desc: 'Organic mesh gradients', href: '/tools/fluid' },
+        { name: 'Gallery Lens', icon: Image, desc: 'Extract mood from photos', href: '/tools/art-extractor' },
+        { name: 'Atmosphere Lab', icon: Wand2, desc: 'Realistic shadow physics', href: '/tools/shadows' },
+        { name: 'Dynamic Contrast', icon: Eye, desc: 'Advanced legibility', href: '/tools/dynamic-contrast' },
+        { name: 'Color Mixer', icon: Grid, desc: 'Pigment mixing sim', href: '/tools/mixer' },
+        { name: 'AI Palette Generator', icon: Sparkles, desc: 'Text to color', href: '/ai' },
     ];
 
     return (

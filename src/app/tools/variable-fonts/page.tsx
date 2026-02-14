@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Type, MoveHorizontal, MoveVertical, Sliders } from 'lucide-react';
+import { FontGuide } from '@/components/content/UtilityGuides';
 import chroma from 'chroma-js';
 
 // Google Fonts that support variable axes are great.
@@ -127,6 +128,7 @@ export default function VariableFontsPage() {
                     </div>
 
                 </div>
+                <FontGuide />
             </div>
         </DashboardLayout>
     );

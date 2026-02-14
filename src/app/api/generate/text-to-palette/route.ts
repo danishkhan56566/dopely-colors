@@ -1,34 +1,56 @@
 import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
+import { generateCorePalette } from '@/lib/color-engine';
+
+// Initialize OpenAI
+// OpenAI initialization moved inside handler to prevent build-time errors if key is missing
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
         const { prompt } = body;
 
-        // Mock logic - in production this would call OpenAI or a Python backend
         console.log(`[TextToPalette] Generating for prompt: ${prompt}`);
 
-        // Simple deterministic hash from prompt to get a "random" color
-        let hash = 0;
-        for (let i = 0; i < prompt.length; i++) {
-            hash = prompt.charCodeAt(i) + ((hash << 5) - hash);
+        if (!process.env.OPENAI_API_KEY) {
+            console.warn("No OPENAI_API_KEY found. Returning mock data.");
+            return NextResponse.json({
+                status: 'mock',
+                seed: '#6366f1',
+                system: generateCorePalette('#6366f1'),
+                message: "Generated via Mock Engine (No API Key)"
+            });
         }
-        const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-        const seed = '#' + '00000'.substring(0, 6 - c.length) + c;
 
-        // Mock suggestions
-        const mockResponse = {
-            status: 'mock',
-            seed: seed,
-            ai_suggestions: {
-                primary: seed,
-                secondary: '#ffffff', // Basic fallback
-                tertiary: '#000000'
-            },
-            message: "Generated via Mock Engine (Server Route)"
-        };
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
 
-        return NextResponse.json(mockResponse);
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4-turbo-preview",
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a specialized Design AI. Analyze the user's request for INDUSTRY CONTEXT (e.g., Food, Weather, Finance). Return a JSON object with keys: 'primary', 'secondary', 'tertiary'. Values must be hex codes. Example: {'primary': '#FF0000', 'secondary': '#00FF00', 'tertiary': '#0000FF'}"
+                },
+                { role: "user", content: `Create a palette for: ${prompt}` }
+            ],
+            response_format: { type: "json_object" }
+        });
+
+        const content = completion.choices[0].message.content;
+        const colors = JSON.parse(content || '{}');
+        const seedHex = colors.primary || '#6366f1';
+
+        // Generate System using our new TS engine
+        const paletteSystem = generateCorePalette(seedHex);
+
+        return NextResponse.json({
+            status: 'success',
+            seed: seedHex,
+            ai_suggestions: colors,
+            system: paletteSystem
+        });
 
     } catch (error) {
         console.error("Text-to-palette error:", error);

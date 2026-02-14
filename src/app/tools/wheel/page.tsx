@@ -6,6 +6,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Copy, RefreshCw, Layers } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { WheelGuide } from '@/components/content/ScienceGuides';
 
 export default function ColorHarmonyWheel() {
     const [baseColor, setBaseColor] = useState('#3b82f6');
@@ -197,7 +198,7 @@ export default function ColorHarmonyWheel() {
 
                             <div className="flex-1 flex flex-col gap-4">
                                 {harmonies.map((c, i) => (
-                                    <div key={i} className="flex-1 flex rounded-2xl overflow-hidden shadow-sm border border-gray-100 group transition-transform hover:scale-[1.02]">
+                                    <div key={i} className="flex h-24 rounded-2xl overflow-hidden shadow-sm border border-gray-100 group transition-transform hover:scale-[1.02]">
                                         <div
                                             className="w-32 h-full relative"
                                             style={{ backgroundColor: c }}
@@ -232,6 +233,7 @@ export default function ColorHarmonyWheel() {
                         </div>
                     </div>
                 </div>
+                <WheelGuide />
             </div>
         </DashboardLayout>
     );

@@ -2,8 +2,10 @@
 
 import { useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { DataStoryGuide } from '@/components/content/UtilityGuides';
 import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
 import { BarChart3, PieChart, TrendingUp, ArrowDown } from 'lucide-react';
+import Link from 'next/link';
 
 const SECTIONS = [
     {
@@ -184,11 +186,14 @@ export default function DataStoryPage() {
                     <p className="text-gray-400 max-w-lg mb-8">
                         Color helps data speak. Use our tools to ensure your message is heard, felt, and understood.
                     </p>
-                    <button className="px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform">
-                        Start Creating
-                    </button>
+                    <Link href="/generate">
+                        <button className="px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform">
+                            Start Creating
+                        </button>
+                    </Link>
                 </section>
 
+                <DataStoryGuide />
             </div>
         </DashboardLayout>
     );

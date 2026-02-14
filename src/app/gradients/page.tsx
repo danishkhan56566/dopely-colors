@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { HexColorPicker } from 'react-colorful';
@@ -22,6 +22,7 @@ import {
 import { GradientGuide } from '@/components/content/GradientGuide';
 import { toast } from 'sonner';
 import clsx from 'clsx';
+import chroma from 'chroma-js';
 
 // --- Types ---
 type GradientStop = {
@@ -54,7 +55,12 @@ const PRESET_GRADIENTS: SavedGradient[] = [
     { name: 'Instagram', css: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)', tags: ['Social', 'Trending'] },
 ];
 
-export default function GradientGeneratorPage() {
+import { useSearchParams } from 'next/navigation';
+
+function GradientGeneratorContent() {
+    const searchParams = useSearchParams();
+    const initialType = searchParams.get('type') as GradientType | null;
+
     const [activeTab, setActiveTab] = useState<'create' | 'browse'>('create');
     const [allGradients, setAllGradients] = useState<SavedGradient[]>(PRESET_GRADIENTS);
 
@@ -82,7 +88,7 @@ export default function GradientGeneratorPage() {
     }, []);
 
     // Builder State
-    const [type, setType] = useState<GradientType>('linear');
+    const [type, setType] = useState<GradientType>(initialType && ['linear', 'radial', 'conic'].includes(initialType) ? initialType : 'linear');
     const [angle, setAngle] = useState(135);
     const [position, setPosition] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
     const [stops, setStops] = useState<GradientStop[]>([
@@ -92,10 +98,57 @@ export default function GradientGeneratorPage() {
     ]);
     const [activeStopId, setActiveStopId] = useState<string>('2');
 
+    // New Feature State
+    const [noiseOpacity, setNoiseOpacity] = useState(20);
+    const [easing, setEasing] = useState<'linear' | 'ease-in' | 'ease-out' | 'ease-in-out'>('linear');
+
     // Helper to generate CSS
     const generatedCSS = useMemo(() => {
-        const sortedStops = [...stops].sort((a, b) => a.position - b.position);
-        const stopString = sortedStops.map(s => `${s.color} ${s.position}%`).join(', ');
+        let finalStops = [...stops].sort((a, b) => a.position - b.position);
+
+        // Apply Easing Interpolation
+        if (easing !== 'linear' && finalStops.length >= 2) {
+            const easedStops: GradientStop[] = [];
+
+            for (let i = 0; i < finalStops.length - 1; i++) {
+                const start = finalStops[i];
+                const end = finalStops[i + 1];
+                const steps = 10;
+
+                for (let j = 0; j <= steps; j++) {
+                    const t = j / steps; // 0 to 1
+
+                    // Easing functions
+                    let easedT = t;
+                    if (easing === 'ease-in') easedT = t * t;
+                    if (easing === 'ease-out') easedT = 1 - (1 - t) * (1 - t);
+                    if (easing === 'ease-in-out') easedT = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+                    const pos = start.position + (end.position - start.position) * easedT;
+
+                    // Simple RGB lerp for now (keeping it dependency free inside memo if possible, or use chroma)
+                    // We can rely on CSS to mix the colors if we just place stops? 
+                    // No, CSS mixes linearly between stops. To ease, we need to place INTERMEDIATE colors.
+                    // We need a color mixer here. Let's use simple hex mixing or chroma if available.
+                    // Since chroma is imported elsewhere, let's assuming it's available or use a helper.
+                    // Actually, we can just let CSS handle color mixing if we only adjusting DISTANCE?
+                    // No, easing "position" means color X takes longer to turn into color Y. 
+                    // So we must calculate the color at the eased time.
+
+                    // Simple Hex interpolator for this snippet to avoid heavy deps in loop
+                    // Or just use chroma since we are client side
+                    const mixedColor = chroma.mix(start.color, end.color, t, 'rgb').hex();
+
+                    if (j === 0) easedStops.push(start);
+                    else if (j === steps) { /* End added next loop */ }
+                    else easedStops.push({ id: `${start.id}-e-${j}`, color: mixedColor, position: pos });
+                }
+            }
+            easedStops.push(finalStops[finalStops.length - 1]);
+            finalStops = easedStops;
+        }
+
+        const stopString = finalStops.map(s => `${s.color} ${Math.round(s.position * 100) / 100}%`).join(', ');
 
         if (type === 'linear') {
             return `linear-gradient(${angle}deg, ${stopString})`;
@@ -104,7 +157,8 @@ export default function GradientGeneratorPage() {
         } else {
             return `conic-gradient(from ${angle}deg at ${position.x}% ${position.y}%, ${stopString})`;
         }
-    }, [type, angle, stops, position]);
+    }, [type, angle, stops, position, easing]);
+
 
     // Handlers
     const addStop = () => {
@@ -309,6 +363,43 @@ export default function GradientGeneratorPage() {
                                             </div>
                                         </div>
                                     )}
+                                    {/* Advanced Controls (Easing & Noise) */}
+                                    <div className="space-y-4 pt-4 border-t border-gray-100">
+                                        <div className="flex justify-between items-center px-1">
+                                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Blend Mode (Easing)</label>
+                                        </div>
+                                        <div className="flex gap-1 bg-gray-100/50 p-1 rounded-xl">
+                                            {(['linear', 'ease-in-out'].map(m => (
+                                                <button
+                                                    key={m}
+                                                    onClick={() => setEasing(m as any)}
+                                                    className={clsx(
+                                                        "flex-1 py-2 rounded-lg text-xs font-bold capitalize transition-all",
+                                                        easing === m ? "bg-white text-black shadow-sm" : "text-gray-400 hover:text-gray-600"
+                                                    )}
+                                                >
+                                                    {m.replace(/-/g, ' ')}
+                                                </button>
+                                            )))}
+                                        </div>
+
+                                        <div className="pt-2">
+                                            <div className="flex justify-between items-end px-1 mb-2">
+                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                                                    <Sparkles size={12} /> Grain / Noise
+                                                </label>
+                                                <span className="text-xs font-bold text-gray-900">{noiseOpacity}%</span>
+                                            </div>
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max="100"
+                                                value={noiseOpacity}
+                                                onChange={(e) => setNoiseOpacity(Number(e.target.value))}
+                                                className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -318,7 +409,10 @@ export default function GradientGeneratorPage() {
                                     className="w-full h-[500px] rounded-[2.5rem] shadow-2xl shadow-indigo-200/20 border-4 border-white ring-1 ring-black/5 relative group overflow-hidden transition-all duration-500"
                                     style={{ background: generatedCSS }}
                                 >
-                                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay" />
+                                    <div
+                                        className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pointer-events-none mix-blend-overlay transition-opacity duration-300"
+                                        style={{ opacity: noiseOpacity / 100 }}
+                                    />
 
                                     <div className="absolute top-8 right-8 flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-[-10px] group-hover:translate-y-0">
                                         <button
@@ -443,5 +537,15 @@ export default function GradientGeneratorPage() {
                 <GradientGuide />
             </div>
         </DashboardLayout>
+    );
+}
+
+export default function GradientGeneratorPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        </div>}>
+            <GradientGeneratorContent />
+        </Suspense>
     );
 }

@@ -5,6 +5,7 @@ import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Image as ImageIcon, Copy, Upload, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { DuotoneGuide } from '@/components/content/ScienceGuides';
 
 export default function DuotoneLab() {
     const [image, setImage] = useState('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop');
@@ -166,6 +167,7 @@ export default function DuotoneLab() {
                     </div>
 
                 </div>
+                <DuotoneGuide />
             </div>
         </DashboardLayout>
     );

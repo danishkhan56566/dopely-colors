@@ -5,6 +5,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Layout, Moon, Sun, Monitor, Smartphone, Tablet, Copy } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
+import { ThemeGuide } from '@/components/content/UtilityGuides';
 
 export default function ThemeGenerator() {
     // Theme State
@@ -236,6 +237,7 @@ export default function ThemeGenerator() {
                         </div>
                     </div>
                 </div>
+                <ThemeGuide />
             </div>
         </DashboardLayout>
     );

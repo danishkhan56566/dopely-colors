@@ -4,7 +4,9 @@ import { useState, useMemo } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Network, Copy, ArrowRight, Spline } from 'lucide-react';
+import { InterpolatorGuide } from '@/components/content/UtilityGuides';
 import { toast } from 'sonner';
+
 
 export default function InterpolatorTool() {
     const [startColor, setStartColor] = useState('#fef08a');
@@ -141,6 +143,7 @@ export default function InterpolatorTool() {
                         </div>
                     </div>
                 </div>
+                <InterpolatorGuide />
             </div>
         </DashboardLayout>
     );

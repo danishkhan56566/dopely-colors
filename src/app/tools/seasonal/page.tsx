@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { SeasonalGuide } from '@/components/content/UtilityGuides';
 import { Calendar, CloudSnow, Sun, CloudRain, Wind } from 'lucide-react';
 import chroma from 'chroma-js';
 
@@ -57,6 +58,7 @@ export default function SeasonalPage() {
                     {season.desc}
                 </div>
 
+                <SeasonalGuide />
             </div>
         </DashboardLayout>
     );

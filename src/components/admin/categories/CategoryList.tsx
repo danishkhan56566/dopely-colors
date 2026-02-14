@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Folder, Plus, Trash, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { createCategoryAction, deleteCategoryAction } from '@/app/admin/categories/actions';
+import { createPortal } from 'react-dom';
 
 export default function CategoryList({ initialCategories }: { initialCategories: any[] }) {
     const [categories, setCategories] = useState(initialCategories);
@@ -103,7 +104,7 @@ export default function CategoryList({ initialCategories }: { initialCategories:
             </div>
 
             {/* Modal */}
-            {isModalOpen && (
+            {isModalOpen && typeof document !== 'undefined' && createPortal(
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
                         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
@@ -158,7 +159,8 @@ export default function CategoryList({ initialCategories }: { initialCategories:
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

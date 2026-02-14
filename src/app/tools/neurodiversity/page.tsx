@@ -2,178 +2,184 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { NeurodiversityGuide } from '@/components/content/AdvancedGuides';
+import { Smile, Zap, BookOpen, User, VolumeX, Sun, Sliders, Check, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Smile, Zap, BookOpen, Eye, Palette, Check } from 'lucide-react';
+import { cn } from '@/lib/utils'; // Assuming cn utility exists
 
-type Mode = 'standard' | 'adhd' | 'autism' | 'dyslexia' | 'protanopia';
-
-const MODES: { id: Mode; name: string; icon: any; desc: string; colors: any }[] = [
+const PERSONAS = [
     {
-        id: 'standard',
-        name: 'Standard',
-        icon: Palette,
-        desc: 'Default high-contrast design.',
-        colors: { bg: '#ffffff', card: '#f3f4f6', text: '#111827', accent: '#3b82f6', success: '#22c55e', warning: '#eab308' }
+        id: 'alex-adhd',
+        name: 'Alex',
+        tag: 'ADHD',
+        desc: 'Struggles with visual clutter and distraction.',
+        mode: 'Focus',
+        params: { sat: 0.8, contrast: 1.2, noise: 0 }
     },
     {
-        id: 'adhd',
-        name: 'ADHD Focus',
-        icon: Zap,
-        desc: 'High contrast, minimal distraction. Reduced non-essential colors to help focus.',
-        colors: { bg: '#f8fafc', card: '#ffffff', text: '#0f172a', accent: '#2563eb', success: '#15803d', warning: '#b45309' }
+        id: 'sam-autism',
+        name: 'Sam',
+        tag: 'Autism',
+        desc: 'Sensitive to bright lights and high-contrast vibration.',
+        mode: 'Calm',
+        params: { sat: 0.5, contrast: 0.8, noise: 0 }
     },
     {
-        id: 'autism',
-        name: 'Autism (Calm)',
-        icon: Smile,
-        desc: 'Soft, muted pastels. Avoids bright yellows/reds and high-contrast vibration.',
-        colors: { bg: '#fdfbf7', card: '#e2e8f0', text: '#475569', accent: '#94a3b8', success: '#86efac', warning: '#fde047' }
-    },
-    {
-        id: 'dyslexia',
-        name: 'Dyslexia Friendly',
-        icon: BookOpen,
-        desc: 'Warm cream backgrounds (avoid pure white). Dark grey text (avoid pure black).',
-        colors: { bg: '#fffff0', card: '#faebd7', text: '#333333', accent: '#4682b4', success: '#556b2f', warning: '#DAA520' }
-    },
-    {
-        id: 'protanopia',
-        name: 'Color Blind Safe',
-        icon: Eye,
-        desc: 'Red-Green safe palette. Uses Blue/Orange/Yellow for distinction.',
-        colors: { bg: '#ffffff', card: '#f3f4f6', text: '#000000', accent: '#0072b2', success: '#009e73', warning: '#d55e00' }
+        id: 'mia-dyslexia',
+        name: 'Mia',
+        tag: 'Dyslexia',
+        desc: 'Needs clear fonts and warm, non-white backgrounds.',
+        mode: 'Clarity',
+        params: { sat: 1, contrast: 1, cream: true }
     }
 ];
 
 export default function NeurodiversityPage() {
-    const [activeMode, setActiveMode] = useState<Mode>('standard');
-    const currentTheme = MODES.find(m => m.id === activeMode)?.colors;
+    const [persona, setPersona] = useState(PERSONAS[0]);
+    const [stimulation, setStimulation] = useState(50); // 0-100
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 p-6 md:p-10 flex flex-col items-center">
+            <div className="min-h-screen bg-[#FAFAF9] font-sans text-stone-800 pb-20 transition-colors duration-700"
+                style={{ backgroundColor: persona.params.cream ? '#FFFBEB' : '#FAFAF9' }}>
 
-                <header className="max-w-3xl w-full text-center mb-12">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-bold uppercase tracking-wider mb-4">
-                        <Smile size={14} /> Inclusive Design
+                {/* Header: Friendly/Calm */}
+                <header className="max-w-5xl mx-auto pt-12 mb-12 text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-stone-200/50 rounded-full text-stone-600 font-bold text-xs uppercase tracking-widest mb-6">
+                        <Smile size={16} /> Sensory Safe Guard
                     </div>
-                    <h1 className="text-4xl font-black text-gray-900 mb-4">Neurodiversity Optimizer</h1>
-                    <p className="text-gray-500 text-lg">
-                        Simulate and optimize your palette for different neurodivergent needs.
-                        Design for brains that process sensory information differently.
+                    <h1 className="text-4xl md:text-5xl font-black text-stone-900 mb-6 tracking-tight">
+                        Design for <span className="text-stone-500">Every Mind.</span>
+                    </h1>
+                    <p className="text-xl text-stone-500 max-w-2xl mx-auto leading-relaxed">
+                        Neurodivergent users process sensory data differently.
+                        Optimize your palette to reduce overload and improve focus.
                     </p>
                 </header>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl w-full">
+                <main className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 px-6">
 
-                    {/* Sidebar */}
-                    <div className="lg:col-span-1 space-y-4">
-                        {MODES.map((mode) => (
-                            <button
-                                key={mode.id}
-                                onClick={() => setActiveMode(mode.id)}
-                                className={`w-full p-4 rounded-2xl border text-left flex items-start gap-4 transition-all duration-200 ${activeMode === mode.id ? 'bg-white border-blue-500 ring-2 ring-blue-100 shadow-lg scale-105' : 'bg-white border-gray-100 hover:border-gray-300 hover:bg-gray-50'}`}
-                            >
-                                <div className={`p-3 rounded-xl ${activeMode === mode.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
-                                    <mode.icon size={24} />
-                                </div>
-                                <div>
-                                    <h3 className={`font-bold ${activeMode === mode.id ? 'text-gray-900' : 'text-gray-600'}`}>
-                                        {mode.name}
-                                    </h3>
-                                    <p className="text-xs text-gray-400 mt-1 leading-relaxed">
-                                        {mode.desc}
-                                    </p>
-                                </div>
-                            </button>
-                        ))}
+                    {/* Left: Persona Selector */}
+                    <div className="md:col-span-4 space-y-8">
+                        <div>
+                            <h3 className="text-xs font-black uppercase tracking-widest text-stone-400 mb-4 ml-2">Select Persona</h3>
+                            <div className="space-y-3">
+                                {PERSONAS.map(p => (
+                                    <button
+                                        key={p.id}
+                                        onClick={() => setPersona(p)}
+                                        className={cn(
+                                            "w-full p-4 rounded-3xl text-left border-2 transition-all duration-300 relative overflow-hidden group",
+                                            persona.id === p.id
+                                                ? "bg-white border-stone-800 shadow-xl scale-105"
+                                                : "bg-white border-transparent shadow-sm hover:scale-102 hover:shadow-md"
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-4 relative z-10">
+                                            <div className={cn("w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg",
+                                                persona.id === p.id ? "bg-stone-800 text-white" : "bg-stone-100 text-stone-400")}>
+                                                {p.name[0]}
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-lg text-stone-900">{p.name}</div>
+                                                <div className="text-xs font-bold uppercase tracking-wider text-stone-400">{p.tag}</div>
+                                            </div>
+                                        </div>
+                                        {persona.id === p.id && (
+                                            <div className="absolute top-4 right-4 text-stone-800">
+                                                <Check size={20} />
+                                            </div>
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Sensory Control */}
+                        <div className="bg-white p-8 rounded-[2.5rem] shadow-lg border border-stone-100">
+                            <div className="flex items-center gap-3 mb-6">
+                                <Activity className="text-stone-400" />
+                                <h3 className="font-bold text-lg text-stone-700">Stimulation</h3>
+                            </div>
+                            <input
+                                type="range"
+                                min="0" max="100"
+                                value={stimulation}
+                                onChange={(e) => setStimulation(Number(e.target.value))}
+                                className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-stone-800 mb-4"
+                            />
+                            <div className="flex justify-between text-xs font-bold text-stone-400 uppercase tracking-widest">
+                                <span>Low (Calm)</span>
+                                <span>High (Energetic)</span>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Preview Area */}
-                    <div className="lg:col-span-2">
+                    {/* Right: Adaptive Preview */}
+                    <div className="md:col-span-8">
                         <AnimatePresence mode="wait">
                             <motion.div
-                                key={activeMode}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.3 }}
-                                className="rounded-3xl shadow-xl overflow-hidden border border-gray-100 min-h-[500px] flex flex-col"
-                                style={{ backgroundColor: currentTheme.bg, color: currentTheme.text }}
+                                key={persona.id}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border-[8px] border-white ring-1 ring-stone-100 min-h-[600px] flex flex-col"
                             >
-                                {/* Mock App Header */}
-                                <div className="p-6 border-b" style={{ borderColor: 'rgba(0,0,0,0.05)' }}>
+                                {/* Simulated App UI */}
+                                <div className="flex-1 p-10 flex flex-col gap-8 transition-colors duration-500"
+                                    style={{
+                                        backgroundColor: persona.params.cream ? '#FFFBEB' : '#fff',
+                                        filter: persona.id === 'sam-autism' ? `saturate(${0.5 + (stimulation / 200)})` : 'none'
+                                    }}
+                                >
+                                    {/* App Header */}
                                     <div className="flex justify-between items-center">
-                                        <div className="flex gap-2">
-                                            <div className="w-3 h-3 rounded-full bg-red-400 opacity-50" />
-                                            <div className="w-3 h-3 rounded-full bg-yellow-400 opacity-50" />
-                                            <div className="w-3 h-3 rounded-full bg-green-400 opacity-50" />
+                                        <div className="w-10 h-10 rounded-full bg-stone-900 opacity-10" />
+                                        <div className="flex gap-4 text-sm font-bold text-stone-400">
+                                            <span>Dashboard</span>
+                                            <span className="text-stone-900">Tasks</span>
+                                            <span>Settings</span>
                                         </div>
-                                        <div className="text-sm font-bold opacity-50">App Preview</div>
-                                    </div>
-                                </div>
-
-                                {/* Mock App Content */}
-                                <div className="p-8 flex-1 flex flex-col gap-8">
-
-                                    {/* Hero */}
-                                    <div className="flex justify-between items-center">
-                                        <div className="space-y-2">
-                                            <h2 className="text-3xl font-black">Welcome back, User.</h2>
-                                            <p className="opacity-70 max-w-md">Here is your daily overview. You have 3 pending tasks to complete today.</p>
-                                        </div>
-                                        <button
-                                            className="px-6 py-3 rounded-xl font-bold text-white shadow-lg transform transition-transform hover:scale-105 active:scale-95"
-                                            style={{ backgroundColor: currentTheme.accent }}
-                                        >
-                                            New Task
-                                        </button>
                                     </div>
 
-                                    {/* Cards */}
+                                    {/* Hero Message */}
+                                    <div className="py-10">
+                                        <h2 className="text-4xl font-bold mb-4 text-stone-900 leading-tight">
+                                            Good Morning,<br />
+                                            {persona.name}.
+                                        </h2>
+                                        <p className="text-lg text-stone-500 max-w-md">
+                                            {persona.desc} This interface adapts to your needs.
+                                        </p>
+                                    </div>
+
+                                    {/* Sensory Cards */}
                                     <div className="grid grid-cols-2 gap-6">
-                                        <div className="p-6 rounded-2xl shadow-sm" style={{ backgroundColor: currentTheme.card }}>
-                                            <div className="flex justify-between items-start mb-4">
-                                                <div className="p-2 rounded-lg" style={{ backgroundColor: currentTheme.success + '20', color: currentTheme.success }}>
-                                                    <Check size={20} />
-                                                </div>
-                                                <span className="text-xs font-bold opacity-50 uppercase">Completed</span>
+                                        <div className="p-8 rounded-[2rem] bg-stone-100 transition-all hover:scale-105 duration-300 group">
+                                            <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 text-stone-800 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                                                <Zap size={24} />
                                             </div>
-                                            <div className="text-2xl font-bold mb-1">12 Tasks</div>
-                                            <div className="text-sm opacity-60">+24% from yesterday</div>
+                                            <div className="font-bold text-xl text-stone-800 mb-1">Focus Mode</div>
+                                            <div className="text-sm text-stone-500">Active</div>
                                         </div>
-
-                                        <div className="p-6 rounded-2xl shadow-sm" style={{ backgroundColor: currentTheme.card }}>
-                                            <div className="flex justify-between items-start mb-4">
-                                                <div className="p-2 rounded-lg" style={{ backgroundColor: currentTheme.warning + '20', color: currentTheme.warning }}>
-                                                    <Zap size={20} />
-                                                </div>
-                                                <span className="text-xs font-bold opacity-50 uppercase">Pending</span>
+                                        <div className="p-8 rounded-[2rem] bg-stone-100 transition-all hover:scale-105 duration-300 group">
+                                            <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-4 text-stone-800 group-hover:bg-green-500 group-hover:text-white transition-colors">
+                                                <BookOpen size={24} />
                                             </div>
-                                            <div className="text-2xl font-bold mb-1">5 Urgent</div>
-                                            <div className="text-sm opacity-60">Requires attention</div>
+                                            <div className="font-bold text-xl text-stone-800 mb-1">Readability</div>
+                                            <div className="text-sm text-stone-500">Optimized</div>
                                         </div>
                                     </div>
 
-                                    {/* List */}
-                                    <div className="p-6 rounded-2xl shadow-sm space-y-4" style={{ backgroundColor: currentTheme.card }}>
-                                        <h3 className="font-bold border-b pb-2 opacity-80" style={{ borderColor: 'rgba(0,0,0,0.05)' }}>Recent Activity</h3>
-                                        {[1, 2, 3].map((i) => (
-                                            <div key={i} className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style={{ backgroundColor: currentTheme.accent, opacity: 0.8 }}>
-                                                        U{i}
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-bold">Project Update #{i}</div>
-                                                        <div className="text-xs opacity-60">2 hours ago</div>
-                                                    </div>
-                                                </div>
-                                                <div className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: currentTheme.bg }}>
-                                                    View
-                                                </div>
-                                            </div>
-                                        ))}
+                                    {/* Info Banner */}
+                                    <div className="mt-auto bg-stone-900 text-stone-200 p-6 rounded-2xl flex items-center gap-4">
+                                        <div className="p-2 bg-white/10 rounded-full">
+                                            <VolumeX size={20} />
+                                        </div>
+                                        <div className="text-sm font-medium">
+                                            <strong>Sensory Guard Active:</strong> Reduced {persona.id === 'alex-adhd' ? 'visual clutter' : persona.id === 'sam-autism' ? 'color vibration' : 'contrast glare'}.
+                                        </div>
                                     </div>
 
                                 </div>
@@ -181,6 +187,10 @@ export default function NeurodiversityPage() {
                         </AnimatePresence>
                     </div>
 
+                </main>
+
+                <div className="max-w-7xl mx-auto px-10 mt-20">
+                    <NeurodiversityGuide />
                 </div>
             </div>
         </DashboardLayout>

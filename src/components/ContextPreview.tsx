@@ -1,6 +1,7 @@
 import { Color } from '@/store/usePaletteStore';
 import { X, ArrowRight, Layout, MousePointer2, BarChart3, PieChart, Layers, Search, Bell } from 'lucide-react';
 import chroma from 'chroma-js';
+import { createPortal } from 'react-dom';
 
 interface ContextPreviewProps {
     isOpen: boolean;
@@ -10,6 +11,7 @@ interface ContextPreviewProps {
 
 export const ContextPreview = ({ isOpen, onClose, colors }: ContextPreviewProps) => {
     if (!isOpen) return null;
+    if (typeof document === 'undefined') return null;
 
     // Realtime Colors Mapping heuristic based on typical 5-color palette generation:
     // We'll map them sequentially but users can hit spacebar to rotate/generate.
@@ -32,7 +34,7 @@ export const ContextPreview = ({ isOpen, onClose, colors }: ContextPreviewProps)
     const textOnPrim = chroma.contrast(cPrim, '#ffffff') > 3 ? '#ffffff' : '#000000';
     const textOnAcc = chroma.contrast(cAcc, '#ffffff') > 3 ? '#ffffff' : '#000000';
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-[100] bg-white text-sans">
             {/* Realtime Colors-ish Header */}
             <nav
@@ -215,6 +217,7 @@ export const ContextPreview = ({ isOpen, onClose, colors }: ContextPreviewProps)
                     </div>
                 </section>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };

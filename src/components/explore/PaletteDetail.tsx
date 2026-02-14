@@ -10,18 +10,31 @@ import { useState, useEffect } from 'react';
 import { usePaletteStore } from '@/store/usePaletteStore';
 import { downloadPaletteAsPng } from '@/utils/download';
 import clsx from 'clsx';
+import { createPortal } from 'react-dom';
 
 interface PaletteDetailProps {
     colors: string[];
 }
 
 export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
-    // Mock Data
-    const likes = 340;
-    const date = '8 hours ago';
-
-    const [copiedColor, setCopiedColor] = useState<string | null>(null);
+    // States
     const [isEmbedOpen, setIsEmbedOpen] = useState(false);
+    const [copiedColor, setCopiedColor] = useState<string | null>(null);
+    const { toggleFavorite, savedPalettes } = usePaletteStore();
+
+    // Generate Related Palettes (Memoized)
+    const [relatedPalettes] = useState(() => Array.from({ length: 8 }).map((_, i) => ({
+        id: `related-${i}-${Math.random().toString(36).substr(2, 9)}`, // Unique ID
+        likes: Math.floor(Math.random() * 2000),
+        date: '1 day ago',
+        colors: chroma.scale([chroma.random(), chroma.random()]).mode('lch').colors(5),
+    })));
+
+    // Validate colors
+    if (!colors || colors.length === 0) return notFound();
+
+    const isSaved = savedPalettes.some(p => p.colors.join('-') === colors.join('-'));
+    const date = 'Just now'; // Dynamic date if available in props
 
     const copyToClipboard = (color: string) => {
         navigator.clipboard.writeText(color);
@@ -29,16 +42,8 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
         setTimeout(() => setCopiedColor(null), 1500);
     };
 
-    // Validate colors
-    if (!colors || colors.length === 0) return notFound();
-
-    const { toggleFavorite, savedPalettes } = usePaletteStore();
-
-    // Check if saved
-    const isSaved = savedPalettes.some(p => p.colors.join('-') === colors.join('-'));
-
     const handleCopyLink = () => {
-        navigator.clipboard.writeText(window.location.href);
+        navigator.clipboard.writeText(typeof window !== 'undefined' ? window.location.href : '');
         setCopiedColor('Link');
         setTimeout(() => setCopiedColor(null), 1500);
     };
@@ -206,12 +211,7 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
                     <div className="w-full max-w-6xl mt-16 px-4">
                         <h3 className="text-2xl font-bold mb-8 text-center text-slate-700">You might also like</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-                            {Array.from({ length: 8 }).map((_, i) => ({
-                                id: `related-${i}`,
-                                likes: Math.floor(Math.random() * 2000),
-                                date: '1 day ago',
-                                colors: chroma.scale([chroma.random(), chroma.random()]).mode('lch').colors(5),
-                            })).map(palette => (
+                            {relatedPalettes.map(palette => (
                                 <PaletteCard key={palette.id} {...palette} />
                             ))}
                         </div>
@@ -219,9 +219,13 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
                 </div>
 
                 {/* Embed Modal */}
-                {isEmbedOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                        <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative">
+                {isEmbedOpen && typeof document !== 'undefined' && createPortal(
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <div
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+                            onClick={() => setIsEmbedOpen(false)}
+                        />
+                        <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative z-10 animate-in zoom-in-95 duration-200">
                             <button
                                 onClick={() => setIsEmbedOpen(false)}
                                 className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors"
@@ -269,7 +273,8 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </div>
         </DashboardLayout>
