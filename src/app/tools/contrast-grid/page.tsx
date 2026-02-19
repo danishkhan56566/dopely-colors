@@ -11,6 +11,14 @@ import { ContrastGuide } from '@/components/content/ContrastGuide';
 import { calcAPCA, sRGBtoY, colorParsley } from 'apca-w3';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+export const metadata = {
+    title: 'Contrast Grid - Check WCAG & APCA Contrast Matrices | Dopely Colors',
+    description: 'Visualize accessibility compliance across your entire color palette. Check WCAG 2.1 (AA/AAA) and APCA contrast scores in a grid format.',
+    alternates: {
+        canonical: '/tools/contrast-grid',
+    },
+};
+
 function ContrastGridContent() {
     const searchParams = useSearchParams();
     const router = useRouter();

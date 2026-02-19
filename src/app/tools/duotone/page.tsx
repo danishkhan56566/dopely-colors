@@ -7,6 +7,14 @@ import { Image as ImageIcon, Copy, Upload, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { DuotoneGuide } from '@/components/content/ScienceGuides';
 
+export const metadata = {
+    title: 'Duotone Generator - Create Spotify-Style SVG Effects | Dopely Colors',
+    description: 'Turn images into brand assets with SVG spectral filtering. Map highlights and shadows to specific brand colors for a cohesive look.',
+    alternates: {
+        canonical: '/tools/duotone',
+    },
+};
+
 export default function DuotoneLab() {
     const [image, setImage] = useState('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop');
     const [color1, setColor1] = useState('#220033'); // Dark

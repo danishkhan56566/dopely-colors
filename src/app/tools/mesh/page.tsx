@@ -26,6 +26,14 @@ const INITIAL_NODES: MeshNode[] = [
     { id: '5', x: 80, y: 80, color: '#68d391', radius: 40, opacity: 1 },
 ];
 
+export const metadata = {
+    title: 'Mesh Gradient Studio - Create Aurora & Multi-Point Gradients | Dopely Colors',
+    description: 'Craft complex, multi-point mesh gradients. Drag and drop color nodes to create soft, dreamlike auroras and backgrounds for your modern UI.',
+    alternates: {
+        canonical: '/tools/mesh',
+    },
+};
+
 export default function MeshGradientStudio() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);

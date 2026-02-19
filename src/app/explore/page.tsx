@@ -5,6 +5,14 @@ import { fetchPalettesAction } from './actions';
 // export const dynamic = 'force-dynamic'; // DISABLED to save CPU
 export const revalidate = 3600; // Cache for 1 hour
 
+export const metadata = {
+    title: 'Explore Color Palettes - Dopely Colors',
+    description: 'Browse thousands of beautiful color palettes created by our community. Filter by color, style, or popularity.',
+    alternates: {
+        canonical: 'https://dopelycolors.com/explore',
+    },
+};
+
 export default async function ExplorePage() {
     const supabase = await createClient();
 

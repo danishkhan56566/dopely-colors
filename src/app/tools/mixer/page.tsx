@@ -9,6 +9,14 @@ import clsx from 'clsx';
 import { toast } from 'sonner';
 import { MixerGuide } from '@/components/content/ScienceGuides';
 
+export const metadata = {
+    title: 'Color Mixer - Blend & Interpolate Colors Online | Dopely Colors',
+    description: 'Digitally mix two colors to find the perfect midpoint or generate a smooth gradient scale. Supports RGB, LCH, LAB, and HSL interpolation.',
+    alternates: {
+        canonical: '/tools/mixer',
+    },
+};
+
 function ColorMixerContent() {
     const searchParams = useSearchParams();
     const view = searchParams.get('view');

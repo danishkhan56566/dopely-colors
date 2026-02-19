@@ -11,6 +11,16 @@ import { FavoritesFAQ } from '@/components/content/PageFAQs';
 
 import { useEffect } from 'react';
 
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'My Favorites - Dopely Colors',
+    robots: {
+        index: false,
+        follow: false,
+    },
+};
+
 export default function Favorites() {
     const { savedPalettes, removeFavorite, fetchFavorites } = usePaletteStore();
 

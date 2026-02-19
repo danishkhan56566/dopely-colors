@@ -7,6 +7,14 @@ import clsx from 'clsx';
 import { toast } from 'sonner';
 import { FluidGuide } from '@/components/content/GenerativeGuides';
 
+export const metadata = {
+    title: 'Fluid Gradient Generator - Create Organic Mesh Gradients | Dopely Colors',
+    description: 'Create organic, moving, and liquid-like gradients. Perfect for modern, dynamic backgrounds that feel alive. Export as CSS or SVG.',
+    alternates: {
+        canonical: '/tools/fluid',
+    },
+};
+
 export default function FluidGradientGenerator() {
     const [colors, setColors] = useState(['#ff80b5', '#9089fc', '#ff0000']);
     const [blur, setBlur] = useState(100);
@@ -170,6 +178,10 @@ ${colors.map((c, i) => `
                         animation: blob infinite ease-in-out;
                     }
                 `}</style>
+
+                <div className="max-w-7xl mx-auto px-6 mt-20 relative z-10">
+                    <FluidGuide />
+                </div>
             </div>
         </DashboardLayout>
     );

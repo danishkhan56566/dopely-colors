@@ -53,7 +53,7 @@ const getColorData = cache(async (hexParam: string) => {
     }
 
     return { hex, data, isValid: true };
-}
+});
 
 export async function generateMetadata(
     { params, searchParams }: Props,

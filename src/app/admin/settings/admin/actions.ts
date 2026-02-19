@@ -142,9 +142,50 @@ export async function inviteAdmin(email: string, role: 'admin' | 'editor') {
     try {
         const supabase = createAdminClient();
 
+        console.log(`[Admin] Inviting ${email} as ${role}`);
+
         const { data, error } = await supabase.auth.admin.inviteUserByEmail(email, {
             data: { role: role }
         });
+
+        // Handle specific case: User already exists
+        if (error && (error.message.includes('already registered') || error.status === 422 || error.status === 400)) {
+            console.log(`[Admin] User ${email} already exists. Attempting to promote.`);
+
+            // Find the user ID from profiles
+            const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('email', email)
+                .single();
+
+            if (profileError || !profile) {
+                console.error('[Admin] Profile lookup failed:', profileError);
+                return { success: false, error: 'User exists but profile not found. Cannot promote.' };
+            }
+
+            // Update their role
+            const { error: updateError } = await supabase
+                .from('profiles')
+                .update({ role: role })
+                .eq('id', profile.id);
+
+            if (updateError) throw updateError;
+
+            // Also update Auth metadata if possible (optional but good for consistency)
+            await supabase.auth.admin.updateUserById(profile.id, {
+                user_metadata: { role: role }
+            });
+
+            await logAdminAction({
+                action: 'Promote User',
+                details: `Promoted existing user ${email} to ${role}`,
+                context: 'User Management'
+            });
+
+            revalidatePath('/admin/settings/admin');
+            return { success: true };
+        }
 
         if (error) throw error;
 

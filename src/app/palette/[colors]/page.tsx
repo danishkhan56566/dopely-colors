@@ -48,17 +48,27 @@ export default async function Page({ params }: Props) {
         "@context": "https://schema.org",
         "@type": "CreativeWork",
         "name": `Color Palette ${validHexCodes.join('-')}`,
-        "description": `A curated color palette containing ${validHexCodes.join(', ')}.`,
+        "headline": `A custom color palette featuring ${validHexCodes.join(', ')}`,
+        "description": `Discover this unique color palette comprising ${validHexCodes.length} colors: ${validHexCodes.join(', ')}. Perfect for web design, branding, and digital art. Use our tools to visualize, test contrast, and export these colors.`,
         "creator": {
             "@type": "Organization",
-            "name": "Dopely Colors"
+            "name": "Dopely Colors",
+            "url": "https://dopelycolors.com"
         },
-        "keywords": `color palette, ${validHexCodes.join(', ')}`,
-        "additionalProperty": validHexCodes.map(hex => ({
-            "@type": "PropertyValue",
-            "name": "Color",
-            "value": hex
-        }))
+        "keywords": `color palette, ${validHexCodes.join(', ')}, hex codes, color scheme, design tools`,
+        "datePublished": new Date().toISOString(),
+        "mainEntity": {
+            "@type": "ItemList",
+            "itemListElement": validHexCodes.map((hex, index) => ({
+                "@type": "ListItem",
+                "position": index + 1,
+                "item": {
+                    "@type": "Color",
+                    "name": hex,
+                    "color": hex
+                }
+            }))
+        }
     };
 
     return (

@@ -17,13 +17,11 @@ User-Agent: *
 Allow: /
 Disallow: /tools/*
 Disallow: /api/*
-Disallow: /api/*
 Disallow: /admin/*
 Disallow: /dashboard/*
 Disallow: /profile/*
 Disallow: /settings/*
-Disallow: /colors/*
-Disallow: /palette/*
 Disallow: /generate/*
+Disallow: /favorites
 
 Sitemap: https://dopelycolors.com/sitemap.xml

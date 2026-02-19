@@ -9,6 +9,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
 
+export const metadata = {
+    title: 'Biometric Color Simulator - Adaptive Interface Design | Dopely Colors',
+    description: 'Simulate how your interface adapts to user stress levels and biometric data. distinct from standard dark/light mode testing.',
+    alternates: {
+        canonical: '/tools/biometric',
+    },
+};
+
 export default function BiometricPage() {
     const [stress, setStress] = useState(45);
     const [bpm, setBpm] = useState(72);

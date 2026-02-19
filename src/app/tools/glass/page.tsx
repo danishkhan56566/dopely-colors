@@ -7,6 +7,14 @@ import clsx from 'clsx';
 import { toast } from 'sonner';
 import { GlassGuide } from '@/components/content/GenerativeGuides';
 
+export const metadata = {
+    title: 'Glassmorphism Generator - CSS Frosted Glass Effect | Dopely Colors',
+    description: 'Generate the perfect frosted glass effect for your UI. Customize blur, transparency, and saturation to create modern, sleek glass cards.',
+    alternates: {
+        canonical: '/tools/glass',
+    },
+};
+
 export default function GlassmorphismGenerator() {
     const [color, setColor] = useState('#ffffff');
     const [opacity, setOpacity] = useState(20);

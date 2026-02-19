@@ -19,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // 2. Tools (Rewrites mapped to actual internal routes usually, but if these are the public URLs...)
     // Assuming the public URLs are cleaned up as intended in the comment
+    // 2. Tools
     const toolRoutes = [
         '/generate',
         '/explore',
@@ -28,7 +29,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/picker',
         '/gradients',
         '/tailwind',
-        '/design-system'
+        '/design-system',
+        // Specific Tools
+        '/tools/ai-prompt',
+        '/tools/art-extractor',
+        '/tools/biometric',
+        '/tools/blind-viz',
+        '/tools/blindness',
+        '/tools/brand',
+        '/tools/cognitive-load',
+        '/tools/collab-lab',
+        '/tools/contrast-grid',
+        '/tools/converter',
+        '/tools/cross-platform',
+        '/tools/cultural',
+        '/tools/delta',
+        '/tools/design-tokens',
+        '/tools/duotone',
+        '/tools/dynamic-contrast',
+        '/tools/eco-impact',
+        '/tools/eco-palette',
+        '/tools/fluid',
+        '/tools/gamified',
+        '/tools/gesture-mix',
+        '/tools/glass',
+        '/tools/interpolator',
+        '/tools/lighting-sim',
+        '/tools/linter',
+        '/tools/mesh',
+        '/tools/micro-interactions',
+        '/tools/migrator',
+        '/tools/mixer',
+        '/tools/multi-variable',
+        '/tools/perf-palette',
+        '/tools/seasonal',
+        '/tools/shade-generator',
+        '/tools/shadows',
+        '/tools/spatial',
+        '/tools/temporal',
+        '/tools/themes',
+        '/tools/tokens',
+        '/tools/toner',
+        '/tools/trend-predictor',
+        '/tools/variable-fonts',
+        '/tools/voice-color',
+        '/tools/wearable',
+        '/tools/wheel'
     ].map(slug => ({ url: slug, priority: 0.9 }));
 
     // 3. Discover (Mapped to cleanest public URL)
