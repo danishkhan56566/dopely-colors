@@ -228,11 +228,13 @@ export async function inviteAdmin(email: string, role: 'admin' | 'editor') {
 
         // Also create an entry in profiles to ensure role is tracked
         if (data.user) {
+            // Fallback: DB constraint only allows 'admin' or 'user'
+            const dbRole = role === 'editor' ? 'admin' : role;
+
             await supabase.from('profiles').upsert({
                 id: data.user.id,
-                email: email,
-                role: role,
-                status: 'pending'
+                role: dbRole
+                // status and email columns do not exist in profiles table
             });
 
             await logAdminAction({
