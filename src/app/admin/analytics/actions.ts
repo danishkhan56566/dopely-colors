@@ -115,13 +115,14 @@ export async function getAnalyticsData() {
         // 5. Countries & Traffic (REAL data from profiles)
         const { data: allProfiles } = await supabase
             .from('profiles')
-            .select('country, traffic_source');
+            .select('id'); // country and traffic_source do not exist yet
 
         // Aggregate Countries
+        /* 
         const countryMap = new Map<string, number>();
         allProfiles?.forEach(p => {
             if (p.country) {
-                const c = p.country === 'Unknown' ? 'Unknown' : p.country; // Keep Unknown explicit if we want
+                const c = p.country === 'Unknown' ? 'Unknown' : p.country;
                 countryMap.set(c, (countryMap.get(c) || 0) + 1);
             }
         });
@@ -132,12 +133,15 @@ export async function getAnalyticsData() {
                 name,
                 count,
                 percent: totalTrackedCountries > 0 ? `${Math.round((count / totalTrackedCountries) * 100)}%` : '0%',
-                flag: getFlagEmoji(name) // Helper needed
+                flag: getFlagEmoji(name)
             }))
             .sort((a, b) => b.count - a.count)
-            .slice(0, 5); // Start with top 5
+            .slice(0, 5);
+        */
+        const countries: AnalyticsExtension['countries'] = [];
 
         // Aggregate Traffic Sources
+        /*
         const trafficMap = new Map<string, number>();
         allProfiles?.forEach(p => {
             if (p.traffic_source) {
@@ -149,6 +153,8 @@ export async function getAnalyticsData() {
             .map(([name, count]) => ({ name, count }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 5);
+        */
+        const trafficSources: AnalyticsExtension['trafficSources'] = [];
 
         return {
             summary: {

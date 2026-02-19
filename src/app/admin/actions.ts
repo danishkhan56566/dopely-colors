@@ -72,14 +72,17 @@ export async function getDashboardStats() {
         const userIdsToFetch = Array.from(new Set(activity.map(a => a.userId).filter(Boolean)));
         if (userIdsToFetch.length > 0) {
             try {
-                const { data: profiles } = await supabase.from('profiles').select('id, email').in('id', userIdsToFetch);
-                if (profiles) {
-                    const emailMap = new Map(profiles.map(p => [p.id, p.email]));
-                    activity = activity.map(a => ({
-                        ...a,
-                        user: emailMap.get(a.userId) || a.user
-                    }));
-                }
+                // Resolved via Auth API because profiles table doesn't have email column
+                const emailMap = new Map<string, string>();
+                await Promise.all(userIdsToFetch.map(async (uid) => {
+                    const { data: { user } } = await supabase.auth.admin.getUserById(uid);
+                    if (user?.email) emailMap.set(uid, user.email);
+                }));
+
+                activity = activity.map(a => ({
+                    ...a,
+                    user: emailMap.get(a.userId) || a.user
+                }));
             } catch (e) { console.error('Profile Resolve Error:', e); }
         }
 
