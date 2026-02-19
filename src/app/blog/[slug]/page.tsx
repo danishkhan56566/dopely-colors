@@ -2,9 +2,10 @@ import { getPostBySlug, getAllPosts } from '@/lib/blog';
 import { notFound } from 'next/navigation';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import Link from 'next/link';
-import { ChevronLeft, Calendar, Share2, Twitter, Copy, Clock, Hash } from 'lucide-react';
+import { ChevronLeft, Calendar, Clock, Twitter, Copy } from 'lucide-react';
 import { marked } from 'marked';
 import { AdUnit } from '@/components/ads/AdUnit';
+import { ShareButtons } from '@/components/blog/ShareButtons';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -49,6 +50,9 @@ export default async function BlogPost({ params }: PageProps) {
     // Calculate read time (approximate)
     const wordCount = post.content.split(/\s+/).length;
     const readTime = Math.ceil(wordCount / 200);
+
+    // Calculate full URL for sharing
+    const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dopelycolors.com'}/blog/${post.slug}`;
 
     return (
         <DashboardLayout>
@@ -233,16 +237,8 @@ export default async function BlogPost({ params }: PageProps) {
                     {/* Main Content */}
                     <div className="relative">
                         {/* Share - Desktop Sticky */}
-                        <div className="hidden xl:flex flex-col gap-4 fixed top-48 left-[calc(50%-42rem)] w-16">
-                            <div className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-2 writing-mode-vertical rotate-180">
-                                Share
-                            </div>
-                            <button className="w-12 h-12 rounded-full bg-white border border-gray-100 text-gray-500 hover:text-[#1DA1F2] hover:border-[#1DA1F2] shadow-sm flex items-center justify-center transition-all hover:scale-110">
-                                <Twitter size={20} />
-                            </button>
-                            <button className="w-12 h-12 rounded-full bg-white border border-gray-100 text-gray-500 hover:text-gray-900 hover:border-gray-900 shadow-sm flex items-center justify-center transition-all hover:scale-110">
-                                <Copy size={20} />
-                            </button>
+                        <div className="hidden xl:flex flex-col gap-4 fixed top-48 left-[calc(50%-42rem)] w-16 z-10">
+                            <ShareButtons url={shareUrl} title={post.title} layout="vertical" />
                         </div>
 
                         {/* Ad: Top Banner */}
@@ -270,14 +266,7 @@ export default async function BlogPost({ params }: PageProps) {
 
                             <div className="flex items-center gap-4">
                                 <span className="text-sm font-medium text-gray-500">Share this article</span>
-                                <div className="flex gap-2">
-                                    <button className="p-2 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
-                                        <Twitter size={18} />
-                                    </button>
-                                    <button className="p-2 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors">
-                                        <Copy size={18} />
-                                    </button>
-                                </div>
+                                <ShareButtons url={shareUrl} title={post.title} layout="horizontal" />
                             </div>
                         </div>
 
