@@ -18,6 +18,8 @@ async function getGradients() {
     return data || [];
 }
 
+import { Suspense } from 'react';
+
 export default async function GradientsPage() {
     const gradients = await getGradients();
 
@@ -28,5 +30,9 @@ export default async function GradientsPage() {
         tags: g.tags || []
     }));
 
-    return <GradientGeneratorClient initialGradients={mappedGradients} />;
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <GradientGeneratorClient initialGradients={mappedGradients} />
+        </Suspense>
+    );
 }
