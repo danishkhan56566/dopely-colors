@@ -115,12 +115,11 @@ export async function getAnalyticsData() {
         // 5. Countries & Traffic (REAL data from profiles)
         const { data: allProfiles } = await supabase
             .from('profiles')
-            .select('id'); // country and traffic_source do not exist yet
+            .select('id, country, traffic_source');
 
         // Aggregate Countries
-        /* 
         const countryMap = new Map<string, number>();
-        allProfiles?.forEach(p => {
+        allProfiles?.forEach((p: any) => {
             if (p.country) {
                 const c = p.country === 'Unknown' ? 'Unknown' : p.country;
                 countryMap.set(c, (countryMap.get(c) || 0) + 1);
@@ -137,13 +136,10 @@ export async function getAnalyticsData() {
             }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 5);
-        */
-        const countries: AnalyticsExtension['countries'] = [];
 
         // Aggregate Traffic Sources
-        /*
         const trafficMap = new Map<string, number>();
-        allProfiles?.forEach(p => {
+        allProfiles?.forEach((p: any) => {
             if (p.traffic_source) {
                 trafficMap.set(p.traffic_source, (trafficMap.get(p.traffic_source) || 0) + 1);
             }
@@ -153,8 +149,6 @@ export async function getAnalyticsData() {
             .map(([name, count]) => ({ name, count }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 5);
-        */
-        const trafficSources: AnalyticsExtension['trafficSources'] = [];
 
         return {
             summary: {
