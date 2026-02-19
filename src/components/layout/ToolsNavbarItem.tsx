@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronDown, ArrowRight, Sparkles, Image, Eye, Layers, Grid, Wand2 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -25,6 +25,21 @@ export const ToolsNavbarItem = () => {
         { name: 'Color Mixer', icon: Grid, desc: 'Pigment mixing sim', href: '/tools/mixer' },
         { name: 'AI Palette Generator', icon: Sparkles, desc: 'Text to color', href: '/ai' },
     ];
+
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return (
+            <button className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors">
+                Tools
+                <ChevronDown size={14} className="opacity-60" />
+            </button>
+        );
+    }
 
     return (
         <Popover>
