@@ -174,11 +174,13 @@ export async function inviteAdmin(email: string, role: 'admin' | 'editor') {
                 }
 
                 // Create the missing profile
+                // Fallback: DB constraint only allows 'admin' or 'user', so we map 'editor' -> 'admin' for now
+                const dbRole = role === 'editor' ? 'admin' : role;
+
                 const { error: createProfileError } = await supabase.from('profiles').insert({
                     id: linkData.user.id,
-                    email: email,
-                    role: role,
-                    status: 'active' // Assume active if they exist in auth
+                    role: dbRole
+                    // status and email columns do not exist in profiles table
                 });
 
                 if (createProfileError) {
