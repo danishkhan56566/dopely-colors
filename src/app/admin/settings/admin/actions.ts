@@ -152,65 +152,57 @@ export async function inviteAdmin(email: string, role: 'admin' | 'editor') {
         if (error && (error.message.includes('already registered') || error.status === 422 || error.status === 400)) {
             console.log(`[Admin] User ${email} already exists. Attempting to promote.`);
 
-            // Find the user ID from profiles
+            // 1. Resolve User ID via Auth API (Safe way)
+            const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+                type: 'magiclink',
+                email: email
+            });
+
+            if (linkError || !linkData.user) {
+                console.error('[Admin] Failed to resolve user via generic link:', linkError);
+                return { success: false, error: 'User exists but cannot be resolved. Cannot promote.' };
+            }
+
+            const userId = linkData.user.id;
+
+            // 2. Check if Profile Exists by ID
             const { data: profile, error: profileError } = await supabase
                 .from('profiles')
                 .select('id')
-                .eq('email', email)
+                .eq('id', userId)
                 .single();
 
+            // Fallback: DB constraint only allows 'admin' or 'user'
+            const dbRole = role === 'editor' ? 'admin' : role;
+
             if (profileError || !profile) {
-                console.warn('[Admin] Profile lookup failed, but user exists in Auth. Attempting to resolve User ID via Admin API.');
-
-                // Try to resolve user ID via generateLink (safe side-effect-free way to get user object)
-                const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
-                    type: 'magiclink',
-                    email: email
-                });
-
-                if (linkError || !linkData.user) {
-                    console.error('[Admin] Failed to resolve user via generic link:', linkError);
-                    return { success: false, error: 'User exists but profile not found. Cannot promote.' };
-                }
-
-                // Create the missing profile
-                // Fallback: DB constraint only allows 'admin' or 'user', so we map 'editor' -> 'admin' for now
-                const dbRole = role === 'editor' ? 'admin' : role;
-
+                // Case A: Profile Missing -> Create it
+                console.log(`[Admin] Profile missing for ${userId}. Creating...`);
                 const { error: createProfileError } = await supabase.from('profiles').insert({
-                    id: linkData.user.id,
+                    id: userId,
                     role: dbRole
-                    // status and email columns do not exist in profiles table
                 });
 
                 if (createProfileError) {
                     console.error('[Admin] Failed to create missing profile:', createProfileError);
                     throw createProfileError;
                 }
+            } else {
+                // Case B: Profile Exists -> Update it
+                console.log(`[Admin] Profile exists for ${userId}. Updating role...`);
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .update({ role: dbRole })
+                    .eq('id', userId);
 
-                console.log(`[Admin] Created missing profile for ${email}`);
-
-                // Since we just created it with the correct role, we are done.
-                await logAdminAction({
-                    action: 'Promote User (Fixed Profile)',
-                    details: `Created missing profile and promoted ${email} to ${role}`,
-                    context: 'User Management'
-                });
-
-                revalidatePath('/admin/settings/admin');
-                return { success: true };
+                if (updateError) {
+                    console.error('[Admin] Failed to update profile role:', updateError);
+                    throw updateError;
+                }
             }
 
-            // Update their role
-            const { error: updateError } = await supabase
-                .from('profiles')
-                .update({ role: role })
-                .eq('id', profile.id);
-
-            if (updateError) throw updateError;
-
-            // Also update Auth metadata if possible (optional but good for consistency)
-            await supabase.auth.admin.updateUserById(profile.id, {
+            // Also update Auth metadata for consistency
+            await supabase.auth.admin.updateUserById(userId, {
                 user_metadata: { role: role }
             });
 
