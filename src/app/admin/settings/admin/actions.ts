@@ -160,8 +160,43 @@ export async function inviteAdmin(email: string, role: 'admin' | 'editor') {
                 .single();
 
             if (profileError || !profile) {
-                console.error('[Admin] Profile lookup failed:', profileError);
-                return { success: false, error: 'User exists but profile not found. Cannot promote.' };
+                console.warn('[Admin] Profile lookup failed, but user exists in Auth. Attempting to resolve User ID via Admin API.');
+
+                // Try to resolve user ID via generateLink (safe side-effect-free way to get user object)
+                const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+                    type: 'magiclink',
+                    email: email
+                });
+
+                if (linkError || !linkData.user) {
+                    console.error('[Admin] Failed to resolve user via generic link:', linkError);
+                    return { success: false, error: 'User exists but profile not found. Cannot promote.' };
+                }
+
+                // Create the missing profile
+                const { error: createProfileError } = await supabase.from('profiles').insert({
+                    id: linkData.user.id,
+                    email: email,
+                    role: role,
+                    status: 'active' // Assume active if they exist in auth
+                });
+
+                if (createProfileError) {
+                    console.error('[Admin] Failed to create missing profile:', createProfileError);
+                    throw createProfileError;
+                }
+
+                console.log(`[Admin] Created missing profile for ${email}`);
+
+                // Since we just created it with the correct role, we are done.
+                await logAdminAction({
+                    action: 'Promote User (Fixed Profile)',
+                    details: `Created missing profile and promoted ${email} to ${role}`,
+                    context: 'User Management'
+                });
+
+                revalidatePath('/admin/settings/admin');
+                return { success: true };
             }
 
             // Update their role
