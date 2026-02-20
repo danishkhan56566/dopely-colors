@@ -200,6 +200,7 @@ export default function FeaturedManager({ initialPalettes }: { initialPalettes: 
                 </div>
 
                 <DndContext
+                    id="featured-dnd-context"
                     sensors={sensors}
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}

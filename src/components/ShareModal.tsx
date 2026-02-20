@@ -1,7 +1,7 @@
 'use client';
 
 import { X, Globe, Lock, Copy, Check, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePaletteStore, SavedPalette } from '@/store/usePaletteStore';
 import { toast } from 'sonner';
 import { createPortal } from 'react-dom';
@@ -16,12 +16,17 @@ export const ShareModal = ({ isOpen, onClose, palette }: ShareModalProps) => {
     const { updateVisibility } = usePaletteStore();
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     if (!isOpen) return null;
-    if (typeof document === 'undefined') return null;
+    if (!mounted) return null;
 
     const isPublic = !!palette.is_public;
-    const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/p/${palette.id}` : '';
+    const shareUrl = `${window.location.origin}/p/${palette.id}`;
 
     const handleToggle = async () => {
         setLoading(true);

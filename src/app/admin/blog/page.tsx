@@ -28,9 +28,10 @@ export default function AdminBlogPage() {
         setError(null);
 
         try {
+            // Use select('*') so it doesn't crash if newer columns (like country_focus) haven't been migrated to the production DB yet.
             const { data, error } = await supabase
                 .from('posts')
-                .select('id, title, slug, status, published_at, created_at, country_focus')
+                .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) {
@@ -48,11 +49,14 @@ export default function AdminBlogPage() {
 
             console.error('Error fetching posts:', err);
 
-            if (err.message === 'MISSING_TABLE' || err?.code === '42P01') {
+            if (err.message === 'MISSING_TABLE') {
                 setError('MISSING_TABLE');
             } else {
                 setError(err?.message || 'Unknown error occurred');
                 toast.error(`Failed to load posts: ${err?.message || 'Unknown error'}`);
+
+                // If it's a column error, we might still want to attempt fetching without the missing column, 
+                // but select('*') usually avoids this. If it still errors, at least we logged it.
             }
         } finally {
             setIsLoading(false);

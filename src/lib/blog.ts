@@ -116,23 +116,38 @@ function getPostFromFile(slug: string): BlogPost | null {
 // --- Hybrid Exports ---
 
 export async function getAllPosts(): Promise<BlogPost[]> {
+    let dbPosts: BlogPost[] = [];
     try {
-        const dbPosts = await getPostsFromDB();
-        return dbPosts;
+        dbPosts = await getPostsFromDB();
     } catch (e: any) {
         console.error('Fetching from DB failed:', e.message);
-        // Return empty array on error instead of falling back to files
-        // This prevents "zombie posts" from appearing if DB fails
-        return [];
     }
+
+    const filePosts = getPostsFromFiles();
+
+    // Combine posts, prioritizing DB versions if duplicates exist
+    const dbSlugs = new Set(dbPosts.map(p => p.slug));
+    const allPosts = [...dbPosts];
+
+    filePosts.forEach(post => {
+        if (!dbSlugs.has(post.slug)) {
+            allPosts.push(post);
+        }
+    });
+
+    // Sort by date descending
+    return allPosts.sort((a, b) => (new Date(a.date) < new Date(b.date) ? 1 : -1));
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+    // 1. Try DB first
     try {
         const dbPost = await getPostFromDB(slug);
-        return dbPost;
+        if (dbPost) return dbPost;
     } catch (e) {
-        console.error('DB lookup failed for:', slug);
-        return null; // No fallback
+        console.warn('DB lookup failed for:', slug);
     }
+
+    // 2. Fallback to local file
+    return getPostFromFile(slug);
 }

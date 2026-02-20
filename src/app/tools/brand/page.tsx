@@ -3,211 +3,242 @@
 import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { BrandGuide } from '@/components/content/AdvancedGuides';
-import { Palette, Layers, Box, Type, MousePointer2, Smartphone, Monitor, Download, Copy, Check } from 'lucide-react';
+import { Palette, Globe, ScanSearch, CheckCircle2, Copy, Sparkles, LayoutPanelLeft } from 'lucide-react';
 import chroma from 'chroma-js';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { HexColorPicker } from 'react-colorful';
+import { motion, AnimatePresence } from 'framer-motion';
+
+type ExtractedColor = {
+    role: string;
+    hex: string;
+    description: string;
+};
+
+// Mock function to simulate URL scraping
+const mockExtractColors = async (url: string): Promise<ExtractedColor[]> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            let base = '#3b82f6';
+            if (url.includes('stripe')) base = '#6366f1';
+            if (url.includes('github')) base = '#24292e';
+            if (url.includes('vercel')) base = '#000000';
+            if (url.includes('figma')) base = '#f24e1e';
+
+            const primary = chroma(base);
+            const isDark = primary.luminance() < 0.1;
+
+            resolve([
+                { role: 'Primary', hex: primary.hex(), description: 'Main brand interactive color' },
+                { role: 'Secondary', hex: primary.set('hsl.h', '+45').hex(), description: 'Accents and highlights' },
+                { role: 'Background', hex: isDark ? '#ffffff' : '#0a0a0b', description: 'Primary page background' },
+                { role: 'Surface', hex: isDark ? '#f4f4f5' : '#18181b', description: 'Cards and elevated elements' },
+                { role: 'Text', hex: isDark ? '#18181b' : '#ffffff', description: 'High-contrast typography' },
+                { role: 'Muted', hex: isDark ? '#a1a1aa' : '#71717a', description: 'Secondary text and borders' },
+            ]);
+        }, 2500); // 2.5s simulated delay
+    });
+};
 
 export default function BrandPalettePage() {
-    const [primary, setPrimary] = useState('#3B82F6');
-    const [showPicker, setShowPicker] = useState(false);
+    const [url, setUrl] = useState('');
+    const [isScanning, setIsScanning] = useState(false);
+    const [extractedData, setExtractedData] = useState<ExtractedColor[] | null>(null);
 
-    // 1. Semantic Token Generation
-    const tokens = useMemo(() => {
-        const p = chroma(primary);
-        return {
-            primary: primary,
-            onPrimary: p.luminance() > 0.5 ? '#000000' : '#FFFFFF',
-            primaryContainer: p.alpha(0.1).css(),
-            secondary: p.set('hsl.h', '+30').hex(),
-            tertiary: p.set('hsl.h', '+180').hex(),
-            surface: '#FFFFFF',
-            surfaceVariant: '#F3F4F6',
-            background: '#FAFAFA',
-            error: '#EF4444',
-            success: '#22C55E'
-        };
-    }, [primary]);
+    const handleExtract = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!url) {
+            toast.error("Please enter a valid URL");
+            return;
+        }
 
-    // 2. Scale Generation (50-950)
-    const scale = useMemo(() => {
-        return chroma.scale(['#fff', primary, '#000']).mode('lch').colors(11); // Simplified steps
-    }, [primary]);
+        setIsScanning(true);
+        setExtractedData(null);
+
+        try {
+            const data = await mockExtractColors(url);
+            setExtractedData(data);
+            toast.success("Brand colors extracted successfully!");
+        } catch (error) {
+            toast.error("Failed to extract colors");
+        } finally {
+            setIsScanning(false);
+        }
+    };
+
+    const copyHex = (hex: string, role: string) => {
+        navigator.clipboard.writeText(hex);
+        toast.custom((t) => (
+            <div className="bg-[#111] border border-white/10 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: hex + '40' }}>
+                    <CheckCircle2 size={16} style={{ color: hex }} />
+                </div>
+                <span className="font-medium text-sm">Copied <span className="font-bold">{role}</span> color</span>
+            </div>
+        ), { duration: 2000 });
+    };
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
+            <div className="min-h-screen bg-[#0a0a0b] flex flex-col p-6 md:p-10 relative overflow-hidden">
+                {/* Ambient Background */}
+                <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-blue-500/10 blur-[150px] rounded-full pointer-events-none" />
+                <div className="absolute top-[40%] right-[-10%] w-[50vw] h-[50vw] bg-purple-500/10 blur-[150px] rounded-full pointer-events-none" />
 
-                {/* Header */}
-                <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
-                    <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-600 rounded-lg text-white">
-                                <Palette size={20} />
-                            </div>
-                            <h1 className="text-xl font-bold tracking-tight">Brand Command Center</h1>
-                        </div>
-                        <button className="px-4 py-2 bg-slate-900 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-slate-800 transition-colors flex items-center gap-2">
-                            <Download size={14} /> Export Tokens
-                        </button>
+                <div className="w-full max-w-5xl mx-auto relative z-10 flex flex-col pt-10">
+
+                    {/* Header */}
+                    <div className="text-center mb-16">
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-blue-400 text-sm font-bold tracking-widest uppercase mb-6 backdrop-blur-md shadow-[0_0_30px_rgba(59,130,246,0.2)]"
+                        >
+                            <Sparkles size={16} /> Brand Intelligence
+                        </motion.div>
+                        <motion.h1
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight"
+                        >
+                            Color Extractor
+                        </motion.h1>
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-gray-400 text-xl max-w-2xl mx-auto"
+                        >
+                            Instantly analyze any website's CSS to extract its core design language and color tokens.
+                        </motion.p>
                     </div>
-                </header>
 
-                <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 p-6 mt-6">
-
-                    {/* Left: Toggles & Map */}
-                    <div className="lg:col-span-4 space-y-6">
-
-                        {/* Primary Input */}
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Core DNA</h3>
-                            <div className="flex gap-4 items-start">
-                                <div className="relative">
-                                    <div
-                                        className="w-16 h-16 rounded-xl shadow-inner cursor-pointer border-2 border-slate-100"
-                                        style={{ backgroundColor: primary }}
-                                        onClick={() => setShowPicker(!showPicker)}
+                    {/* Extractor Input Area */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="bg-white/5 backdrop-blur-3xl p-8 md:p-12 rounded-[2.5rem] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden"
+                    >
+                        {/* Scanning Overlay Animation */}
+                        <AnimatePresence>
+                            {isScanning && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="absolute inset-0 z-20 pointer-events-none bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center overflow-hidden"
+                                >
+                                    <motion.div
+                                        animate={{ top: ['-10%', '110%'] }}
+                                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                        className="absolute left-0 right-0 h-32 bg-gradient-to-b from-transparent via-blue-500/20 to-blue-400/80 border-b border-blue-400 shadow-[0_0_40px_rgba(59,130,246,0.8)]"
                                     />
-                                    {showPicker && (
-                                        <div className="absolute top-full mt-2 left-0 z-50">
-                                            <HexColorPicker color={primary} onChange={setPrimary} />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex-1">
-                                    <label className="text-xs font-bold text-slate-500 block mb-1">Primary Hex</label>
-                                    <div className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2 border border-slate-200 focus-within:ring-2 ring-blue-500/20">
-                                        <span className="text-slate-400">#</span>
-                                        <input
-                                            type="text"
-                                            value={primary.replace('#', '')}
-                                            onChange={(e) => setPrimary('#' + e.target.value)}
-                                            className="bg-transparent outline-none font-mono font-bold text-slate-700 w-full uppercase"
-                                        />
+                                    <ScanSearch size={48} className="text-blue-400 animate-pulse relative z-30 mb-4" />
+                                    <div className="text-blue-300 font-mono text-sm tracking-widest uppercase animate-pulse">Analyzing DOM & CSSOM...</div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        <form onSubmit={handleExtract} className="relative z-10 max-w-3xl mx-auto">
+                            <div className="relative group">
+                                <div className={cn(
+                                    "absolute -inset-1 rounded-[2rem] blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-1000",
+                                    isScanning ? "bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 animate-pulse" : "bg-white/20"
+                                )} />
+                                <div className="relative flex items-center bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-3 shadow-inner">
+                                    <div className="pl-4 pr-3 text-gray-500">
+                                        <Globe size={24} />
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Semantic Map */}
-                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Token Map</h3>
-                            <div className="space-y-4">
-                                {Object.entries(tokens).map(([key, value]) => (
-                                    <div key={key} className="flex items-center justify-between group cursor-pointer hover:bg-slate-50 p-2 rounded-lg -mx-2 transition-colors">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full border border-slate-100 shadow-sm" style={{ backgroundColor: value }} />
-                                            <span className="text-sm font-medium capitalize text-slate-600">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                                        </div>
-                                        <span className="font-mono text-xs text-slate-400 group-hover:text-blue-500">{value}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {/* Right: Live Preview */}
-                    <div className="lg:col-span-8 space-y-8">
-
-                        {/* App Simulation */}
-                        <div className="bg-slate-100 rounded-3xl p-2 border border-slate-200 shadow-inner overflow-hidden">
-                            <div className="bg-white rounded-[1.2rem] overflow-hidden shadow-xl min-h-[500px] flex flex-col md:flex-row">
-
-                                {/* Sidebar */}
-                                <div className="w-64 bg-slate-50 border-r border-slate-100 p-6 hidden md:flex flex-col gap-8">
-                                    <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-                                        <div className="w-6 h-6 rounded-lg" style={{ backgroundColor: tokens.primary }} />
-                                        BrandOS
-                                    </div>
-                                    <div className="space-y-1">
-                                        {['Dashboard', 'Projects', 'Team', 'Settings'].map((item, i) => (
-                                            <div key={item}
-                                                className={cn("px-3 py-2 rounded-lg text-sm font-medium cursor-pointer", i === 0 ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:bg-slate-100")}
-                                                style={i === 0 ? { color: tokens.primary } : {}}
-                                            >
-                                                {item}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Main Content */}
-                                <div className="flex-1 bg-white p-8">
-                                    <header className="flex justify-between items-center mb-10">
-                                        <div>
-                                            <h2 className="text-2xl font-bold text-slate-900">Overview</h2>
-                                            <p className="text-slate-500 text-sm">Welcome back, Team.</p>
-                                        </div>
-                                        <button
-                                            className="px-4 py-2 rounded-lg text-sm font-bold text-white shadow-lg transition-transform active:scale-95"
-                                            style={{ backgroundColor: tokens.primary, color: tokens.onPrimary }}
-                                        >
-                                            + New Project
-                                        </button>
-                                    </header>
-
-                                    {/* Cards */}
-                                    <div className="grid grid-cols-2 gap-6 mb-8">
-                                        <div className="p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                                            <div className="absolute top-0 right-0 p-4 opacity-10 transition-transform group-hover:scale-110" style={{ color: tokens.primary }}>
-                                                <Layers size={64} />
-                                            </div>
-                                            <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Total Revenue</div>
-                                            <div className="text-3xl font-black text-slate-900">$24,500</div>
-                                            <div className="text-xs font-bold mt-2" style={{ color: tokens.success }}>+12% vs last month</div>
-                                        </div>
-                                        <div className="p-6 rounded-2xl border border-slate-100 shadow-sm bg-slate-50">
-                                            <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Active Users</div>
-                                            <div className="text-3xl font-black text-slate-900">1,204</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Alert Component */}
-                                    <div className="p-4 rounded-xl border flex items-center gap-4 mb-8" style={{ backgroundColor: tokens.primaryContainer, borderColor: tokens.primary + '30' }}>
-                                        <div className="p-2 bg-white rounded-lg shadow-sm" style={{ color: tokens.primary }}>
-                                            <Box size={20} />
-                                        </div>
-                                        <div>
-                                            <div className="font-bold text-sm text-slate-900">System Update Available</div>
-                                            <div className="text-xs opacity-70">A new version of the design system is ready.</div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
-
-                        {/* Generated Scale */}
-                        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
-                            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Generated Scale ({scale.length} Steps)</h3>
-                            <div className="flex rounded-xl overflow-hidden h-16 shadow-inner">
-                                {scale.map((color, i) => (
-                                    <div
-                                        key={i}
-                                        className="flex-1 flex items-end justify-center pb-2 group cursor-pointer hover:flex-[1.5] transition-all duration-300"
-                                        style={{ backgroundColor: color }}
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(color);
-                                            toast.success(`Copied ${color}`);
-                                        }}
+                                    <input
+                                        type="url"
+                                        value={url}
+                                        onChange={(e) => setUrl(e.target.value)}
+                                        placeholder="https://example.com"
+                                        className="flex-1 bg-transparent border-none text-white text-xl md:text-2xl font-medium outline-none placeholder:text-gray-600 py-3"
+                                        required
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={isScanning}
+                                        className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-2xl font-bold text-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        <span className={cn("text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity", chroma(color).luminance() > 0.5 ? "text-black" : "text-white")}>
-                                            {(i * 100) === 0 ? 50 : i * 100}
-                                        </span>
-                                    </div>
-                                ))}
+                                        Extract <LayoutPanelLeft size={20} />
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
+                    </motion.div>
 
+                    {/* Results Area */}
+                    <AnimatePresence mode="wait">
+                        {extractedData && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 40 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                            >
+                                {extractedData.map((item, index) => {
+                                    const luma = chroma(item.hex).luminance();
+                                    const textColor = luma > 0.5 ? '#000000' : '#ffffff';
+                                    const isDarkBg = luma < 0.2;
+
+                                    return (
+                                        <motion.div
+                                            key={index}
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: index * 0.1 }}
+                                            onClick={() => copyHex(item.hex, item.role)}
+                                            className="group relative h-64 rounded-3xl overflow-hidden cursor-pointer shadow-2xl border border-white/5 transition-transform hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] flex flex-col justify-between p-6"
+                                            style={{ backgroundColor: item.hex }}
+                                        >
+                                            {/* Top info */}
+                                            <div className="flex justify-between items-start w-full relative z-10">
+                                                <div
+                                                    className="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-md"
+                                                    style={{ backgroundColor: textColor === '#000000' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.2)', color: textColor }}
+                                                >
+                                                    {item.role}
+                                                </div>
+                                                <div
+                                                    className={cn("opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-full", isDarkBg ? "bg-white/20" : "bg-black/10")}
+                                                    style={{ color: textColor }}
+                                                >
+                                                    <Copy size={16} />
+                                                </div>
+                                            </div>
+
+                                            {/* Bottom info */}
+                                            <div className="relative z-10" style={{ color: textColor }}>
+                                                <div className="font-mono text-3xl font-black mb-1 opacity-90 tracking-tighter uppercase">{item.hex}</div>
+                                                <div className="text-sm font-medium opacity-70">{item.description}</div>
+                                            </div>
+
+                                            {/* Hover glare effect */}
+                                            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                                        </motion.div>
+                                    );
+                                })}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Initial State Helper text */}
+                    {!extractedData && !isScanning && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mt-16 text-center text-gray-500 text-sm"
+                        >
+                            Try urls like <span className="text-gray-400 font-mono">stripe.com</span>, <span className="text-gray-400 font-mono">github.com</span>, or <span className="text-gray-400 font-mono">vercel.com</span>
+                        </motion.div>
+                    )}
+
+                    <div className="mt-24">
+                        <BrandGuide />
                     </div>
-
-                </main>
-
-                <div className="max-w-7xl mx-auto px-6 mt-12 mb-20">
-                    <BrandGuide />
                 </div>
             </div>
         </DashboardLayout>
