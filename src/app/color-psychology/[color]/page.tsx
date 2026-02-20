@@ -12,8 +12,9 @@ export async function generateStaticParams() {
     }));
 }
 
-export async function generateMetadata({ params }: { params: { color: string } }): Promise<Metadata> {
-    const colorData = colorPsychologyDb.find((c) => c.slug === params.color);
+export async function generateMetadata({ params }: { params: Promise<{ color: string }> }): Promise<Metadata> {
+    const resolvedParams = await params;
+    const colorData = colorPsychologyDb.find((c) => c.slug === resolvedParams.color);
     if (!colorData) return {};
 
     return {
@@ -25,8 +26,9 @@ export async function generateMetadata({ params }: { params: { color: string } }
     };
 }
 
-export default function ColorPsychologyDetail({ params }: { params: { color: string } }) {
-    const colorData = colorPsychologyDb.find((c) => c.slug === params.color);
+export default async function ColorPsychologyDetail({ params }: { params: Promise<{ color: string }> }) {
+    const resolvedParams = await params;
+    const colorData = colorPsychologyDb.find((c) => c.slug === resolvedParams.color);
     if (!colorData) {
         notFound();
     }
