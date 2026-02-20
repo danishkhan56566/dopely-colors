@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { MultiVariableGuide } from '@/components/content/UtilityGuides';
-import { Combine, RefreshCw, Info } from 'lucide-react';
+import { Combine, RefreshCw, Info, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -58,7 +59,14 @@ export default function MultiVariablePage() {
     }, [data, hueVar, satVar, lightVar]);
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<MultiVariableGuide />}
+        >
             <div className="min-h-screen bg-gray-50 p-6 md:p-10">
                 <header className="max-w-4xl mx-auto mb-10 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-4">
@@ -205,8 +213,8 @@ export default function MultiVariablePage() {
                     </div>
                 </div>
 
-                <MultiVariableGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { CognitiveLoadGuide } from '@/components/content/AdvancedGuides';
-import { Brain, Cpu, Zap, Activity, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Brain, Cpu, Zap, Activity, AlertTriangle, CheckCircle, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { cn } from '@/lib/utils';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -53,7 +54,14 @@ export default function CognitiveLoadPage() {
     })).sort((a, b) => b.weight - a.weight);
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<CognitiveLoadGuide />}
+        >
             <div className="min-h-screen bg-[#020617] p-6 md:p-10 font-mono text-slate-300 pb-20">
 
                 {/* Header: Cyber/System Style */}
@@ -202,9 +210,9 @@ export default function CognitiveLoadPage() {
                 </main>
 
                 <div className="max-w-7xl mx-auto mt-20 px-6">
-                    <CognitiveLoadGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

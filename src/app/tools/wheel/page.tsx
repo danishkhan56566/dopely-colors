@@ -3,7 +3,8 @@
 import { useState, useMemo, useEffect } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Copy, RefreshCw, Layers, CheckCircle2 } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Copy, RefreshCw, Layers, CheckCircle2, Wand2 } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 import { WheelGuide } from '@/components/content/ScienceGuides';
@@ -180,7 +181,14 @@ export default function ColorHarmonyWheel() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<WheelGuide />}
+        >
             {/* Dynamic Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-[#0a0a0b] transition-colors duration-1000" style={{ backgroundColor: chroma(validBaseColor).darken(4).hex() }}>
                 <div
@@ -378,9 +386,9 @@ export default function ColorHarmonyWheel() {
                 </div>
 
                 <div className="mt-20 w-full max-w-5xl mx-auto">
-                    <WheelGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

@@ -1,8 +1,10 @@
+import { EcoImpactGuide } from '@/components/content/generated_guides/EcoImpactGuide';
 'use client';
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Printer, Leaf, DollarSign, Droplet } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Printer, Leaf, DollarSign, Droplet, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 
 export default function EcoImpactPage() {
@@ -33,7 +35,14 @@ export default function EcoImpactPage() {
     }, { cost: 0, ink: 0 });
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<EcoImpactGuide />}
+            hideHeader={true}
+            title="Eco-Friendly Color Calculator"
+            description="Measure the estimated OLED screen energy consumption based on the lumens and pixel brightness of your color palette."
+            icon={Wand2}
+            badgeText="Tool"
+        >
             <div className="min-h-screen bg-stone-50 p-6 md:p-10">
                 <header className="max-w-4xl mx-auto mb-10 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wider mb-4">
@@ -119,6 +128,6 @@ export default function EcoImpactPage() {
 
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

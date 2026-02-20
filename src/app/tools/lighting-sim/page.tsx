@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Sun, Monitor, Projector, Book, Smartphone, Eye, Battery, CheckCircle2, AlertTriangle, CloudRain, Cpu, Settings2, Sliders } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Sun, Monitor, Projector, Book, Smartphone, Eye, Battery, CheckCircle2, AlertTriangle, CloudRain, Cpu, Settings2, Sliders, Wand2 } from 'lucide-react';
 import { LightingSimGuide } from '@/components/content/AdvancedGuides';
 import { cn } from '@/lib/utils';
 
@@ -41,7 +42,14 @@ export default function LightingSimPage() {
     const isWcagCompliant = (profile.contrast > 500 && brightness > 50 && ambientLight < 5000);
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<LightingSimGuide />}
+        >
             <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 pb-20">
 
                 {/* 1. Header (System Config Style) */}
@@ -246,9 +254,9 @@ export default function LightingSimPage() {
                 </main>
 
                 <div className="max-w-7xl mx-auto px-8 mt-12">
-                    <LightingSimGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

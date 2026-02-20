@@ -1,3 +1,4 @@
+import { ContrastGridGuide } from '@/components/content/generated_guides/ContrastGridGuide';
 import ContrastGridWrapper from './contrast-grid-content';
 
 export const metadata = {

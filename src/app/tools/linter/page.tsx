@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Search, TriangleAlert, CircleCheck, ArrowRight } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Search, TriangleAlert, CircleCheck, ArrowRight, Wand2 } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 import { LinterGuide } from '@/components/content/DevGuides';
@@ -78,7 +79,14 @@ export default function ColorLinter() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<LinterGuide />}
+            hideHeader={true}
+            title="Color Accessibility Linter"
+            description="Paste your raw CSS, SCSS, or Tailwind code to automatically find and fix color contrast and accessibility violations."
+            icon={Wand2}
+            badgeText="Tool"
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 md:p-10">
                 <div className="text-center max-w-2xl mb-12">
                     <h1 className="text-4xl font-black text-gray-900 mb-4 flex items-center justify-center gap-3">
@@ -191,6 +199,6 @@ export default function ColorLinter() {
 
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

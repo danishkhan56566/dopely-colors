@@ -1,9 +1,11 @@
+import { TokensGuide } from '@/components/content/generated_guides/TokensGuide';
 'use client';
 
 import { useState, useMemo } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Code2, Copy, Plus, Trash2, Download } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Code2, Copy, Plus, Trash2, Download, Wand2 } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 
@@ -121,7 +123,14 @@ export default function DesignTokenGenerator() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<TokensGuide />}
+            hideHeader={true}
+            title="Design Token Exporter"
+            description="The ultimate source of truth. Manage semantic tokens, aliases, and export your systems to JSON, tailwind.config, or iOS Swift."
+            icon={Wand2}
+            badgeText="${name}-${step}: ${hex}"
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 md:p-10">
                 <div className="text-center max-w-2xl mb-12">
                     <h1 className="text-4xl font-black text-gray-900 mb-4 flex items-center justify-center gap-3">
@@ -241,6 +250,6 @@ export default function DesignTokenGenerator() {
 
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

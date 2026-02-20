@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { SeasonalGuide } from '@/components/content/UtilityGuides';
-import { Calendar, CloudSnow, Sun, CloudRain, Wind } from 'lucide-react';
+import { Calendar, CloudSnow, Sun, CloudRain, Wind, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 
 const SEASONS = [
@@ -17,7 +18,14 @@ export default function SeasonalPage() {
     const [season, setSeason] = useState(SEASONS[0]);
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<SeasonalGuide />}
+        >
             <div
                 className="min-h-screen transition-colors duration-700 p-6 md:p-10 flex flex-col items-center"
                 style={{ backgroundColor: season.colors[0] }}
@@ -58,8 +66,8 @@ export default function SeasonalPage() {
                     {season.desc}
                 </div>
 
-                <SeasonalGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

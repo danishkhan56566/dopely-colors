@@ -1,8 +1,10 @@
+import { ScraperGuide } from '@/components/content/generated_guides/ScraperGuide';
 'use client';
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Globe, Search, ArrowRight, Download, ExternalLink } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Globe, Search, ArrowRight, Download, ExternalLink, Wand2 } from 'lucide-react';
 import { scrapeColors } from './actions';
 import { toast } from 'sonner';
 import clsx from 'clsx';
@@ -32,7 +34,14 @@ export default function WebsiteScraper() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<ScraperGuide />}
+            hideHeader={true}
+            title="Website Color Scraper"
+            description="Enter any URL to extract the complete brand color palette, typograhy usage, and DOM color distribution metrics."
+            icon={Wand2}
+            badgeText="${c.count} occurrences"
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 md:p-10">
                 <div className="text-center max-w-2xl mb-12">
                     <h1 className="text-4xl font-black text-gray-900 mb-4 flex items-center justify-center gap-3">
@@ -208,6 +217,6 @@ export default function WebsiteScraper() {
                     )}
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

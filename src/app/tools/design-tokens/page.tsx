@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Code, Copy, Check, FileJson, FileCode, Smartphone, Terminal, Settings2 } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Code, Copy, Check, FileJson, FileCode, Smartphone, Terminal, Settings2, Wand2 } from 'lucide-react';
 import { usePaletteStore } from '@/store/usePaletteStore';
 import { toast } from 'sonner';
 import { DesignTokensGuide } from '@/components/content/DevGuides';
@@ -88,7 +89,14 @@ export default function DesignTokenGenerator() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<DesignTokensGuide />}
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4 sm:px-6">
 
                 {/* Header */}
@@ -223,8 +231,8 @@ export default function DesignTokenGenerator() {
                     </div>
 
                 </div>
-                <DesignTokensGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

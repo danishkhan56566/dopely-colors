@@ -3,7 +3,8 @@
 import { useState, useMemo } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Pointer, Copy, Code2, Sparkles, Eye, Smartphone, Layout, Check, Info } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Pointer, Copy, Code2, Sparkles, Eye, Smartphone, Layout, Check, Info, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ShadeGuide } from '@/components/content/UtilityGuides';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -96,7 +97,14 @@ colors: {
 }`.trim();
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Default"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Default"
+            guide={<ShadeGuide />}
+        >
             <div className="min-h-screen bg-[#0a0a0b] text-white flex flex-col items-center relative overflow-hidden font-sans">
 
                 {/* Immersive Background Aura */}
@@ -280,7 +288,7 @@ colors: {
                     </div>
                 </div>
 
-                <ShadeGuide />
+                
 
                 {/* CSS Simulation Hacks */}
                 <style jsx>{`
@@ -290,7 +298,7 @@ colors: {
                     }
                 `}</style>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }
 

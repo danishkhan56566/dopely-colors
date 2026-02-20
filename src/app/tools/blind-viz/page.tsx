@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { BlindVizGuide } from '@/components/content/AdvancedGuides';
-import { Eye, EyeOff, Check, AlertTriangle, RefreshCw, BarChart2, ScanEye } from 'lucide-react';
+import { Eye, EyeOff, Check, AlertTriangle, RefreshCw, BarChart2, ScanEye, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -70,7 +71,14 @@ export default function BlindVizPage() {
     const isSafe = safetyScore > 10;
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<BlindVizGuide />}
+        >
             <div className="min-h-screen bg-neutral-900 p-6 md:p-10 font-sans text-neutral-100 pb-20">
 
                 {/* Header: Lab Style */}
@@ -214,9 +222,9 @@ export default function BlindVizPage() {
                 </main>
 
                 <div className="max-w-7xl mx-auto mt-12 mb-20">
-                    <BlindVizGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

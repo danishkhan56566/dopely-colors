@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { BarChart3, TrendingUp, Sparkles, RefreshCw, AlertOctagon, Activity, Globe, Share2, Download, Radar } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { BarChart3, TrendingUp, Sparkles, RefreshCw, AlertOctagon, Activity, Globe, Share2, Download, Radar, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { TrendGuide } from '@/components/content/AdvancedGuides';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -75,7 +76,14 @@ export default function TrendPredictorPage() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<TrendGuide />}
+        >
             <div className="min-h-screen bg-[#0B0F19] text-white pb-20 font-sans">
 
                 {/* 1. Dashboard Header */}
@@ -230,9 +238,9 @@ export default function TrendPredictorPage() {
                 </main>
 
                 <div className="max-w-7xl mx-auto px-8 mt-12 mb-20">
-                    <TrendGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

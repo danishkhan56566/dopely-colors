@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Copy, RefreshCw, Layers, Zap } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Copy, RefreshCw, Layers, Zap, Wand2 } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 import { ConverterGuide } from '@/components/content/ScienceGuides';
@@ -62,7 +63,14 @@ export default function ColorConverter() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<ConverterGuide />}
+        >
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-[#0a0a0b]">
                 <div
@@ -225,9 +233,9 @@ export default function ColorConverter() {
                 </div>
 
                 <div className="mt-12">
-                    <ConverterGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

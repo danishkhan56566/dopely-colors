@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Upload, Image as ImageIcon, X, Eye, EyeOff, SlidersHorizontal, ArrowRightLeft } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Upload, Image as ImageIcon, X, Eye, EyeOff, SlidersHorizontal, ArrowRightLeft, Wand2 } from 'lucide-react';
 import { BlindVizGuide } from '@/components/content/AdvancedGuides';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -88,7 +89,14 @@ export default function ColorBlindnessPage() {
     const activeSimulation = SIMULATIONS.find(s => s.id === activeSim);
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<BlindVizGuide />}
+        >
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-[#0a0a0b]">
                 <div className="absolute top-0 right-0 w-[50vw] h-[50vw] bg-purple-500/10 rounded-full blur-[120px]" />
@@ -347,10 +355,10 @@ export default function ColorBlindnessPage() {
                 </div>
 
                 <div className="mt-20 w-full max-w-5xl mx-auto">
-                    <BlindVizGuide />
+                    
                 </div>
 
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

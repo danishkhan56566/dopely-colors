@@ -1,5 +1,6 @@
 import { LandingPage } from '@/components/landing/LandingPage';
 import { Metadata } from 'next';
+import { getAllPosts } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'Dopely Colors – AI Color Palette Generator for Designers & Developers',
@@ -28,6 +29,8 @@ export const metadata: Metadata = {
 export const dynamic = 'force-static';
 export const revalidate = 3600; // Revalidate every hour (incremental static regeneration)
 
-export default function Page() {
-  return <LandingPage />;
+export default async function Page() {
+  const posts = await getAllPosts();
+  const recentPosts = posts.slice(0, 3);
+  return <LandingPage recentPosts={recentPosts} />;
 }

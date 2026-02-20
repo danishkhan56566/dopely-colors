@@ -67,6 +67,15 @@ export const metadata: Metadata = {
     title: "Dopely Colors",
     statusBarStyle: "default",
   },
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png' }
+    ]
+  },
   verification: {
     google: "YraEoUZQurKF6RDK8P0qEqhcRl6JfVfSVUebXJDdeck",
   },

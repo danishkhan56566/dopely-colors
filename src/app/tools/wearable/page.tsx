@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { WearableGuide } from '@/components/content/AdvancedGuides';
-import { Watch, Sun, Moon, Battery, Zap, Timer, Activity, MessageCircle, MoreHorizontal } from 'lucide-react';
+import { Watch, Sun, Moon, Battery, Zap, Timer, Activity, MessageCircle, MoreHorizontal, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils'; // Ensure utils are imported for 'cn'
@@ -34,7 +35,14 @@ export default function WearablePage() {
     const glanceScore = Math.max(0, 100 - (200 / contrast)); // Higher contrast = faster glance
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<WearableGuide />}
+        >
             <div className="min-h-screen bg-gray-50 p-6 md:p-10 font-sans text-slate-900 pb-20">
 
                 {/* Header */}
@@ -257,9 +265,9 @@ export default function WearablePage() {
                 </main>
 
                 <div className="max-w-7xl mx-auto mt-12 mb-20">
-                    <WearableGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

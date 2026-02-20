@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { GamifiedGuide } from '@/components/content/UtilityGuides';
-import { Gamepad2, Trophy, Star, Sparkles } from 'lucide-react';
+import { Gamepad2, Trophy, Star, Sparkles, Wand2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function GamifiedPage() {
@@ -20,7 +21,14 @@ export default function GamifiedPage() {
     const colors = THEMES[theme];
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<GamifiedGuide />}
+        >
             <div className="min-h-screen bg-gray-900 border-b-8 border-gray-800 p-6 md:p-10 flex flex-col items-center">
 
                 <header className="max-w-2xl text-center mb-12">
@@ -109,8 +117,8 @@ export default function GamifiedPage() {
                     </div>
                 </div>
 
-                <GamifiedGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

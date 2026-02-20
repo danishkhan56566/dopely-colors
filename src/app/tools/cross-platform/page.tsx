@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { CrossPlatformGuide } from '@/components/content/UtilityGuides';
-import { Smartphone, Monitor } from 'lucide-react';
+import { Smartphone, Monitor, Wand2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function CrossPlatformPage() {
@@ -11,7 +12,14 @@ export default function CrossPlatformPage() {
     const [bg, setBg] = useState('#F2F2F7'); // iOS Gray default
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<CrossPlatformGuide />}
+        >
             <div className="min-h-screen bg-gray-100 p-6 md:p-10">
                 <header className="max-w-4xl mx-auto mb-10 text-center">
                     <h1 className="text-3xl font-black text-gray-900 mb-4">Cross-Platform Consistency</h1>
@@ -111,8 +119,8 @@ export default function CrossPlatformPage() {
                     </div>
 
                 </div>
-                <CrossPlatformGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

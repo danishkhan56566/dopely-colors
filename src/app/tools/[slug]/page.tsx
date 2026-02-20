@@ -1,6 +1,7 @@
 
 
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { Hammer, ArrowLeft, Construction } from 'lucide-react';
 import Link from 'next/link';
 import { ALL_TOOLS } from '@/data/tools';
@@ -17,7 +18,13 @@ export default async function ToolPlaceholder({ params }: { params: Promise<{ sl
     const Icon = tool?.icon || Construction;
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title={title}
+            description={description}
+            icon={Icon}
+            badgeText="Coming Soon"
+        >
             <div className="flex flex-col items-center justify-center min-h-[80vh] text-center p-6 bg-white">
                 <div className="w-24 h-24 bg-purple-50 rounded-3xl flex items-center justify-center mb-8 text-purple-600 shadow-xl shadow-purple-900/5">
                     <Icon size={48} />
@@ -29,9 +36,9 @@ export default async function ToolPlaceholder({ params }: { params: Promise<{ sl
                         {description}
                     </p>
 
-                    {tool?.badge && (
+                    {('badge' in (tool || {}) && (tool as any).badge) && (
                         <span className="inline-block px-3 py-1 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-full">
-                            {tool.badge} Release
+                            {(tool as any).badge} Release
                         </span>
                     )}
                 </div>
@@ -59,6 +66,6 @@ export default async function ToolPlaceholder({ params }: { params: Promise<{ sl
                     </Link>
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

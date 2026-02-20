@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Layout, Moon, Sun, Monitor, Smartphone, Tablet, Copy } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Layout, Moon, Sun, Monitor, Smartphone, Tablet, Copy, Wand2 } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 import { ThemeGuide } from '@/components/content/UtilityGuides';
@@ -54,7 +55,14 @@ export default function ThemeGenerator() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<ThemeGuide />}
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 md:p-10">
                 <div className="text-center max-w-2xl mb-12">
                     <h1 className="text-4xl font-black text-gray-900 mb-4 flex items-center justify-center gap-3">
@@ -237,8 +245,8 @@ export default function ThemeGenerator() {
                         </div>
                     </div>
                 </div>
-                <ThemeGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

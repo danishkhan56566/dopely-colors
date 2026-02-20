@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { ShadowsGuide } from '@/components/content/AdvancedGuides';
 import { Layers, Sun, Moon, Wand2, Copy, Move, Zap, RotateCcw } from 'lucide-react';
 import chroma from 'chroma-js';
@@ -66,7 +67,14 @@ export default function ShadowsPage() {
     ];
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<ShadowsGuide />}
+        >
             <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
 
                 {/* Header */}
@@ -249,9 +257,9 @@ export default function ShadowsPage() {
                 </main>
 
                 <div className="max-w-7xl mx-auto px-6 mt-12 mb-20">
-                    <ShadowsGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

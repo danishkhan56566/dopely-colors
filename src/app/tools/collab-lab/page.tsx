@@ -1,8 +1,10 @@
+import { CollabLabGuide } from '@/components/content/generated_guides/CollabLabGuide';
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Users, MousePointer2, AlertTriangle, Wifi, WifiOff } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Users, MousePointer2, AlertTriangle, Wifi, WifiOff, Wand2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import chroma from 'chroma-js';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
@@ -156,7 +158,14 @@ export default function CollabLabPage() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<CollabLabGuide />}
+            hideHeader={true}
+            title="Real-time Color Lab"
+            description="Multiplayer color palette editing and design system building. Work synchronously with your entire design team."
+            icon={Wand2}
+            badgeText="Tool"
+        >
             <div className="min-h-screen bg-gray-50 p-6 md:p-10 relative overflow-hidden">
                 <header className="max-w-4xl mx-auto mb-12 text-center relative z-10">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-bold uppercase tracking-wider mb-4">
@@ -275,6 +284,6 @@ export default function CollabLabPage() {
 
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

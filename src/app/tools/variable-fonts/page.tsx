@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Type, MoveHorizontal, MoveVertical, Sliders } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Type, MoveHorizontal, MoveVertical, Sliders, Wand2 } from 'lucide-react';
 import { FontGuide } from '@/components/content/UtilityGuides';
 import chroma from 'chroma-js';
 
@@ -20,7 +21,14 @@ export default function VariableFontsPage() {
     const contrast = chroma.contrast(color, bg);
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<FontGuide />}
+        >
             <div className="min-h-screen bg-white p-6 md:p-10 flex flex-col">
                 <header className="max-w-4xl mx-auto w-full mb-10 text-center flex-shrink-0">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-bold uppercase tracking-wider mb-4">
@@ -128,8 +136,8 @@ export default function VariableFontsPage() {
                     </div>
 
                 </div>
-                <FontGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

@@ -3,7 +3,8 @@
 import { useState, useMemo } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Network, Copy, ArrowRight, Spline } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Network, Copy, ArrowRight, Spline, Wand2 } from 'lucide-react';
 import { InterpolatorGuide } from '@/components/content/UtilityGuides';
 import { toast } from 'sonner';
 
@@ -35,7 +36,14 @@ export default function InterpolatorTool() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<InterpolatorGuide />}
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 md:p-10">
                 <div className="text-center max-w-2xl mb-12">
                     <h1 className="text-4xl font-black text-gray-900 mb-4 flex items-center justify-center gap-3">
@@ -143,8 +151,8 @@ export default function InterpolatorTool() {
                         </div>
                     </div>
                 </div>
-                <InterpolatorGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

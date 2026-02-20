@@ -1,3 +1,4 @@
+import { DynamicContrastGuide } from '@/components/content/generated_guides/DynamicContrastGuide';
 import DynamicContrastContent from './dynamic-contrast-content';
 
 export const metadata = {

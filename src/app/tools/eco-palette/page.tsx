@@ -2,8 +2,9 @@
 
 import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { EcoPaletteGuide } from '@/components/content/AdvancedGuides';
-import { Leaf, Zap, Battery, AlertTriangle, Moon, Sun, Smartphone, RefreshCw } from 'lucide-react';
+import { Leaf, Zap, Battery, AlertTriangle, Moon, Sun, Smartphone, RefreshCw, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -35,7 +36,14 @@ export default function EcoPalettePage() {
     const displayColors = mode === 'audit' ? colors : optimizedColors;
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<EcoPaletteGuide />}
+        >
             <div className="min-h-screen bg-black text-white font-sans selection:bg-green-500/30 pb-20">
 
                 {/* Hero Header */}
@@ -151,9 +159,9 @@ export default function EcoPalettePage() {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-6 mt-12 mb-20">
-                    <EcoPaletteGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

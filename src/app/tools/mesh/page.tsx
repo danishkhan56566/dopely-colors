@@ -1,4 +1,7 @@
+import { MeshGuide } from '@/components/content/generated_guides/MeshGuide';
+import { Wand2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import MeshGradientContent from './mesh-content';
 
 export const metadata = {
@@ -11,8 +14,15 @@ export const metadata = {
 
 export default function MeshGradientPage() {
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<MeshGuide />}
+            hideHeader={true}
+            title="Mesh Gradient Maker"
+            description="Visually drag and drop control nodes to create ultra-smooth organic multi-color gradients."
+            icon={Wand2}
+            badgeText="Tool"
+        >
             <MeshGradientContent />
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

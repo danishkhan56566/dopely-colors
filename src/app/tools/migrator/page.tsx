@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { ArrowRightLeft, FileJson, Apple, Palette, Smartphone, Copy, CheckCircle2, ChevronRight, Terminal, Code2 } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { ArrowRightLeft, FileJson, Apple, Palette, Smartphone, Copy, CheckCircle2, ChevronRight, Terminal, Code2, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { toast } from 'sonner';
 import { MigratorGuide } from '@/components/content/UtilityGuides';
@@ -155,7 +156,14 @@ export default function MigratorPage() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="${key}: ${value}"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="${key}: ${value}"
+            guide={<MigratorGuide />}
+        >
             <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center p-6 md:p-10 relative overflow-hidden">
                 {/* Ambient Background */}
                 <div className="absolute top-0 right-0 w-[80vw] h-[80vw] bg-blue-500/10 blur-[150px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2" />
@@ -337,7 +345,7 @@ export default function MigratorPage() {
 
                     </div>
                     <div className="mt-12">
-                        <MigratorGuide />
+                        
                     </div>
                 </div>
             </div>
@@ -352,6 +360,6 @@ export default function MigratorPage() {
                     scrollbar-width: none;
                 }
             `}} />
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Zap, Server, Monitor, FileCode, CheckCircle, Smartphone, AlertTriangle } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Zap, Server, Monitor, FileCode, CheckCircle, Smartphone, AlertTriangle, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { toast } from 'sonner';
 import { PerfPaletteGuide } from '@/components/content/PerfPaletteGuide';
@@ -71,7 +72,14 @@ export default function PerfPalettePage() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<PerfPaletteGuide />}
+        >
             <div className="min-h-screen bg-gray-50 p-6 md:p-10">
                 <header className="max-w-4xl mx-auto mb-10">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-bold uppercase tracking-wider mb-4">
@@ -271,9 +279,9 @@ export default function PerfPalettePage() {
                         </div>
 
                     </div>
-                    <PerfPaletteGuide />
+                    
                 </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

@@ -1,8 +1,10 @@
+import { VoiceColorGuide } from '@/components/content/generated_guides/VoiceColorGuide';
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Mic, MicOff, Volume2, Command, Palette } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Mic, MicOff, Volume2, Command, Palette, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -143,7 +145,14 @@ export default function VoiceColorPage() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<VoiceColorGuide />}
+            hideHeader={true}
+            title="Voice to Color Generator"
+            description="Speak your mood, context, or project brief into the microphone and watch our NLP artificial intelligence generate the perfect palette."
+            icon={Wand2}
+            badgeText="Tool"
+        >
             <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
 
                 {/* Background Aura */}
@@ -248,6 +257,6 @@ export default function VoiceColorPage() {
                 </div>
 
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

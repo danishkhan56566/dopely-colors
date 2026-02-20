@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { TemporalGuide } from '@/components/content/UtilityGuides';
-import { Clock, Play, Pause, RotateCcw, Sun, Moon, Sunrise, Sunset } from 'lucide-react';
+import { Clock, Play, Pause, RotateCcw, Sun, Moon, Sunrise, Sunset, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { motion } from 'framer-motion';
 
@@ -51,7 +52,14 @@ export default function TemporalPage() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<TemporalGuide />}
+        >
             <div
                 className="min-h-screen transition-colors duration-100 flex flex-col items-center justify-center p-6 relative overflow-hidden"
                 style={{ backgroundColor: currentColor, color: textColor }}
@@ -154,8 +162,8 @@ export default function TemporalPage() {
                     </div>
 
                 </div>
-                <TemporalGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

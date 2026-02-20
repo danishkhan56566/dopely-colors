@@ -1,8 +1,10 @@
+import { GestureMixGuide } from '@/components/content/generated_guides/GestureMixGuide';
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Hand, Move, MousePointer2, Camera, RefreshCw } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Hand, Move, MousePointer2, Camera, RefreshCw, Wand2 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -57,7 +59,14 @@ export default function GestureMixPage() {
     };
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<GestureMixGuide />}
+            hideHeader={true}
+            title="Gesture-Based Color Mixer"
+            description="Use your webcam and bare hands to mix virtual colors in the air, translating physical motion into digital palettes."
+            icon={Wand2}
+            badgeText="Webcam Mode (Coming Soon)"
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col">
 
                 {/* Canvas Area */}
@@ -147,6 +156,6 @@ export default function GestureMixPage() {
                 </div>
 
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

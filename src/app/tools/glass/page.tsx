@@ -1,4 +1,7 @@
+import { GlassGuide } from '@/components/content/generated_guides/GlassGuide';
+import { Wand2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import GlassmorphismContent from './glass-content';
 
 export const metadata = {
@@ -11,8 +14,15 @@ export const metadata = {
 
 export default function GlassmorphismPage() {
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<GlassGuide />}
+            hideHeader={true}
+            title="Glassmorphism CSS Generator"
+            description="Create premium frosted glass UI elements with customizable blur, transparency, noise, and specular highlights."
+            icon={Wand2}
+            badgeText="Tool"
+        >
             <GlassmorphismContent />
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

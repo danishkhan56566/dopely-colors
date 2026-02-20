@@ -1,3 +1,4 @@
+import { MixerGuide } from '@/components/content/generated_guides/MixerGuide';
 import ColorMixerWrapper from './mixer-content';
 
 export const metadata = {

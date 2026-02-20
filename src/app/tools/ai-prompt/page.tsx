@@ -2,249 +2,334 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { generatePaletteFromPrompt } from './actions';
-import { AIPromptGuide } from '@/components/content/AdvancedGuides'; // Correct import now
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { AIPromptGuide } from '@/components/content/AdvancedGuides';
 import { toast } from 'sonner';
-import clsx from 'clsx';
-import { Sparkles, Terminal, Command, Palette, Copy, History, Tag, ChevronRight, Lock, Unlock, Wand2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Wand2, Copy, Sparkles, Tag, Layers, RefreshCw, Type, Palette, LayoutDashboard, Component } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import clsx from 'clsx';
 
-const SUGGESTED_TAGS = [
-    { label: "+ Neon", style: "neon, glowing, cyberpunk" },
-    { label: "+ Pastel", style: "soft, desaturated, dreamy" },
-    { label: "+ Corporate", style: "finance, trust, blue, secure" },
-    { label: "+ Dark Mode", style: "dark background, high contrast, ui interface" },
-    { label: "+ Nature", style: "organic, earth tones, green, brown" }
-];
+const MOODS = ['Calm', 'Luxury', 'Energetic', 'Dark Aesthetic', 'Futuristic', 'Minimal'];
+const STYLES = ['Cinematic Lighting', 'Pastel Themes', 'Retro Color Grading', 'Synthwave Neon', 'Corporate Branding', 'Natural Earth Tones'];
+const CONTEXTS = ['Image Generation', 'UI / UX Design', 'Brand Identity', 'Concept Art', 'Marketing Visuals'];
 
-export default function AIPromptLab() {
-    const [prompt, setPrompt] = useState('');
+interface GeneratedPrompt {
+    fullText: string;
+    paletteDesc: string;
+    lighting: string;
+    contrast: string;
+    hierarchy: string;
+}
+
+export default function AIColorPromptLab() {
+    const [vision, setVision] = useState('');
+    const [mood, setMood] = useState(MOODS[0]);
+    const [style, setStyle] = useState(STYLES[0]);
+    const [context, setContext] = useState(CONTEXTS[0]);
+
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState<any>(null);
-    const [history, setHistory] = useState<any[]>([]);
+    const [result, setResult] = useState<GeneratedPrompt | null>(null);
 
-    const handleGenerate = async () => {
-        if (!prompt.trim()) return;
+    const handleGenerate = () => {
+        if (!vision.trim()) {
+            toast.error("Please describe your vision first");
+            return;
+        }
+
         setLoading(true);
-        try {
-            // Mock simulation for UI purposes since simulation backend requires API key usually
-            // In real 10x, this would call real API. We will use the existing action but handle mock
-            const res = await generatePaletteFromPrompt(prompt, 'ui', {});
 
-            const newResult = res.success ? res.data : {
-                // Fallback mock if API fails/offline
-                palette_name: "Simulated " + prompt,
-                description: "AI-generated simulation based on your input.",
-                colors: [
-                    { name: 'Primary', hex: '#6366f1' },
-                    { name: 'Secondary', hex: '#a855f7' },
-                    { name: 'Surface', hex: '#1e293b' },
-                    { name: 'Accent', hex: '#f43f5e' },
-                    { name: 'Text', hex: '#f8fafc' }
-                ],
-                usage_tips: {
-                    background: '#0f172a',
-                    surface: '#1e293b',
-                    primary: '#6366f1',
-                    secondary: '#a855f7',
-                    accent: '#f43f5e',
-                    text: '#f8fafc'
-                }
+        // Simulate AI Processing time
+        setTimeout(() => {
+            // Very basic but effective generation logic for MVP to demonstrate value
+            const adjectives = mood === 'Futuristic' || mood === 'Dark Aesthetic' ? 'electric, high-contrast, deep' : 'soft, balanced, harmonious';
+            const lightingDesc = style.includes('Cinematic') ? 'volumetric, dramatic shadows, rim lighting' : style.includes('Pastel') ? 'diffused, soft ambient lighting, airy' : 'structured studio lighting, crisp highlights';
+            const baseColorInfo = style.includes('Neon') ? 'cyans and magentas' : style.includes('Earth') ? 'terracotta, olive, ochre' : 'monochromatic base with a vibrant pop';
+
+            const generated: GeneratedPrompt = {
+                fullText: `/imagine prompt: ${vision.trim()}. Core visual identity: ${mood.toLowerCase()} mood, ${style.toLowerCase()}. Color palette features ${adjectives} tones centered around ${baseColorInfo}. Lighting should be ${lightingDesc}. Maintain high professional quality, precise contrast hierarchy, 8k resolution, photorealistic render --ar 16:9`,
+                paletteDesc: `Primary base of ${baseColorInfo} enriched with ${adjectives} accents tailored for a ${mood.toLowerCase()} emotional response.`,
+                lighting: lightingDesc.charAt(0).toUpperCase() + lightingDesc.slice(1) + ' to emphasize depth and texture.',
+                contrast: mood === 'Futuristic' || mood === 'Dark Aesthetic' ? 'High contrast ratio with deep true-blacks and glowing highlights.' : 'Medium-low contrast for a soothing, cohesive viewing experience.',
+                hierarchy: context === 'UI / UX Design' ? 'Strict 60-30-10 rule application for backgrounds, surfaces, and interactive accents.' : 'Organic flow with focal points highlighted by maximum saturation.'
             };
 
-            setResult(newResult);
-            setHistory(prev => [newResult, ...prev]);
-
-            toast.success("Palette Materialized");
-
-        } catch (e) {
-            toast.error("Generation failed");
-        } finally {
+            setResult(generated);
             setLoading(false);
-        }
+            toast.success("Prompt Engineered Successfully", { icon: '✨' });
+        }, 1200);
     };
 
-    const addTag = (tagStyle: string) => {
-        setPrompt(prev => prev + (prev ? " " : "") + tagStyle);
+    const handleExportSystem = () => {
+        if (!result) return;
+
+        const exportData = {
+            prompt: result.fullText,
+            theory: {
+                palette: result.paletteDesc,
+                lighting: result.lighting,
+                contrast: result.contrast,
+                hierarchy: result.hierarchy
+            },
+            metadata: {
+                vision,
+                mood,
+                style,
+                context,
+                generatedAt: new Date().toISOString()
+            }
+        };
+
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ai-color-prompt-${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        toast.success("Design System Exported (JSON)");
+    };
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        toast.success('Copied to clipboard');
     };
 
     return (
-        <DashboardLayout>
-            <div className="min-h-screen bg-[#0F172A] font-mono text-slate-200 pb-20 selection:bg-indigo-500/30">
-
-                {/* Header: Terminal Style */}
-                <header className="border-b border-indigo-900/30 bg-[#1E293B]/50 backdrop-blur-md sticky top-0 z-30 px-6 py-4">
-                    <div className="max-w-7xl mx-auto flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                            <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-                            <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                            <div className="h-6 w-px bg-indigo-800/50 mx-2" />
-                            <h1 className="text-sm font-bold text-indigo-400 flex items-center gap-2">
-                                <Terminal size={16} /> ~/ai-prompt-studio
-                            </h1>
-                        </div>
-                        <div className="text-xs text-slate-500 font-bold uppercase tracking-widest hidden md:block">
-                            v4.2.0 • Stable Diffusion
-                        </div>
-                    </div>
-                </header>
-
-                <main className="max-w-7xl mx-auto px-4 md:px-6 py-10 grid lg:grid-cols-12 gap-10">
-
-                    {/* Left: Input Console */}
-                    <div className="lg:col-span-5 space-y-6">
-
-                        <div className="bg-[#1E293B] rounded-2xl p-1 shadow-2xl shadow-black/50 border border-indigo-500/20 ring-1 ring-black/20">
-                            <div className="bg-[#0F172A] rounded-xl p-6 min-h-[300px] flex flex-col">
-                                <label className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                    <Command size={14} /> Input Stream
-                                </label>
-
-                                <textarea
-                                    value={prompt}
-                                    onChange={(e) => setPrompt(e.target.value)}
-                                    placeholder="// Describe your vision... e.g. 'Cyberpunk city in rain'"
-                                    className="flex-1 bg-transparent resize-none outline-none text-lg leading-relaxed placeholder:text-slate-700 text-slate-100"
-                                    onKeyDown={e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleGenerate())}
-                                />
-
-                                <div className="mt-6 pt-4 border-t border-indigo-900/30 flex justify-between items-center">
-                                    <div className="flex gap-2 text-xs text-slate-500">
-                                        <span>CMD+ENTER to run</span>
-                                    </div>
-                                    <button
-                                        onClick={handleGenerate}
-                                        disabled={loading}
-                                        className={cn(
-                                            "bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] flex items-center gap-2",
-                                            loading && "opacity-50 cursor-not-allowed"
-                                        )}
-                                    >
-                                        {loading ? <span className="animate-pulse">Compiling...</span> : <>Execute <ChevronRight size={14} /></>}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Magic Tags */}
-                        <div className="flex flex-wrap gap-2">
-                            {SUGGESTED_TAGS.map(tag => (
-                                <button
-                                    key={tag.label}
-                                    onClick={() => addTag(tag.style)}
-                                    className="px-3 py-1.5 rounded-md border border-indigo-500/20 bg-[#1E293B] hover:bg-indigo-900/20 text-indigo-300 text-xs font-bold transition-colors flex items-center gap-1.5"
-                                >
-                                    <Tag size={10} /> {tag.label}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* History Tape */}
-                        <div className="border-t border-indigo-900/30 pt-6">
-                            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <History size={14} /> Output Log
-                            </h3>
-                            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-900">
-                                {history.map((h, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setResult(h)}
-                                        className="w-full text-left p-3 rounded-lg hover:bg-[#1E293B] transition-colors group"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex gap-1">
-                                                {h.colors.slice(0, 3).map((c: any, j: number) => (
-                                                    <div key={j} className="w-3 h-3 rounded-full" style={{ backgroundColor: c.hex }} />
-                                                ))}
-                                            </div>
-                                            <div className="text-xs text-slate-400 group-hover:text-slate-200 truncate font-mono">
-                                                {h.palette_name}
-                                            </div>
-                                        </div>
-                                    </button>
-                                ))}
-                                {history.length === 0 && (
-                                    <div className="text-xs text-slate-700 italic px-2">No history yet. Run your first prompt.</div>
-                                )}
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {/* Right: Output Viz */}
-                    <div className="lg:col-span-7 space-y-8">
-                        {result ? (
-                            <div className="animate-in fade-in slide-in-from-bottom-8 duration-500 space-y-8">
-
-                                {/* Palette Strip (Main) */}
-                                <div className="bg-[#1E293B] p-2 rounded-2xl border border-indigo-500/20 shadow-xl">
-                                    <div className="flex h-40 rounded-xl overflow-hidden">
-                                        {result.colors.map((c: any, i: number) => (
-                                            <div key={i} className="flex-1 relative group cursor-pointer" onClick={() => { navigator.clipboard.writeText(c.hex); toast.success("Copied HEX"); }} style={{ backgroundColor: c.hex }}>
-                                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/20 backdrop-blur-[2px] transition-all">
-                                                    <div className="text-white font-mono font-bold text-sm drop-shadow-md">{c.hex}</div>
-                                                </div>
-                                                <div className="absolute bottom-4 left-0 right-0 text-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <span className="text-[10px] bg-black/50 text-white px-2 py-1 rounded">{c.name}</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="p-4 flex justify-between items-center">
-                                        <div>
-                                            <h2 className="text-xl font-bold text-white">{result.palette_name}</h2>
-                                            <p className="text-xs text-slate-400">{result.description}</p>
-                                        </div>
-                                        <button className="p-2 hover:bg-white/5 rounded-lg text-indigo-400 transition-colors">
-                                            <Copy size={20} />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Mock UI Preview */}
-                                <div className="border border-indigo-500/20 rounded-2xl overflow-hidden bg-[#020617] relative">
-                                    <div className="absolute top-4 left-4 z-10 text-[10px] font-bold bg-indigo-600 text-white px-2 py-1 rounded">PREVIEW_RENDER_01</div>
-
-                                    {/* Mock App */}
-                                    <div className="p-12" style={{ backgroundColor: result.usage_tips.background }}>
-                                        <div className="max-w-sm mx-auto rounded-xl p-8 shadow-2xl" style={{ backgroundColor: result.usage_tips.surface }}>
-                                            <div className="w-12 h-12 rounded-lg mb-6 flex items-center justify-center" style={{ backgroundColor: result.usage_tips.primary }}>
-                                                <Wand2 size={24} color="#fff" />
-                                            </div>
-                                            <h3 className="text-2xl font-bold mb-2" style={{ color: result.usage_tips.text }}>Infinite Possibilities</h3>
-                                            <p className="text-sm mb-8 opacity-80" style={{ color: result.usage_tips.text }}>
-                                                Discover the power of generative color systems crafted for your unique vision.
-                                            </p>
-                                            <div className="flex gap-4">
-                                                <button className="flex-1 py-3 rounded-lg font-bold text-sm" style={{ backgroundColor: result.usage_tips.primary, color: '#fff' }}>
-                                                    Primary
-                                                </button>
-                                                <button className="flex-1 py-3 rounded-lg font-bold text-sm border-2" style={{ borderColor: result.usage_tips.secondary, color: result.usage_tips.secondary }}>
-                                                    Secondary
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        ) : (
-                            <div className="h-full flex flex-col items-center justify-center border-2 border-dashed border-indigo-900/30 rounded-3xl p-12 text-center opacity-50">
-                                <Sparkles size={48} className="text-indigo-500 mb-4 animate-pulse" />
-                                <h2 className="text-xl font-bold text-slate-400">Awaiting Command</h2>
-                                <p className="text-sm text-slate-600 mt-2">Enter a prompt to initialize generation sequence.</p>
-                            </div>
-                        )}
-                    </div>
-
-                </main>
-
-                <div className="max-w-7xl mx-auto px-6 mt-12 text-slate-400">
+        <PremiumToolLayout
+            title="AI Color Prompt Lab"
+            description="Generate intelligent, highly structured color prompts for AI design, image generation, and creative workflows. Translate your vision into machine-understandable instructions."
+            icon={Sparkles}
+            badgeText="AI Engineering"
+            guide={(
+                <div className="max-w-7xl mx-auto px-6 mt-12 pb-24 relative z-10">
                     <AIPromptGuide />
                 </div>
+            )}
+        >
+            <div className="grid lg:grid-cols-12 gap-8">
+
+                {/* Left Side: Inputs */}
+                <div className="lg:col-span-5 space-y-6">
+                    <div className="bg-white/80 backdrop-blur-xl p-6 md:p-8 rounded-[2rem] shadow-xl shadow-blue-900/5 border border-white/50 ring-1 ring-black/5 space-y-8">
+                        {/* Vision Input */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-gray-900 font-bold mb-2">
+                                <Type size={20} className="text-blue-500" />
+                                <h2>1. Describe Your Vision</h2>
+                            </div>
+                            <textarea
+                                value={vision}
+                                onChange={(e) => setVision(e.target.value)}
+                                placeholder="e.g. futuristic neon cyberpunk interface with a sleek dashboard..."
+                                className="w-full bg-white/50 border border-gray-200 rounded-xl p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[120px] resize-none"
+                            />
+                        </div>
+
+                        <div className="w-full h-px bg-gray-200/50 my-2" />
+
+                        {/* Configuration */}
+                        <div className="space-y-8">
+                            <div className="flex items-center gap-2 text-gray-900 font-bold border-b border-gray-100 pb-4">
+                                <Settings2Icon size={20} className="text-blue-500" />
+                                <h2>2. Refine Parameters</h2>
+                            </div>
+
+                            {/* Mood */}
+                            <div className="space-y-3">
+                                <label className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Mood / Emotion</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {MOODS.map(m => (
+                                        <button
+                                            key={m}
+                                            onClick={() => setMood(m)}
+                                            className={clsx(
+                                                "px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200",
+                                                mood === m
+                                                    ? "bg-gray-900 text-white shadow-md shadow-gray-900/10 scale-[1.02]"
+                                                    : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                                            )}
+                                        >
+                                            {m}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Style */}
+                            <div className="space-y-3">
+                                <label className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Visual Style</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {STYLES.map(s => (
+                                        <button
+                                            key={s}
+                                            onClick={() => setStyle(s)}
+                                            className={clsx(
+                                                "px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-1.5",
+                                                style === s
+                                                    ? "bg-blue-50 text-blue-700 border-blue-200 shadow-sm scale-[1.02]"
+                                                    : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                                            )}
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Context */}
+                            <div className="space-y-3">
+                                <label className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Target Context</label>
+                                <select
+                                    value={context}
+                                    onChange={(e) => setContext(e.target.value)}
+                                    className="w-full bg-white/50 border border-gray-200 rounded-xl p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                                >
+                                    {CONTEXTS.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Generate Button */}
+                        <button
+                            onClick={handleGenerate}
+                            disabled={loading}
+                            className={clsx(
+                                "w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-300 shadow-xl disabled:opacity-70 disabled:cursor-not-allowed",
+                                loading ? "bg-blue-600 shadow-blue-500/20 text-white" : "bg-gray-900 text-white hover:bg-gray-800 hover:shadow-gray-900/20 hover:-translate-y-0.5 min-h-[60px]"
+                            )}
+                        >
+                            {loading ? (
+                                <><RefreshCw className="animate-spin" size={20} /> Engineering Prompt...</>
+                            ) : (
+                                <><Wand2 size={20} /> Generate Intelligence</>
+                            )}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Right Side: Output */}
+                <div className="lg:col-span-7">
+                    <AnimatePresence mode="wait">
+                        {result ? (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="space-y-6"
+                            >
+                                {/* Main Prompt Banner */}
+                                <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+                                    <div className="bg-gray-900 p-6 sm:p-8 relative group">
+                                        <div className="absolute top-4 right-4 text-[10px] font-bold tracking-widest text-gray-500 uppercase">
+                                            Structured AI Prompt
+                                        </div>
+                                        <div className="mt-4 mb-8">
+                                            <p className="text-xl sm:text-2xl text-white font-serif leading-relaxed italic">
+                                                "{result.fullText}"
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row gap-3">
+                                            <button
+                                                onClick={() => copyToClipboard(result.fullText)}
+                                                className="flex-1 bg-white hover:bg-gray-100 text-gray-900 font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                                            >
+                                                <Copy size={18} /> Copy Full Prompt
+                                            </button>
+                                            <button
+                                                onClick={handleGenerate}
+                                                className="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                                            >
+                                                <RefreshCw size={18} /> Generate Variant
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Data Breakdown */}
+                                    <div className="p-6 sm:p-8 bg-white grid sm:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 text-gray-400">
+                                                <Palette size={16} />
+                                                <h4 className="text-xs font-bold uppercase tracking-wider">Palette Theory</h4>
+                                            </div>
+                                            <p className="text-sm text-gray-900 font-medium leading-relaxed">{result.paletteDesc}</p>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 text-gray-400">
+                                                <LightbulbIcon size={16} />
+                                                <h4 className="text-xs font-bold uppercase tracking-wider">Lighting Behavior</h4>
+                                            </div>
+                                            <p className="text-sm text-gray-900 font-medium leading-relaxed">{result.lighting}</p>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 text-gray-400">
+                                                <ContrastIcon size={16} />
+                                                <h4 className="text-xs font-bold uppercase tracking-wider">Contrast Depth</h4>
+                                            </div>
+                                            <p className="text-sm text-gray-900 font-medium leading-relaxed">{result.contrast}</p>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2 text-gray-400">
+                                                <Layers size={16} />
+                                                <h4 className="text-xs font-bold uppercase tracking-wider">Visual Hierarchy</h4>
+                                            </div>
+                                            <p className="text-sm text-gray-900 font-medium leading-relaxed">{result.hierarchy}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Mock Export formats missing contextually but nice to have in 10x */}
+                                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
+                                            <LayoutDashboard size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-gray-900">Push to Design System</h3>
+                                            <p className="text-sm text-gray-500">Extract matching tokens automatically</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={handleExportSystem}
+                                        className="text-sm font-bold text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition-colors"
+                                    >
+                                        Export System
+                                    </button>
+                                </div>
+
+                            </motion.div>
+                        ) : (
+                            <div className="h-full min-h-[500px] flex flex-col items-center justify-center text-center p-12 bg-white rounded-3xl border border-dashed border-gray-300">
+                                <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mb-6">
+                                    <Component className="text-gray-300" size={40} />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-2">Awaiting Parameters</h2>
+                                <p className="text-gray-500 max-w-sm mx-auto">
+                                    Describe your vision and configure your settings on the left to engineer a structured AI prompt.
+                                </p>
+                            </div>
+                        )}
+                    </AnimatePresence>
+                </div>
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
+}
+
+// Simple local mock icons to replace those not imported directly due to huge lucide-react import
+function Settings2Icon({ size, className }: { size: number, className?: string }) {
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 7h-9" /><path d="M14 17H5" /><circle cx="17" cy="17" r="3" /><circle cx="7" cy="7" r="3" /></svg>;
+}
+
+function LightbulbIcon({ size, className }: { size: number, className?: string }) {
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.3 1.5 1.5 2.5" /><path d="M9 18h6" /><path d="M10 22h4" /></svg>;
+}
+
+function ContrastIcon({ size, className }: { size: number, className?: string }) {
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10" /><path d="M12 18a6 6 0 1 0 0-12v12z" /></svg>;
 }

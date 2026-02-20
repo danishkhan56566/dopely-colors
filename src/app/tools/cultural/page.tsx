@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { CulturalGuide } from '@/components/content/UtilityGuides';
-import { Globe2, Map } from 'lucide-react';
+import { Globe2, Map, Wand2 } from 'lucide-react';
 
 const CULTURES = [
     {
@@ -30,7 +31,14 @@ export default function CulturalPage() {
     const [active, setActive] = useState(CULTURES[0]);
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<CulturalGuide />}
+        >
             <div className="min-h-screen bg-amber-50 p-6 md:p-10">
                 <header className="max-w-4xl mx-auto mb-12 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-200 text-amber-900 text-xs font-bold uppercase tracking-wider mb-4">
@@ -79,9 +87,9 @@ export default function CulturalPage() {
                     </div>
 
                 </div>
-                <CulturalGuide />
+                
                 <CulturalGuide />
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

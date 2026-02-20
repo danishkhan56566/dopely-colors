@@ -75,9 +75,9 @@ export default function ToolsPage() {
                                             {tool.desc}
                                         </p>
 
-                                        {tool.badge && (
+                                        {('badge' in tool && (tool as any).badge) && (
                                             <span className="absolute top-4 right-4 text-[10px] font-bold px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-sm">
-                                                {tool.badge}
+                                                {(tool as any).badge}
                                             </span>
                                         )}
                                     </Link>

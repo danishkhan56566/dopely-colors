@@ -9,16 +9,15 @@ import {
     Sun, Leaf, LineChart, Combine, Clock, Users, ArrowLeftRight,
     Smartphone, Mic, Hand, MousePointerClick, Watch, Fingerprint,
     Box, Gamepad2, EyeOff, Globe2, Calendar, Heart,
-    FlaskConical, ArrowRightLeft, Image
+    FlaskConical, ArrowRightLeft, Image, Briefcase, LayoutGrid
 } from 'lucide-react';
 
 export const ALL_TOOLS = [
     {
-        category: 'AI & Generative Tools',
+        category: 'Generative & AI',
         items: [
+            { name: 'AI Color Prompt Lab', icon: Wand2, desc: 'Generate structured prompts for AI art', href: '/tools/ai-prompt', badge: 'New' },
             { name: 'Generative Art Extractor', icon: Image, desc: 'Extract mood & remix palette', href: '/tools/art-extractor', badge: 'New' },
-            { name: 'AI Color Prompt Lab', icon: Wand2, desc: 'Text-to-palette generator', href: '/tools/ai-prompt' },
-
             { name: 'Brand Palette Maker', icon: Wand2, desc: 'AI brand color system generator', href: '/tools/brand', badge: 'New' },
             { name: 'Gradient Generator', icon: Layers, desc: 'Create CSS gradients', href: '/gradients' },
             { name: 'Radial Gradient Maker', icon: Droplet, desc: 'Create radial gradients', href: '/gradients?type=radial' },
@@ -36,7 +35,7 @@ export const ALL_TOOLS = [
         items: [
             { name: 'Image Color Picker', icon: Image, desc: 'Extract colors from images', href: '/image' },
             { name: 'Contrast Checker', icon: Eye, desc: 'Check accessibility', href: '/contrast' },
-            { name: 'Contrast Grid', icon: Grid, desc: 'Check all palette combinations', href: '/tools/contrast-grid' },
+            { name: 'Contrast Grid', icon: LayoutGrid, desc: 'Check all palette combinations', href: '/tools/contrast-grid' },
             { name: 'Color Blindness Simulator', icon: Accessibility, desc: 'Test accessibility', href: '/tools/blindness' },
             { name: 'Color Analyzer', icon: Monitor, desc: 'Analyze color properties', href: '/colors' },
         ]

@@ -265,35 +265,39 @@ export const WearableGuide = () => (
 
 export const AIPromptGuide = () => (
     <DocumentationHub
-        title="AI Prompt Engineering Studio"
-        description="Speak the language of color. Use natural language commands to generate, refine, and lock specific color harmonies."
+        title="AI Color Prompt Lab"
+        description="Generate intelligent color prompts for AI design, image generation, branding, and creative workflows. Translates creative intent into machine-understandable color instructions."
         benefits={[
-            "Translates abstract concepts (e.g., 'Cyberpunk Sunset') into mathematically sound palettes.",
-            "Allows iterative refinement: 'Make it pop more', 'Add a neon accent', 'Darken the background'.",
-            "Provides semantic usage tags (Primary, Surface, Text) automatically."
+            "Transforms simple ideas into structured color prompts.",
+            "Outputs include color palette description, lighting behavior, contrast level, and visual hierarchy.",
+            "Optimized for AI models, design automation, and concept art creation."
         ]}
         howToSteps={[
             {
-                title: "Enter a Mood",
-                desc: "Type a descriptive phrase like 'Minimalist Scandinavian Kitchen' or 'Retro 80s Arcade'."
+                title: "Describe Your Vision",
+                desc: "Enter mood, style, theme, design type, and brand personality."
             },
             {
-                title: "Use Magic Tags",
-                desc: "Click tags like '+ Neon' or '+ Matte' to append style modifiers to your prompt."
+                title: "AI Color Intelligence",
+                desc: "System analyzes emotional tone, visual environment, contrast, and lighting context."
             },
             {
-                title: "Lock & Refine",
-                desc: "Click the lock icon on perfect colors, then re-generate to fill in the gaps."
+                title: "Copy & Use",
+                desc: "Copy the structured AI-ready color prompt and paste it directly into Midjourney, Stable Diffusion, or design briefs."
             }
         ]}
         faqs={[
             {
-                question: "Can I use brand names?",
-                answer: "Yes, our model understands cultural references like 'Wes Anderson style' or 'Coca-Cola Red'."
+                question: "Does this work with any AI image generator?",
+                answer: "Yes. Prompts are structured for broad compatibility across Midjourney, DALL-E, Stable Diffusion, and others."
             },
             {
-                question: "How do I get better results?",
-                answer: "Be specific about lighting and texture. Instead of 'Blue', try 'Electric Blue glowing in the dark'."
+                question: "Can beginners use this?",
+                answer: "Yes. You only describe mood or style — the system structures everything professionally."
+            },
+            {
+                question: "Does it generate actual color codes?",
+                answer: "Yes, optional palette and token output available for UI/UX developers."
             }
         ]}
     />
@@ -462,35 +466,64 @@ export const SpatialGuide = () => (
 
 export const ArtExtractorGuide = () => (
     <DocumentationHub
-        title="Gallery Lens"
-        description="Extract the emotional DNA of any image. Turn masterpieces into mathematically usable palettes."
+        title="Generative Art Color Palette Extractor"
+        description="Extract intelligent color systems from AI art, digital illustrations, and generative visuals instantly. Unlike simple image pickers, this tool understands visual hierarchy and design semantics."
         benefits={[
-            "Extracts 'Dominant Pigments' based on perceptual area, not just pixel count.",
-            "Visualizes 'Mood DNA' (Temperature, Vibrancy, Contrast) in a radar chart.",
-            "Generates 'AI Remixes' that keep the mood but shift the hue."
+            "AI Visual Intelligence Engine: Detects meaningful color clusters instead of random pixels.",
+            "Dominant vs Accent Separation: Automatically classifies primary colors, balance colors, and micro accents.",
+            "Harmony Pattern Recognition: Identifies relationships such as complementary, triadic, and analogous.",
+            "Semantic Role Assignment: Labels colors for real design use (background, surface, text, highlight).",
+            "Accessibility Simulation: Evaluates palette contrast and readability for safer UI design."
         ]}
         howToSteps={[
             {
-                title: "Upload Masterpiece",
-                desc: "Drop any image (JPG, PNG, WebP) onto the canvas. The AI instantly scans for color clusters."
+                title: "Upload Artwork",
+                desc: "Drop an AI generated image, fractal render, or abstract composition onto the canvas."
             },
             {
-                title: "Analyze DNA",
-                desc: "Review the 'Emotional DNA' chart to see if the image is Warm/Cool or High/Low contrast."
+                title: "Visual Structure Analysis",
+                desc: "The engine maps color density, spatial dominance, gradient transitions, and light distribution."
             },
             {
-                title: "Export Palette",
-                desc: "Click any color node to copy its Hex code, or export the entire report."
+                title: "Export or Apply",
+                desc: "Export instantly to HEX, RGB, HSL, CSS variables, Tailwind config, or design tokens."
             }
         ]}
         faqs={[
             {
-                question: "How is this different from other pickers?",
-                answer: "Standard pickers just average pixels. Gallery Lens uses k-means clustering on the LAB color space to find distinct human-perceivable colors."
+                question: "Can this extract colors from AI generated images?",
+                answer: "Yes. It is specifically optimized for AI and procedural visuals, modeling visual dominance rather than raw pixel sampling."
             },
             {
-                question: "Can I use this for non-art images?",
-                answer: "Yes! It works great for UI screenshots, nature photography, and product moods."
+                question: "Why do traditional extractors fail on generative art?",
+                answer: "Most tools sample random pixels and ignore visual importance. They fail with complex gradients and thousands of micro-colors, producing muddy palettes."
+            },
+            {
+                question: "Can I use these palettes in real UI design?",
+                answer: "Yes. Colors are structured into functional roles, reflecting the true hierarchy of dominant visual fields, structural mid-tones, and emotional accents."
+            }
+        ]}
+        extraSections={[
+            {
+                title: "Why Traditional Extractors Fail",
+                content: (
+                    <div className="space-y-4">
+                        <p>Most tools sample random pixels and ignore visual importance. They fail with gradients and produce muddy palettes.</p>
+                        <p><strong>This tool models visual perception instead.</strong> Every visual contains a dominant visual field, structural mid-tones, emotional accents, and micro contrast signals. Professional palettes mirror this hierarchy.</p>
+                    </div>
+                )
+            },
+            {
+                title: "Who Should Use This Tool",
+                content: (
+                    <ul className="space-y-2 list-disc list-inside">
+                        <li><strong>UI / UX Designers</strong> working with AI art references</li>
+                        <li><strong>Digital Artists</strong> building brand systems</li>
+                        <li><strong>Creative Developers</strong> generating visual themes</li>
+                        <li><strong>Product Designers</strong> building futuristic interfaces</li>
+                        <li><strong>Generative Art Collectors</strong></li>
+                    </ul>
+                )
             }
         ]}
     />
@@ -529,17 +562,47 @@ export const DataVizGuide = () => (
 );
 
 export const BrandGuide = () => (
-    <ToolGuide
-        title="Brand Identity Guide"
-        description="Build a cohesive brand. Learn how to create a scalable color system for your brand identity."
-    >
-        <div className="space-y-6">
-            <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Core Identity</h3>
-                <p className="text-gray-600 leading-relaxed">
-                    Your primary color defines your brand. Use it sparingly for key actions and focal points to maintain impact.
-                </p>
-            </div>
-        </div>
-    </ToolGuide>
+    <DocumentationHub
+        title="Brand Palette Maker"
+        description="Build a complete, professional brand color system in seconds. From a single base color, logo, or brand idea, generate a full identity palette including primary, secondary, accent, background, surface, and semantic colors ready for real-world design use."
+        benefits={[
+            "Consistent Branding: Ensures visual hierarchy and consistency across web, mobile, marketing, and product interfaces.",
+            "Intelligent Roles: Automatically assigns semantic roles (Primary, Secondary, Background, Surface).",
+            "Harmony Engine: Uses proven models (complementary, analogous, triadic) for visual balance.",
+            "Accessibility Safe: Validates contrast for readability and inclusive design compliance.",
+            "Light & Dark Mode: Creates variations optimized for both light and dark interfaces."
+        ]}
+        howToSteps={[
+            {
+                title: "Input Brand Source",
+                desc: "Choose a base color via HEX, or select a brand personality tone."
+            },
+            {
+                title: "AI Structuring",
+                desc: "The system analyzes visual identity tone, emotional perception, and contrast hierarchy based on your inputs."
+            },
+            {
+                title: "Semantic Construction",
+                desc: "Instantly generates a structured brand color system with scalable 50-900 shades."
+            },
+            {
+                title: "Export & Apply",
+                desc: "View UI previews or export the design tokens for development (CSS, Tailwind)."
+            }
+        ]}
+        faqs={[
+            {
+                question: "Is the palette ready for real product design?",
+                answer: "Yes. Colors include semantic roles and structured 50-900 scales perfect for UI frameworks."
+            },
+            {
+                question: "Can I export for developers?",
+                answer: "Yes. CSS variables and Tailwind configurations are supported."
+            },
+            {
+                question: "Does it support dark mode branding?",
+                answer: "Yes. We automatically generate light and dark semantic surface variations."
+            }
+        ]}
+    />
 );

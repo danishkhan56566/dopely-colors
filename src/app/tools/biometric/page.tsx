@@ -1,4 +1,7 @@
+import { BiometricGuide } from '@/components/content/generated_guides/BiometricGuide';
+import { Wand2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import BiometricContent from './biometric-content';
 
 export const metadata = {
@@ -11,8 +14,15 @@ export const metadata = {
 
 export default function BiometricPage() {
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<BiometricGuide />}
+            hideHeader={true}
+            title="Biometric Color Engine"
+            description="Simulate and measure emotional and physiological responses to complete color systems using AI pattern matching."
+            icon={Wand2}
+            badgeText="Tool"
+        >
             <BiometricContent />
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

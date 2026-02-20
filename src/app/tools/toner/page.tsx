@@ -3,7 +3,8 @@
 import { useState, useMemo } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Printer, Copy, Droplet } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Printer, Copy, Droplet, Wand2 } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 import { TonerGuide } from '@/components/content/ScienceGuides';
@@ -60,7 +61,14 @@ export default function ColorTonerPage() {
     );
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tints"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tints"
+            guide={<TonerGuide />}
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 md:p-10">
                 <div className="text-center max-w-2xl mb-12">
                     <h1 className="text-4xl font-black text-gray-900 mb-4 flex items-center justify-center gap-3">
@@ -114,8 +122,8 @@ export default function ColorTonerPage() {
                         <ToneRow title="Tones" colors={tones} desc="Mixed with Gray (Saturation ↓)" />
                     </div>
                 </div>
-                <TonerGuide />
+                
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

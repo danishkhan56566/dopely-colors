@@ -1,8 +1,10 @@
+import { MicroInteractionsGuide } from '@/components/content/generated_guides/MicroInteractionsGuide';
 'use client';
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { MousePointerClick, Check, X } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { MousePointerClick, Check, X, Wand2 } from 'lucide-react';
 
 import chroma from 'chroma-js';
 import { MicroInteractionGuide } from '@/components/content/UtilityGuides';
@@ -17,7 +19,14 @@ export default function MicroInteractionsPage() {
     const disabled = chroma(baseColor).desaturate(2).brighten(1.5).hex();
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            guide={<MicroInteractionsGuide />}
+            hideHeader={true}
+            title="Color Micro-Interactions Preview"
+            description="Visualize and fine-tune how your colors behave during hover, active, and focus states on actual UI components."
+            icon={Wand2}
+            badgeText="Tool"
+        >
             <div className="min-h-screen bg-white p-6 md:p-10 flex flex-col items-center">
                 <header className="max-w-2xl text-center mb-12">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wider mb-4">
@@ -128,6 +137,6 @@ export default function MicroInteractionsPage() {
                 </div>
 
             </div>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

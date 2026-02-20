@@ -41,6 +41,7 @@ const HexColorPicker = dynamic(() => import('react-colorful').then(mod => mod.He
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { HomeGuide } from '@/components/content/PageGuides';
 import { HomeFAQ } from '@/components/content/PageFAQs';
+import type { BlogPost } from '@/lib/blog';
 
 type DesignState = {
     text: string;
@@ -71,7 +72,7 @@ const TRENDING_PALETTES = [
     { name: 'Earth & Clay', colors: ['#451a03', '#78350f', '#92400e', '#b45309', '#d97706'] },
 ];
 
-export function LandingPage() {
+export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) {
     const [activePreview, setActivePreview] = useState<'dashboard' | 'mobile' | 'marketing'>('mobile');
     const [design, setDesign] = useState<DesignState>(DEFAULT_DESIGN);
     const [activePicker, setActivePicker] = useState<keyof DesignState | null>(null);
@@ -889,6 +890,48 @@ export function LandingPage() {
 
                     </div>
                 </div>
+
+                {/* Latest Blog Posts Section */}
+                {recentPosts && recentPosts.length > 0 && (
+                    <div className="max-w-7xl mx-auto px-6 py-24 relative z-10 w-full border-t border-gray-100">
+                        <div className="flex justify-between items-end mb-12">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest mb-4 border border-indigo-100">
+                                    <Layers size={12} className="fill-indigo-600 text-indigo-600" />
+                                    Knowledge Base
+                                </div>
+                                <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight mb-4">Latest Insights & Resources</h2>
+                                <p className="text-lg text-gray-500 max-w-2xl">Expert articles on UI design, color theory, accessibility, and modern frontend development.</p>
+                            </div>
+                            <Link href="/blog" className="hidden md:flex font-bold text-indigo-600 hover:text-indigo-700 items-center gap-2 group">
+                                View All Articles <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {recentPosts.map((post) => (
+                                <Link key={post.slug} href={`/blog/${post.slug}`} className="group bg-white rounded-[2rem] p-6 lg:p-8 border border-gray-100 shadow-xl shadow-gray-200/20 hover:shadow-2xl hover:-translate-y-2 transition-all flex flex-col h-full">
+                                    <div className="flex items-center gap-3 text-sm text-gray-500 mb-6">
+                                        <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full font-bold text-[10px] md:text-xs uppercase tracking-widest border border-indigo-100">{post.category}</span>
+                                        <span className="font-semibold text-[10px] md:text-xs uppercase tracking-widest opacity-80">{post.date}</span>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-indigo-600 transition-colors leading-tight line-clamp-2">{post.title}</h3>
+                                    <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-1 line-clamp-3">{post.excerpt}</p>
+                                    <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
+                                        <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 opacity-80 group-hover:opacity-100 transition-opacity">Read Article</span>
+                                        <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                            <ArrowRight size={16} />
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                        <div className="mt-10 md:hidden">
+                            <Link href="/blog" className="w-full flex justify-center py-4 rounded-xl font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 transition-colors items-center gap-2">
+                                View All Articles <ArrowRight size={18} />
+                            </Link>
+                        </div>
+                    </div>
+                )}
 
                 {/* Guides - Now with component */}
                 <HomeGuide />

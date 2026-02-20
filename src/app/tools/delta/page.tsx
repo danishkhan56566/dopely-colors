@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import chroma from 'chroma-js';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Ruler, RefreshCw, Info } from 'lucide-react';
+import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
+import { Ruler, RefreshCw, Info, Wand2 } from 'lucide-react';
 import { DeltaGuide } from '@/components/content/DevGuides';
 import clsx from 'clsx';
 
@@ -33,7 +34,14 @@ export default function DeltaECalculator() {
     const interp = getInterpretation(delta);
 
     return (
-        <DashboardLayout>
+        <PremiumToolLayout
+            hideHeader={true}
+            title="Tool"
+            description="Tool Description"
+            icon={Wand2}
+            badgeText="Tool"
+            guide={<DeltaGuide />}
+        >
             <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6 md:p-10">
                 <div className="text-center max-w-2xl mb-12">
                     <h1 className="text-4xl font-black text-gray-900 mb-4 flex items-center justify-center gap-3">
@@ -121,7 +129,7 @@ export default function DeltaECalculator() {
                     </div>
 
                 </div>
-                <DeltaGuide />
+                
             </div>
             <style jsx>{`
                 @keyframes spin-slow { to { transform: rotate(360deg); } }
@@ -129,6 +137,6 @@ export default function DeltaECalculator() {
                 .animate-spin-slow { animation: spin-slow 10s linear infinite; }
                 .animate-reverse-spin { animation: reverse-spin 12s linear infinite; }
             `}</style>
-        </DashboardLayout>
+        </PremiumToolLayout>
     );
 }

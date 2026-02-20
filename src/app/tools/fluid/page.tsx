@@ -1,3 +1,4 @@
+import { FluidGuide } from '@/components/content/generated_guides/FluidGuide';
 import FluidGradientContent from './fluid-content';
 
 export const metadata = {
