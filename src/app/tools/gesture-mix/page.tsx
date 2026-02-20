@@ -1,5 +1,5 @@
-import { GestureMixGuide } from '@/components/content/generated_guides/GestureMixGuide';
 'use client';
+import { GestureMixGuide } from '@/components/content/generated_guides/GestureMixGuide';
 
 import { useState, useRef, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';

@@ -1,5 +1,5 @@
-import { TokensGuide } from '@/components/content/generated_guides/TokensGuide';
 'use client';
+import { TokensGuide } from '@/components/content/generated_guides/TokensGuide';
 
 import { useState, useMemo } from 'react';
 import chroma from 'chroma-js';

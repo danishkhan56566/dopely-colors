@@ -1,5 +1,5 @@
-import { ScraperGuide } from '@/components/content/generated_guides/ScraperGuide';
 'use client';
+import { ScraperGuide } from '@/components/content/generated_guides/ScraperGuide';
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';

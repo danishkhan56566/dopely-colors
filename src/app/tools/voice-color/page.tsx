@@ -1,5 +1,5 @@
-import { VoiceColorGuide } from '@/components/content/generated_guides/VoiceColorGuide';
 'use client';
+import { VoiceColorGuide } from '@/components/content/generated_guides/VoiceColorGuide';
 
 import { useState, useEffect, useRef } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';

@@ -1,5 +1,5 @@
-import { EcoImpactGuide } from '@/components/content/generated_guides/EcoImpactGuide';
 'use client';
+import { EcoImpactGuide } from '@/components/content/generated_guides/EcoImpactGuide';
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';

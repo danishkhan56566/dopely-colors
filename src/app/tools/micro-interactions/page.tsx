@@ -1,5 +1,5 @@
-import { MicroInteractionsGuide } from '@/components/content/generated_guides/MicroInteractionsGuide';
 'use client';
+import { MicroInteractionsGuide } from '@/components/content/generated_guides/MicroInteractionsGuide';
 
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';

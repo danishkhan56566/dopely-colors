@@ -1,5 +1,5 @@
-import { CollabLabGuide } from '@/components/content/generated_guides/CollabLabGuide';
 'use client';
+import { CollabLabGuide } from '@/components/content/generated_guides/CollabLabGuide';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
