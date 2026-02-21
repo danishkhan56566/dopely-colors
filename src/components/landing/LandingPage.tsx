@@ -132,14 +132,14 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                 }}
                                 className="relative bg-white rounded-[1.8rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center gap-2"
                             >
-                                <div className="pl-5 text-gray-400">
+                                <div className="pl-5 text-gray-500">
                                     <Sparkles size={24} className="text-orange-400 fill-orange-400/20" />
                                 </div>
                                 <input
                                     type="text"
                                     name="aiQuery"
                                     placeholder="Describe your project..."
-                                    className="flex-1 bg-transparent border-none outline-none text-lg text-gray-900 placeholder:text-gray-400 h-16 min-w-0 font-medium"
+                                    className="flex-1 bg-transparent border-none outline-none text-lg text-gray-900 placeholder:text-gray-500 h-16 min-w-0 font-medium"
                                 />
                                 <button type="submit" className="hidden sm:flex px-8 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-all active:scale-95 whitespace-nowrap text-base">
                                     Start Exploring <ArrowRight size={18} />
@@ -152,7 +152,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
 
                         {/* Quick Suggestions - Pills */}
                         <div className="flex flex-wrap justify-center items-center gap-3 mb-16">
-                            <span className="font-bold text-xs uppercase tracking-widest text-gray-400 mr-2">Try:</span>
+                            <span className="font-bold text-xs uppercase tracking-widest text-gray-500 mr-2">Try:</span>
                             {['Minimalist Dashboard', 'Luxury Brand', 'Neon Cyberpunk', 'Pastel App', 'Ocean Vibes'].map((tag) => (
                                 <button key={tag} className="px-4 py-2 bg-white rounded-full border border-gray-200 text-gray-600 hover:border-gray-900 hover:text-gray-900 hover:shadow-md transition-all text-[11px] font-bold uppercase tracking-wide">
                                     {tag}
@@ -164,7 +164,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 relative z-10">
                             <Link href="/colors" className="px-12 py-5 bg-white text-gray-900 border-2 border-gray-100 rounded-[1.5rem] font-bold text-lg hover:border-gray-200 hover:bg-gray-50 hover:shadow-xl hover:-translate-y-1 transition-all w-full sm:w-auto flex items-center justify-center gap-3 group">
                                 Explore Trending Palettes
-                                <ArrowRight size={18} className="text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
+                                <ArrowRight size={18} className="text-gray-500 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
                             </Link>
                         </div>
                     </div>
@@ -185,9 +185,9 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                     <div className="mt-4 flex justify-between items-center px-1">
                                         <div>
                                             <span className="block text-sm font-bold text-gray-800">{palette.name}</span>
-                                            <span className="text-[10px] uppercase tracking-wide text-gray-400 font-medium">5 Colors • {palette.colors[0]}</span>
+                                            <span className="text-[10px] uppercase tracking-wide text-gray-500 font-medium">5 Colors • {palette.colors[0]}</span>
                                         </div>
-                                        <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-red-50 group-hover:text-red-500 transition-colors">
+                                        <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-red-50 group-hover:text-red-500 transition-colors">
                                             <Heart size={14} className="fill-current" />
                                         </button>
                                     </div>
@@ -207,9 +207,9 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                     <div className="mt-4 flex justify-between items-center px-1">
                                         <div>
                                             <span className="block text-sm font-bold text-gray-800">{palette.name}</span>
-                                            <span className="text-[10px] uppercase tracking-wide text-gray-400 font-medium">5 Colors • {palette.colors[0]}</span>
+                                            <span className="text-[10px] uppercase tracking-wide text-gray-500 font-medium">5 Colors • {palette.colors[0]}</span>
                                         </div>
-                                        <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+                                        <button className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
                                             <Download size={14} />
                                         </button>
                                     </div>
@@ -402,7 +402,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                                                 </div>
                                                                 <div className="flex justify-between items-center">
                                                                     <div className="font-bold text-gray-800">Summer Vibes {i}</div>
-                                                                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                                                                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
                                                                         <Heart size={16} fill={i === 1 ? design.accent : "none"} stroke={i === 1 ? design.accent : "currentColor"} />
                                                                     </div>
                                                                 </div>
@@ -431,7 +431,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                                         <ArrowRight size={24} className="rotate-180" />
                                                     </button>
                                                     <div className="relative z-10 text-white">
-                                                        <h3 className="text-4xl font-bold mb-2">Neon Lights</h3>
+                                                        <div className="text-4xl font-bold mb-2">Neon Lights</div>
                                                         <div className="flex gap-2 text-white/80">
                                                             <span className="bg-white/20 px-3 py-1 rounded-lg text-sm backdrop-blur-md">Vibrant</span>
                                                             <span className="bg-white/20 px-3 py-1 rounded-lg text-sm backdrop-blur-md">Cyberpunk</span>
@@ -451,9 +451,9 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                                             <div className="w-16 h-16 rounded-xl shadow-inner" style={{ backgroundColor: swatch.color }} />
                                                             <div>
                                                                 <div className="font-bold text-gray-900 text-lg">{swatch.color}</div>
-                                                                <div className="text-gray-400 text-sm font-medium">{swatch.name}</div>
+                                                                <div className="text-gray-500 text-sm font-medium">{swatch.name}</div>
                                                             </div>
-                                                            <button className="ml-auto w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-colors">
+                                                            <button className="ml-auto w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                                                                 <Share2 size={18} />
                                                             </button>
                                                         </div>
@@ -515,7 +515,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                                     {/* Floating Details */}
                                                     <div className="absolute bottom-6 left-6 right-6 p-6 bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50">
                                                         <div className="flex justify-between items-center mb-2">
-                                                            <h4 className="font-bold text-xl text-gray-900">Premium Sneaker</h4>
+                                                            <div className="font-bold text-xl text-gray-900">Premium Sneaker</div>
                                                             <span className="font-black text-xl" style={{ color: design.primary }}>$129</span>
                                                         </div>
                                                         <div className="flex gap-2">
@@ -576,8 +576,8 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                 <RotateCcw size={18} />
                             </button>
                             <div className="flex bg-gray-100 rounded-xl p-1">
-                                <button className="p-2 text-gray-400 hover:text-gray-900 rounded-lg transition-colors" aria-label="Undo"><Undo size={16} /></button>
-                                <button className="p-2 text-gray-400 hover:text-gray-900 rounded-lg transition-colors" aria-label="Redo"><Redo size={16} /></button>
+                                <button className="p-2 text-gray-500 hover:text-gray-900 rounded-lg transition-colors" aria-label="Undo"><Undo size={16} /></button>
+                                <button className="p-2 text-gray-500 hover:text-gray-900 rounded-lg transition-colors" aria-label="Redo"><Redo size={16} /></button>
                             </div>
                             <button className="p-3 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors" aria-label="Download"><Download size={18} /></button>
                             <button className="p-3 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors" aria-label="Share"><Share2 size={18} /></button>
@@ -695,7 +695,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                             <Layout size={32} className="text-blue-400" />
                                         </div>
                                         <h3 className="text-3xl font-bold mb-4 tracking-tight">Design Token Engine</h3>
-                                        <p className="text-xl text-gray-400 font-medium max-w-lg leading-relaxed mb-8">
+                                        <p className="text-xl text-gray-500 font-medium max-w-lg leading-relaxed mb-8">
                                             Manage semantic tokens, aliases, and component values in one place. Export to JSON, CSS, or Swift.
                                         </p>
                                     </div>
@@ -716,8 +716,8 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                         <div className="h-3 w-1/2 bg-gray-700/50 rounded-full"></div>
                                     </div>
                                     <div className="mt-8 flex gap-3">
-                                        <div className="px-4 py-2 rounded-lg bg-white/10 text-xs text-gray-400 font-medium border border-white/5">Button</div>
-                                        <div className="px-4 py-2 rounded-lg bg-white/10 text-xs text-gray-400 font-medium border border-white/5">Input</div>
+                                        <div className="px-4 py-2 rounded-lg bg-white/10 text-xs text-gray-500 font-medium border border-white/5">Button</div>
+                                        <div className="px-4 py-2 rounded-lg bg-white/10 text-xs text-gray-500 font-medium border border-white/5">Input</div>
                                     </div>
                                 </div>
                             </div>
@@ -776,8 +776,8 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                             </p>
 
                             <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
-                                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-indigo-600 transition-colors">Explore Library</span>
-                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-indigo-600 transition-colors">Explore Library</span>
+                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
                                     <ArrowRight size={18} />
                                 </div>
                             </div>
@@ -797,8 +797,8 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                             </p>
 
                             <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
-                                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-pink-600 transition-colors">Browse Typography</span>
-                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-pink-600 group-hover:text-white transition-all duration-300">
+                                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-pink-600 transition-colors">Browse Typography</span>
+                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-pink-600 group-hover:text-white transition-all duration-300">
                                     <ArrowRight size={18} />
                                 </div>
                             </div>
@@ -818,8 +818,8 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                             </p>
 
                             <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
-                                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-emerald-600 transition-colors">Start Creating</span>
-                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-emerald-600 transition-colors">Start Creating</span>
+                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
                                     <ArrowRight size={18} />
                                 </div>
                             </div>
@@ -839,8 +839,8 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                             </p>
 
                             <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
-                                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-orange-600 transition-colors">View Collection</span>
-                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
+                                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-orange-600 transition-colors">View Collection</span>
+                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
                                     <ArrowRight size={18} />
                                 </div>
                             </div>
@@ -860,8 +860,8 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                             </p>
 
                             <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
-                                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-cyan-600 transition-colors">Generate Palette</span>
-                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-cyan-600 group-hover:text-white transition-all duration-300">
+                                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-cyan-600 transition-colors">Generate Palette</span>
+                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-cyan-600 group-hover:text-white transition-all duration-300">
                                     <ArrowRight size={18} />
                                 </div>
                             </div>
@@ -881,8 +881,8 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                             </p>
 
                             <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
-                                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-purple-600 transition-colors">Convert Files</span>
-                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
+                                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-purple-600 transition-colors">Convert Files</span>
+                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
                                     <ArrowRight size={18} />
                                 </div>
                             </div>

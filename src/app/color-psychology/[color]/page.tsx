@@ -251,7 +251,7 @@ export default async function ColorPsychologyDetail({ params }: { params: Promis
                             <ul className="space-y-5">
                                 {colorData.randomFacts.map((fact, idx) => (
                                     <li key={idx} className="flex gap-4 text-gray-600 items-start">
-                                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0 text-sm font-bold text-gray-400 mt-0.5">
+                                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0 text-sm font-bold text-gray-500 mt-0.5">
                                             {idx + 1}
                                         </div>
                                         <span className="leading-relaxed font-medium pt-1">{fact}</span>

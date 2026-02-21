@@ -195,8 +195,8 @@ export const TopBar = ({ onOpenPreview, onOpenExport, onOpenSystem, onOpenHelp, 
 
                 {/* History */}
                 <div className="hidden lg:flex gap-1">
-                    <button onClick={undo} disabled={!canUndo} className="p-2 text-gray-400 hover:text-gray-700 disabled:opacity-20"><Undo size={18} /></button>
-                    <button onClick={redo} disabled={!canRedo} className="p-2 text-gray-400 hover:text-gray-700 disabled:opacity-20"><Redo size={18} /></button>
+                    <button onClick={undo} disabled={!canUndo} className="p-2 text-gray-400 hover:text-gray-700 disabled:opacity-20" aria-label="Undo"><Undo size={18} /></button>
+                    <button onClick={redo} disabled={!canRedo} className="p-2 text-gray-400 hover:text-gray-700 disabled:opacity-20" aria-label="Redo"><Redo size={18} /></button>
                 </div>
 
                 {/* User */}

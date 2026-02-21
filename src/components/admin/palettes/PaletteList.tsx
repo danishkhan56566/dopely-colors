@@ -256,7 +256,7 @@ export default function PaletteList({ initialPalettes, totalCount }: PaletteList
                                                             onChange={e => setTempMetricValue(Number(e.target.value))}
                                                             onKeyDown={e => e.key === 'Enter' && saveMetric()}
                                                         />
-                                                        <button onClick={saveMetric} className="text-green-600"><Save size={14} /></button>
+                                                        <button onClick={saveMetric} className="text-green-600" aria-label="Save Metric"><Save size={14} /></button>
                                                         <button onClick={() => setEditingMetric(null)} className="text-red-600"><X size={14} /></button>
                                                     </div>
                                                 ) : (
@@ -282,7 +282,7 @@ export default function PaletteList({ initialPalettes, totalCount }: PaletteList
                                                             onChange={e => setTempMetricValue(Number(e.target.value))}
                                                             onKeyDown={e => e.key === 'Enter' && saveMetric()}
                                                         />
-                                                        <button onClick={saveMetric} className="text-green-600"><Save size={14} /></button>
+                                                        <button onClick={saveMetric} className="text-green-600" aria-label="Save Metric"><Save size={14} /></button>
                                                         <button onClick={() => setEditingMetric(null)} className="text-red-600"><X size={14} /></button>
                                                     </div>
                                                 ) : (

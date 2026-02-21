@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/react";
-
-import { CommandPalette } from "@/components/CommandPalette";
+import { CommandPaletteLazy } from '@/components/CommandPaletteLazy';
 import { CookieConsent } from "@/components/layout/CookieConsent";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { ErrorSuppressorScript } from '@/components/ErrorSuppressorScript';
@@ -161,7 +160,7 @@ export default function RootLayout({
           }}
         />
         {children}
-        <CommandPalette />
+        <CommandPaletteLazy />
         <Toaster position="top-center" richColors />
         <CookieConsent />
         <ServiceWorkerRegister />

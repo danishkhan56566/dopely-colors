@@ -89,16 +89,16 @@ export const Footer = () => {
                         <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center text-white text-xs font-bold bg-rainbow">D</div>
                         <span className="text-gray-900 font-bold">Dopely Colors</span>
                         <div className="flex flex-col ml-2">
-                            <span className="text-gray-400 text-sm">© 2026 — Let's build better color systems. Made by Danish Khan.</span>
+                            <span className="text-gray-500 text-sm">© 2026 — Let's build better color systems. Made by Danish Khan.</span>
                             <span className="text-gray-300 text-[10px] mt-1">This website uses Google AdSense, a service for displaying advertisements. Google may use cookies to show relevant ads to users.</span>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <Link href="#" aria-label="Twitter" className="text-gray-400 hover:text-gray-900 transition-colors"><Twitter size={20} /></Link>
-                        <Link href="#" aria-label="Github" className="text-gray-400 hover:text-gray-900 transition-colors"><Github size={20} /></Link>
-                        <Link href="#" aria-label="Dribbble" className="text-gray-400 hover:text-gray-900 transition-colors"><Dribbble size={20} /></Link>
-                        <Link href="#" aria-label="Instagram" className="text-gray-400 hover:text-gray-900 transition-colors"><Instagram size={20} /></Link>
+                        <Link href="#" aria-label="Twitter" className="text-gray-500 hover:text-gray-900 transition-colors"><Twitter size={20} /></Link>
+                        <Link href="#" aria-label="Github" className="text-gray-500 hover:text-gray-900 transition-colors"><Github size={20} /></Link>
+                        <Link href="#" aria-label="Dribbble" className="text-gray-500 hover:text-gray-900 transition-colors"><Dribbble size={20} /></Link>
+                        <Link href="#" aria-label="Instagram" className="text-gray-500 hover:text-gray-900 transition-colors"><Instagram size={20} /></Link>
                     </div>
                 </div>
             </div>
