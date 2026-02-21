@@ -1,185 +1,13 @@
-import { batch1Db } from "./extended-colors/batch1";
-import { batch2Db } from "./extended-colors/batch2";
-import { batch3Db } from "./extended-colors/batch3";
-import { batch4Db } from "./extended-colors/batch4";
-import { batch5Db } from "./extended-colors/batch5";
-import { batch6Db } from "./extended-colors/batch6";
-import { batch7Db } from "./extended-colors/batch7";
-import { batch8Db } from "./extended-colors/batch8";
+import fs from 'fs';
+import path from 'path';
 
-export interface ColorPsychologyData {
-    slug: string;
-    name: string;
-    hex: string;
-    shortDescription: string;
-    history: string[];
-    description: string[];
-    deepPsychology: {
-        title: string;
-        description: string;
-    }[];
-    personalityProfile: {
-        intro: string;
-        positive: string[];
-        negative: string[];
-    };
-    symbolism: string;
-    businessApplications: string[];
-    marketingAndBranding: string[];
-    randomFacts: string[];
-    detailedShades: {
-        name: string;
-        hex: string;
-        description: string;
-    }[];
-}
+const dbPath = path.join(__dirname, '../src/data/colorPsychology.ts');
+let content = fs.readFileSync(dbPath, 'utf8');
 
-export const colorPsychologyDb: ColorPsychologyData[] = [
+const replacements = [
     {
-        slug: 'red',
-        name: 'Red',
-        hex: '#EF4444',
-        shortDescription: 'The color of passion, power, and urgency.',
-        history: [
-            'Red is widely recognized as the very first color that humans mastered, fabricated, reproduced, and systematically broke down into different distinct shades. As one of the earliest colors used by artists during the prehistoric period, red ochre was utilized extensively in cave paintings dating back over 40,000 years, establishing an immortal link between humanity and the physical representation of life and blood.',
-            'Throughout the Middle Ages, the color red acquired profound religious significance across Europe. It became the definitive color of both the blood of Christ and the terrifying fires of hell. In the Renaissance period, vibrant red pigments were exorbitantly expensive and were therefore exclusively utilized to draw the viewer’s immediate attention to the most influential or divine figures in a painted composition, denoting extreme wealth, power, and sacred duty.',
-            'By the 19th century, the cultural perception of red underwent a massive shift, becoming the definitive color of aggressive new political and social movements, such as socialism and revolution. It was during this modern era that the color red transitioned from merely imitating the literal nature of blood or fire to actively being weaponized to manufacture specific, intense emotional responses in art and political propaganda.'
-        ],
-        description: [
-            'Red is universally known to have profound physiological and psychological impacts on the human body, producing both intensely positive and dangerously negative effects on our psyche. It is the color at the very end of the visible spectrum of light, and because of its long wavelength, it visually advances towards the viewer faster than any other color. This biological quirk is precisely why red commands absolute, undeniable attention the instant it enters our field of vision.',
-            'Numerous clinical studies have overwhelmingly proven that exposure to red actually causes a measurable physical reaction in the human body. Its warm, vibrant hue directly stimulates the adrenal gland, forcing the body to dump adrenaline into the bloodstream. This literal chemical reaction gives us more energy to take sudden physical action, elevating heart rates, increasing respiration, and raising blood pressure. Red is not just a visual stimulus; it is a physical event experienced by the human nervous system.'
-        ],
-        deepPsychology: [
-            { title: 'Love', description: 'Red is the universal color of romance, passion, sexuality, and lust. Whether we are infatuated, deeply in love, or brutally broken-hearted, we involuntarily map these feelings to the color red, which communicates strong, undeniable feelings of biological attraction that energize the soul.' },
-            { title: 'Power', description: 'Compared to the rest of the spectrum, red provokes the most potent emotions. It makes individuals feel extraordinarily dominant and powerful by instantly boosting their perceived self-esteem. Famous individuals walk the red carpet, and red sports cars imply untouchable high status.' },
-            { title: 'Confidence', description: 'Wearing red visually conveys an absolute state of believing in one’s abilities and qualities. Putting on a red dress, a sharp red coat, or bold red lipstick mathematically shows the world that a person is fiercely ready to take control and make a significant difference.' },
-            { title: 'Aggression', description: 'While red heightens fierce passion, it equally increases tendencies toward raw aggression and violent confrontational impulses. Red has a deeply evolved psychological relationship with extreme anger, primal rage, and unreasonable, heated physical reactions.' },
-            { title: 'Appetite', description: 'Red overwhelmingly stimulates hunger and biological appetite. Global fast-food chains leverage this exact psychological impact in their visual branding and interior design to encourage rapid, high-volume consumption and quick customer turnover.' },
-            { title: 'Impulse Control', description: 'The intensely stimulating nature of the color red is psychologically tied directly to impulsiveness, urgency, and stimulation-seeking behavior. It motivates rapid, deeply reactive behavior rather than slow, cautious, or deliberate consideration before acting.' },
-            { title: 'Dominance', description: 'Red has a measurable psychological impact on perceptions of power, social status, and dominance. Clinical exposure to red makes people feel significantly more influential, signaling authority figures and commanding absolute respect.' },
-            { title: 'Risk-Taking', description: 'Red directly elicits intense sensations of psychological thrill and physical adventure. It aggressively promotes risky, daring behavior by simultaneously signaling massive excitement and immediate danger.' }
-        ],
-        personalityProfile: {
-            intro: 'Individuals who genuinely favor the color red are generally observed to be extreme extroverts, highly outgoing, and enjoy spending immense amounts of time interacting with people and living life to its absolute physical limits. However, this intense fire means they can also be perceived as brutally competitive, impatient, and unapologetically aggressive individuals.',
-            positive: ['Courageous', 'Passionate', 'Deeply Energetic', 'Viscerally Driven', 'Unyielding Confidence'],
-            negative: ['Overly Aggressive', 'Dangerous Impulsive', 'Overpowering Dominance', 'Quick-tempered', 'Exhaustingly Demanding']
-        },
-        symbolism: 'In Western cultures, red universally means immediate danger, intense passion, or sudden action. In Eastern cultures (especially China and surrounding regions), red shifts entirely to represent extreme luck, pure joy, and financial prosperity. Conversely, in specific parts of South Africa, it is heavily designated as the color of sorrow and mourning.',
-        businessApplications: [
-            'In the corporate world, red is the undisputed titan of manufacturing urgency. It is heavily utilized in retail environments to initiate clearance sales, instantly grabbing the consumer’s eye and creating a genuine psychological fear of missing out (FOMO) on a limited-time opportunity.',
-            'Furthermore, the restaurant industry capitalizes on red’s biological ability to stimulate the metabolism and induce hunger. Fast-food heavyweights use red to not only make their food look viscerally appetizing but to subliminally rush the customer, ensuring high table turnover rates in crowded dining rooms. It is the ultimate color for dynamic, high-energy brands that thrive on immediate action.'
-        ],
-        marketingAndBranding: [
-            'When designing User Interfaces (UI) or major marketing campaigns, use red strategically as a high-value accent color to draw immediate, undeniable attention to critical Calls-to-Action (CTAs) such as "Buy Now" or "Subscribe" buttons.',
-            'However, extreme caution must be exercised when utilizing red in branding. Overusing it across massive surface areas can cause severe visual and psychological strain on the user, leading to immediate tab closures. Furthermore, because red is universally recognized in UX as the color of "Errors" or "Destructive Actions" (like deleting an account), applying it to safe or positive elements can cause massive cognitive dissonance for the user.'
-        ],
-        randomFacts: [
-            'Red is the absolute first color that newborn babies can see and distinguish, typically occurring when they are around 2 weeks old.',
-            'Staring at a large block of the color red can actually make your physical heart beat faster and raise your blood pressure.',
-            'Bulls are genuinely colorblind; it is the violent movement of the matador’s cape that angers them, not the specific red hue.',
-            'During the 19th Century, "Red" was exclusively considered a hyper-masculine color, while "Blue" was considered delicate and feminine.'
-        ],
-        detailedShades: [
-            { name: 'Crimson', hex: '#DC143C', description: 'A massive, strong red color inclining slightly to purple. It represents unbreakable determination and deep, venous blood.' },
-            { name: 'Maroon', hex: '#800000', description: 'A brutally dark, brownish-red. It symbolizes tightly controlled physical power, autumn warmth, and intense psychological grounding.' },
-            { name: 'Scarlet', hex: '#FF2400', description: 'A brilliant red with a searing tinge of orange. It is highly aggressive, unapologetically dynamic, and associated with flames.' },
-            { name: 'Ruby', hex: '#E0115F', description: 'A deep, intensely vibrant red honoring the precious gemstone. Associated with massive royal wealth, majesty, and enduring value.' }
-        ]
-    },
-    {
-        slug: 'blue',
-        name: 'Blue',
-        hex: '#3B82F6',
-        shortDescription: 'The color of trust, peace, and corporate logic.',
-        history: [
-            'Historically, the attainment of true blue pigment was one of the most difficult and expensive endeavors in the art world. For centuries, the most brilliant blue—ultramarine—was derived exclusively from the semi-precious lapis lazuli stone, which had to be mined in Afghanistan and transported across the Silk Road.',
-            'Because of its staggering cost, which often exceeded the price of pure gold, the use of true blue during the Renaissance was heavily regulated. It was reserved almost exclusively for depicting massive wealth, supreme royalty, or the divine robes of the Virgin Mary in sacred religious paintings, establishing blue as a color of untouchable divinity and profound value.',
-            'It wasn’t until the invention of synthetic blue pigments during the Industrial Revolution that the color became accessible to the masses. Today, blue has transitioned from being a rare symbol of the divine to becoming the stabilizing, foundational color of the modern digital and corporate era.'
-        ],
-        description: [
-            'Blue is statistically the most universally favored color across the entire globe, transcending borders, cultures, genders, and age groups. It sits firmly on the cold end of the visible spectrum, meaning it naturally recedes visually, creating immense feelings of wide-open space and infinite distance.',
-            'Biologically, blue acts as the ultimate psychological antithesis to red. While red violently stimulates the adrenal system, blue triggers the parasympathetic nervous system. Exposure to blue environments has been clinically proven to fundamentally calm the human mind, significantly lower the heart rate, reduce body temperature, and inspire profound feelings of serene security and highly structured, rational logic.'
-        ],
-        deepPsychology: [
-            { title: 'Trust', description: 'Blue represents unwavering reliability, absolute security, and stoic loyalty. This is exactly why massive global financial institutions, banks, and insurance companies heavily rely on deep blue branding to instantly assure customers their money and lives are perfectly safe.' },
-            { title: 'Productivity', description: 'Unlike red or yellow, blue does not distract or agitate. It massively enhances deep mental concentration and is extensively used in corporate office architecture to silently boost logical reasoning and sustained intellectual output.' },
-            { title: 'Sadness', description: 'The common term "feeling blue" stems directly from the color’s cold physical wavelength. Excessive or poorly lit blue environments can dramatically evoke severe feelings of melancholy, emotional isolation, and psychological detachment.' },
-            { title: 'Peace', description: 'Because it is profoundly reminiscent of the vast ocean and the infinite daytime sky, blue effortlessly triggers a biological relaxation response, achieving an unmatched tranquil state of mental and physical peace.' },
-            { title: 'Appetite Suppressant', description: 'Blue is one of the rarest colors to occur naturally in edible food (excluding select berries). Therefore, it acts as a highly effective, biological appetite suppressant, as our primal brains subliminally associate blue foods with dangerous spoilage or toxic poison.' }
-        ],
-        personalityProfile: {
-            intro: 'Those who declare blue as their preferred color are heavily introspective, deeply analytical, and extraordinarily reliable individuals. They value absolute stability, intellectual honesty, and deep, meaningful relationships over fleeting, noisy interactions.',
-            positive: ['Fiercely Loyal', 'Deeply Serene', 'Highly Intelligent', 'Unquestionably Trustworthy', 'Coldly Rational'],
-            negative: ['Emotionally Cold', 'Harshly Unforgiving', 'Boringly Predictable', 'Socially Detached', 'Immovably Stubborn']
-        },
-        symbolism: 'In the West, blue means massive corporate trust and periods of deep sadness. In Eastern cultures, it symbolizes eternal immortality and spiritual elevation. In the Middle East, blue is seen as highly protective and is actively painted on doors to ward off evil spirits.',
-        businessApplications: [
-            'Blue is overwhelmingly preferred for corporate identities, global tech firms, and massive healthcare providers. It is utilized to project an aura of absolute financial security, hygienic cleanliness, and non-threatening, highly stable innovation.',
-            'Because it universally lowers the heart rate and extends patience, blue is the dominant color of the internet. It is the core reason why social media networks (Facebook, LinkedIn, Twitter) use blue: it encourages prolonged, calm, and sustained interaction without causing user burnout or agitation.'
-        ],
-        marketingAndBranding: [
-            'Blue is the ultimate safe choice in UX and corporate marketing. Use it to establish immediate trust, structure, and professional authority. Dark blues (Navy) project immense power and stoic intelligence, while lighter blues (Azure) are viewed as incredibly friendly and digital.',
-            'However, you must strictly avoid utilizing blue in food marketing or hospitality dining rooms. Because blue naturally suppresses the appetite and lacks the warmth needed to make a space feel "appetizing," it will drastically reduce food sales and perceived deliciousness.'
-        ],
-        randomFacts: [
-            'Mosquitoes are biologically drawn to the color blue twice as much as any other color on the spectrum.',
-            'Clinical sports studies show that Olympic weightlifters can actually lift significantly heavier weights when training in blue environments.',
-            'Blue is the most common favorite color globally, with over 35% of the human population declaring it as their preferred hue.'
-        ],
-        detailedShades: [
-            { name: 'Navy', hex: '#000080', description: 'A deeply dark shade of blue conveying immense authority, marine logic, and strict, unyielding order.' },
-            { name: 'Cyan', hex: '#00FFFF', description: 'A bright, incredibly lively blue-green mixed with pure light. It feels intensely futuristic and aggressively electrical.' },
-            { name: 'Cerulean', hex: '#007BA7', description: 'A gorgeous mid-blue that perfectly mirrors a clear daytime sky, promoting immense psychological calm.' },
-            { name: 'Azure', hex: '#007FFF', description: 'The absolute classic web blue. Bright, perfectly responsive, and deeply ingrained in modern digital infrastructure.' }
-        ]
-    },
-    {
-        slug: 'green',
-        name: 'Green',
-        hex: '#10B981',
-        shortDescription: 'The color of nature, extreme wealth, and absolute equilibrium.',
-        history: [
-            'Ironically, despite green being the ultimate symbol of life and the natural world, historically reproducing green as a commercial dye or paint was an incredibly dangerous and toxic process. Early synthetic greens (such as Paris Green and Scheele’s Green) were heavily formulated using massive amounts of deadly arsenic.',
-            'During the Victorian era, these highly toxic green pigments were utilized in everything from high-end fashion dresses to domestic wallpaper, resulting in widespread illness and death among those surrounded by the color. It took immense scientific advancement to finally create safe, stable green pigments that allowed humanity to safely wear the color of the forest.',
-            'Today, the toxic past of green has been entirely forgotten. It has been universally reclaimed by environmental movements, financial institutions, and global traffic systems, cementing its modern legacy as the color of safety, sustainable progression, and untethered biological growth.'
-        ],
-        description: [
-            'Green is the single easiest color on the human eye to process biologically. Because it sits precisely in the physical middle of the visual light spectrum, the human eye requires absolutely zero physical adjustment to perceive it, making it the most relaxing and restful color we can look at.',
-            'When surrounded by massive amounts of green foliage or green UI elements, the human brain enters a psychological state of absolute balance, restoration, and life. It signals to our primal instincts that we are in a safe, fertile environment where water and food are plentiful, drastically lowering cortisol and stress levels.'
-        ],
-        deepPsychology: [
-            { title: 'Growth', description: 'Green visually mimics the arrival of the spring season, tricking our brains into feeling a profound sense of biological renewal, continued prosperity, and unstoppable forward progression.' },
-            { title: 'Wealth', description: 'Tied heavily to the physical appearance of the American dollar, dark forest green is a massive, universal symbol for traditional finance, established banking, and hoarded physical abundance.' },
-            { title: 'Harmony', description: 'Because it takes absolutely zero physiological effort to perceive green light, it creates an environment of incredibly calm deliberation, removing all visual stress from the observer.' },
-            { title: 'Envy', description: 'The profound term "green with envy" is deeply rooted in ancient lore and popularized by Shakespeare, permanently linking the sickly yellow-green shade to intense jealousy, physical sickness, and moral decay.' }
-        ],
-        personalityProfile: {
-            intro: 'Green lovers are typically the ultimate peacemakers of any given society. They possess a deep, biological need to belong, and they truly thrive when surrounded by either dense physical nature or fiercely protective, tight-knit communities.',
-            positive: ['Deeply Diplomatic', 'Intensely Nurturing', 'Perfectly Balanced', 'Highly Adaptable', 'Quietly Prosperous'],
-            negative: ['Sickly Envious', 'Paralyzingly Over-cautious', 'Heavily Materialistic', 'Frustratingly Unambitious', 'Aggressively Possessive']
-        },
-        symbolism: 'In Islam, green is a highly sacred color representing paradise. In Ireland, it universally represents explosive luck and national pride. Globally, it acts as the absolute ultimate symbol for eco-friendliness, sustainability, and "GO" in all global traffic networks.',
-        businessApplications: [
-            'Green is the absolute, undisputed staple for thousands of organic, eco-friendly, and global agricultural brands. Any corporation wishing to portray themselves as environmentally conscious or "natural" will lean heavily into vibrant leaf greens.',
-            'Conversely, dark hues of green dominate the financial sector. Wealth management firms, luxury investing platforms, and traditional banks utilize dark green to portray established wealth, fiscal safety, and continuous, unending monetary growth.'
-        ],
-        marketingAndBranding: [
-            'Use green in your UI to positively portray an ethical, sustainable, and highly calming brand environment. It is the absolute excellent, globally understood color for positive confirmations, such as "Success" toast messages, vital "Save" buttons, and system health checks.',
-            'Avoid muddy or yellow-tinted greens unless you are explicitly designing a military or hunting interface, as those specific shades strongly evoke sickness, decay, and dirty camouflage rather than vibrant life.'
-        ],
-        randomFacts: [
-            'Modern military night vision goggles utilize green phosphor specifically because the human eye can biologically differentiate more subtle shades of green than any other color on the entire spectrum.',
-            'Television and theater actors wait in a designated "green room" before going out on stage purely because the color physiologically relaxes their nerves and lowers their rushing blood pressure.',
-            'In a massive psychological study, suicides actually dropped by a staggering 34% when a notoriously dangerous London bridge was repainted from a drab color to a vibrant green.'
-        ],
-        detailedShades: [
-            { name: 'Olive', hex: '#808000', description: 'A muted, earthy green heavily associated with ancient peace (the olive branch) and rugged military camouflage.' },
-            { name: 'Emerald', hex: '#50C878', description: 'A brilliant, shimmering green symbolizing extravagant physical wealth and immense crystalline clarity.' },
-            { name: 'Mint', hex: '#98FF98', description: 'A light, fiercely cooling green that immediately implies crisp freshness, innocent youth, and clinical hygienic cleanliness.' },
-            { name: 'Forest', hex: '#228B22', description: 'A deep, heavy green that fiercely grounds the viewer in absolute stability and dense, overwhelming natural environments.' }
-        ]
-    }, {
-        slug: 'yellow',
+        search: `slug: 'yellow'`,
+        replace: `slug: 'yellow',
         name: 'Yellow',
         hex: '#EAB308',
         shortDescription: 'The color of joy, intellect, and intense caution.',
@@ -222,7 +50,11 @@ export const colorPsychologyDb: ColorPsychologyData[] = [
             { name: 'Lemon', hex: '#FFF700', description: 'A piercingly bright, almost violently acidic yellow that conveys sourness, intense physical freshness, and absolute, frantic energy.' }
         ]
     }, {
-        slug: 'orange',
+        slug: 'orange'`
+    },
+    {
+        search: `slug: 'orange'`,
+        replace: `slug: 'orange',
         name: 'Orange',
         hex: '#F97316',
         shortDescription: 'The color of adventure, youth, and immediate affordability.',
@@ -265,7 +97,11 @@ export const colorPsychologyDb: ColorPsychologyData[] = [
             { name: 'Tangerine', hex: '#F28500', description: 'A highly saturated, incredibly juicy orange that screams pure physical vitality, immense zest, and vitamin-rich energy.' }
         ]
     }, {
-        slug: 'purple',
+        slug: 'purple'`
+    },
+    {
+        search: `slug: 'purple'`,
+        replace: `slug: 'purple',
         name: 'Purple',
         hex: '#8B5CF6',
         shortDescription: 'The color of royal mystery, luxury, and spiritual depth.',
@@ -309,7 +145,11 @@ export const colorPsychologyDb: ColorPsychologyData[] = [
             { name: 'Amethyst', hex: '#9966CC', description: 'A fascinating, crystalline purple that leans heavily into the mystical, spiritual, and occult realms.' }
         ]
     }, {
-        slug: 'pink',
+        slug: 'pink'`
+    },
+    {
+        search: `slug: 'pink'`,
+        replace: `slug: 'pink',
         name: 'Pink',
         hex: '#EC4899',
         shortDescription: 'The color of unconditional love, femininity, and soothing warmth.',
@@ -353,7 +193,11 @@ export const colorPsychologyDb: ColorPsychologyData[] = [
             { name: 'Salmon', hex: '#FA8072', description: 'A wonderfully warm, slightly orangey-pink that feels phenomenally organic, deeply culinary, and highly, effortlessly approachable.' }
         ]
     }, {
-        slug: 'brown',
+        slug: 'brown'`
+    },
+    {
+        search: `slug: 'brown'`,
+        replace: `slug: 'brown',
         name: 'Brown',
         hex: '#8B4513',
         shortDescription: 'The color of the physical earth, absolute stability, and pure utility.',
@@ -396,7 +240,11 @@ export const colorPsychologyDb: ColorPsychologyData[] = [
             { name: 'Chocolate', hex: '#7B3F00', description: 'A dense, impossibly delicious dark brown that biologically tricks the human brain into literally tasting rich sweetness and deep comfort simply by looking at it.' }
         ]
     }, {
-        slug: 'black',
+        slug: 'black'`
+    },
+    {
+        search: `slug: 'black'`,
+        replace: `slug: 'black',
         name: 'Black',
         hex: '#000000',
         shortDescription: 'The overarching color of absolute authority, unyielding luxury, and the total void.',
@@ -440,7 +288,11 @@ export const colorPsychologyDb: ColorPsychologyData[] = [
             { name: 'Charcoal', hex: '#36454F', description: 'A softer, intensely grey-leaning black that perfectly retains the sophisticated power of black but completely removes the heavy, grieving threat of the absolute void.' }
         ]
     }, {
-        slug: 'white',
+        slug: 'white'`
+    },
+    {
+        search: `slug: 'white'`,
+        replace: `slug: 'white',
         name: 'White',
         hex: '#FFFFFF',
         shortDescription: 'The color of pure perfection, stark clinicality, and the ultimate blank slate.',
@@ -483,13 +335,19 @@ export const colorPsychologyDb: ColorPsychologyData[] = [
             { name: 'Alabaster', hex: '#F2F0E6', description: 'A cool, very pale, grayish off-white that feels incredibly sculptural, highly architectural, and smoothly impenetrable.' },
             { name: 'Cream', hex: '#FFFDD0', description: 'A rich, butter-tinted white that completely removes all the harsh clinical sterility of pure white, making it deeply appetizing, rich, and comforting.' }
         ]
-    },
-    ...batch1Db,
-    ...batch2Db,
-    ...batch3Db,
-    ...batch4Db,
-    ...batch5Db,
-    ...batch6Db,
-    ...batch7Db,
-    ...batch8Db
+    }
+];`
+    }
 ];
+
+let finalContent = content;
+replacements.forEach(({ search, replace }) => {
+    // Only replace the specific object by finding the exact boundary
+    const parts = finalContent.split(search);
+    if (parts.length > 1) {
+        finalContent = parts.shift() + replace + parts.join('');
+    }
+});
+
+fs.writeFileSync(dbPath, finalContent);
+console.log('Successfully completed extreme depth parity for all 10 colors!');

@@ -38,6 +38,7 @@ const TOOL_CATEGORIES = [
     {
         title: "Science & Analysis",
         items: [
+            { icon: Brain, label: 'Color Psychology', href: '/color-psychology' },
             { icon: Contrast, label: 'Dynamic Contrast', href: '/tools/dynamic-contrast' },
             { icon: EyeOff, label: 'Blind Viz', href: '/tools/blind-viz' },
             { icon: Brain, label: 'Cognitive Load', href: '/tools/cognitive-load' },

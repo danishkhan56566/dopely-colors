@@ -22,6 +22,7 @@ const FOOTER_LINKS = {
         links: [
             { label: "Blog & Articles", href: "/blog" },
             { label: "Guides & Tutorials", href: "/guides" },
+            { label: "Color Psychology", href: "/color-psychology" },
             { label: "List of Colors", href: "/explore" },
             { label: "Browse Gradients", href: "/explore" },
             { label: "Industry Palettes", href: "/explore?tag=saas" },

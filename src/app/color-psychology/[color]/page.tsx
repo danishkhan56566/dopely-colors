@@ -96,9 +96,13 @@ export default async function ColorPsychologyDetail({ params }: { params: Promis
                                 <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><BookOpen size={24} /></div>
                                 <h2 className="text-2xl font-black text-gray-900 tracking-tight">The Psychology</h2>
                             </div>
-                            <p className="text-lg text-gray-600 leading-relaxed font-medium relative z-10">
-                                {colorData.description}
-                            </p>
+                            <div className="space-y-4">
+                                {colorData.description.map((paragraph, i) => (
+                                    <p key={i} className="text-lg text-gray-600 leading-relaxed font-medium relative z-10">
+                                        {paragraph}
+                                    </p>
+                                ))}
+                            </div>
                         </div>
 
                         <div className="bg-white rounded-[2rem] p-8 md:p-10 shadow-xl shadow-gray-200/40 border border-gray-100 relative overflow-hidden group">
@@ -107,9 +111,13 @@ export default async function ColorPsychologyDetail({ params }: { params: Promis
                                 <div className="p-3 bg-amber-100 text-amber-700 rounded-2xl"><History size={24} /></div>
                                 <h2 className="text-2xl font-black text-gray-900 tracking-tight">The History</h2>
                             </div>
-                            <p className="text-lg text-gray-600 leading-relaxed font-medium relative z-10">
-                                {colorData.history}
-                            </p>
+                            <div className="space-y-4">
+                                {colorData.history.map((paragraph, i) => (
+                                    <p key={i} className="text-lg text-gray-600 leading-relaxed font-medium relative z-10">
+                                        {paragraph}
+                                    </p>
+                                ))}
+                            </div>
                         </div>
                     </section>
 
@@ -194,18 +202,26 @@ export default async function ColorPsychologyDetail({ params }: { params: Promis
                                     <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl"><Briefcase size={24} /></div>
                                     <h2 className="text-2xl font-black text-gray-900">Corporate Strategy</h2>
                                 </div>
-                                <p className="text-lg text-gray-600 leading-relaxed">
-                                    {colorData.businessApplications}
-                                </p>
+                                <div className="space-y-4">
+                                    {colorData.businessApplications.map((paragraph, i) => (
+                                        <p key={i} className="text-lg text-gray-600 leading-relaxed">
+                                            {paragraph}
+                                        </p>
+                                    ))}
+                                </div>
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-6">
                                     <div className="p-3 bg-orange-50 text-orange-600 rounded-2xl"><Target size={24} /></div>
                                     <h2 className="text-2xl font-black text-gray-900">Marketing & UI</h2>
                                 </div>
-                                <p className="text-lg text-gray-600 leading-relaxed">
-                                    {colorData.marketingAndBranding}
-                                </p>
+                                <div className="space-y-4">
+                                    {colorData.marketingAndBranding.map((paragraph, i) => (
+                                        <p key={i} className="text-lg text-gray-600 leading-relaxed">
+                                            {paragraph}
+                                        </p>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </section>
