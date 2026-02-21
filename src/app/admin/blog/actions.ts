@@ -275,3 +275,57 @@ export async function savePost(payload: any) {
         return { success: false, error: error.message };
     }
 }
+
+export async function getPostsAdmin() {
+    try {
+        const supabase = createAdminClient();
+        const { data, error } = await supabase
+            .from('posts')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            if (error.code === '42P01') {
+                return { error: 'MISSING_TABLE' };
+            }
+            throw error;
+        }
+
+        return { posts: data || [] };
+    } catch (err: any) {
+        console.error('getPostsAdmin error:', err);
+        return { error: err.message };
+    }
+}
+
+export async function getPostAdmin(id: string) {
+    try {
+        const supabase = createAdminClient();
+        const { data, error } = await supabase
+            .from('posts')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) throw error;
+        return { post: data };
+    } catch (err: any) {
+        console.error('getPostAdmin error:', err);
+        return { error: err.message };
+    }
+}
+
+export async function deletePostAdmin(id: string) {
+    try {
+        const supabase = createAdminClient();
+        const { error } = await supabase
+            .from('posts')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
+        return { success: true };
+    } catch (err: any) {
+        return { error: err.message };
+    }
+}

@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Save, Globe, Image as ImageIcon, Eye, BarChart, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
-import { generateBlogPost, savePost } from '../actions';
+import { generateBlogPost, savePost, getPostAdmin } from '../actions';
 
 import { marked } from 'marked';
 import dynamic from 'next/dynamic';
@@ -74,13 +74,10 @@ function BlogEditorContent() {
 
         const fetchPost = async () => {
             setIsLoading(true);
-            const { data, error } = await supabase
-                .from('posts')
-                .select('*')
-                .eq('id', postId)
-                .single();
+            const result = await getPostAdmin(postId);
 
-            if (data) {
+            if (result.post) {
+                const data = result.post;
                 // Convert Markdown to HTML for the Editor if strictly Markdown
                 // Logic: If it has newlines but no HTML tags, likely MD. 
                 // Simple approach: Always run marked, it handles HTML strings gracefully too?

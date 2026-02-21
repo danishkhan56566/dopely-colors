@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import { Plus, Edit, Trash2, ExternalLink, RefreshCw, AlertTriangle, FileText, Globe } from 'lucide-react';
 import { toast } from 'sonner';
+import { getPostsAdmin, deletePostAdmin } from './actions';
 
 // Define Interface
 interface BlogPost {
@@ -28,21 +28,16 @@ export default function AdminBlogPage() {
         setError(null);
 
         try {
-            // Use select('*') so it doesn't crash if newer columns (like country_focus) haven't been migrated to the production DB yet.
-            const { data, error } = await supabase
-                .from('posts')
-                .select('*')
-                .order('created_at', { ascending: false });
+            const result = await getPostsAdmin();
 
-            if (error) {
-                // Determine if it's a "Missing Table" error
-                if (error.code === '42P01') { // undefined_table
+            if (result.error) {
+                if (result.error === 'MISSING_TABLE') {
                     throw new Error('MISSING_TABLE');
                 }
-                throw error;
+                throw new Error(result.error);
             }
 
-            setPosts(data || []);
+            setPosts(result.posts || []);
         } catch (err: any) {
             // Ignore AbortErrors which happen on unmounting/re-renders
             if (err.name === 'AbortError' || err.message?.includes('aborted')) return;
@@ -67,12 +62,9 @@ export default function AdminBlogPage() {
         if (!confirm('Are you sure you want to delete this post? This cannot be undone.')) return;
 
         try {
-            const { error } = await supabase
-                .from('posts')
-                .delete()
-                .eq('id', id);
+            const result = await deletePostAdmin(id);
 
-            if (error) throw error;
+            if (result.error) throw new Error(result.error);
 
             toast.success('Post deleted successfully');
             fetchPosts();
