@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getAllPosts } from '@/lib/blog';
 import { COLOR_NAMES, getSystematicColors } from '@/lib/color-utils';
+import { colorPsychologyDb } from '@/data/colorPsychology';
 import chroma from 'chroma-js';
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
@@ -107,6 +108,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
     }));
 
+    // 5.5. Color Psychology Hub
+    const colorPsychologyIndex = [{ url: '/color-psychology', priority: 0.9 }];
+    const colorPsychologyPages = colorPsychologyDb.map((color) => ({
+        url: `/color-psychology/${color.slug}`,
+        priority: 0.8,
+    }));
+
     // 6. Colors (Popular & Named)
     const colorRoutes: MetadataRoute.Sitemap = [];
     const seenColors = new Set<string>();
@@ -149,6 +157,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...discoverRoutes,
         ...guideRoutes,
         ...blogIndex,
+        ...colorPsychologyIndex,
     ].map(route => ({
         url: `${baseUrl}${route.url}`,
         lastModified: new Date(),
@@ -156,11 +165,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route.priority,
     }));
 
-    const dynamicBlogRoutes = blogPosts.map(post => ({
+    const dynamicBlogRoutes = [
+        ...blogPosts,
+        ...colorPsychologyPages,
+    ].map(post => ({
         url: `${baseUrl}${post.url}`,
         lastModified: new Date(),
         changeFrequency: 'monthly' as const,
-        priority: 0.7,
+        priority: post.priority,
     }));
 
     return [...staticRoutes, ...dynamicBlogRoutes, ...colorRoutes];
