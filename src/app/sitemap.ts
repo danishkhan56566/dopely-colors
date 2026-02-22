@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { getAllPosts } from '@/lib/blog';
 import { COLOR_NAMES, getSystematicColors } from '@/lib/color-utils';
 import { colorPsychologyDb } from '@/data/colorPsychology';
+import { colorTheoryDb } from '@/data/colorTheory';
 import chroma from 'chroma-js';
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
@@ -31,6 +32,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/gradients',
         '/tailwind',
         '/design-system',
+        '/color-wheel',
+        '/color-mixer',
+        '/color-blindness-simulator',
+        '/compare-generators',
         // Specific Tools
         '/tools/ai-prompt',
         '/tools/art-extractor',
@@ -60,7 +65,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/tools/mesh',
         '/tools/micro-interactions',
         '/tools/migrator',
-        '/tools/mixer',
         '/tools/multi-variable',
         '/tools/perf-palette',
         '/tools/seasonal',
@@ -75,7 +79,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/tools/variable-fonts',
         '/tools/voice-color',
         '/tools/wearable',
-        '/tools/wheel'
     ].map(slug => ({ url: slug, priority: 0.9 }));
 
     // 3. Discover (Mapped to cleanest public URL)
@@ -112,6 +115,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const colorPsychologyIndex = [{ url: '/color-psychology', priority: 0.9 }];
     const colorPsychologyPages = colorPsychologyDb.map((color) => ({
         url: `/color-psychology/${color.slug}`,
+        priority: 0.8,
+    }));
+
+    // 5.6. Color Theory Hub
+    const colorTheoryPages = colorTheoryDb.map((page) => ({
+        url: `/color-theory/${page.slug}`,
         priority: 0.8,
     }));
 
@@ -168,6 +177,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const dynamicBlogRoutes = [
         ...blogPosts,
         ...colorPsychologyPages,
+        ...colorTheoryPages,
     ].map(post => ({
         url: `${baseUrl}${post.url}`,
         lastModified: new Date(),
