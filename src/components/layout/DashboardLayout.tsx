@@ -16,6 +16,15 @@ import { ToolsNavbarItem } from '@/components/layout/ToolsNavbarItem';
 
 const TOOL_CATEGORIES = [
     {
+        title: "Featured Suite",
+        items: [
+            { icon: Palette, label: 'Color Wheel', href: '/color-wheel' },
+            { icon: Blend, label: 'Color Mixer', href: '/color-mixer' },
+            { icon: Search, label: 'Compare Suites', href: '/compare-generators' },
+            { icon: EyeOff, label: 'Blindness Sim', href: '/color-blindness-simulator' },
+        ]
+    },
+    {
         title: "Generative & AI",
         items: [
             { icon: Wand2, label: 'Generate Palettes', href: '/' },
@@ -23,8 +32,6 @@ const TOOL_CATEGORIES = [
             { icon: Image, label: 'Gallery Lens', href: '/tools/art-extractor' },
             { icon: Terminal, label: 'Prompt Lab', href: '/tools/ai-prompt' },
             { icon: TrendingUp, label: 'Trend Predictor', href: '/tools/trend-predictor' },
-            { icon: Palette, label: 'Color Wheel', href: '/color-wheel' },
-            { icon: Blend, label: 'Color Mixer', href: '/color-mixer' },
         ]
     },
     {
@@ -42,11 +49,9 @@ const TOOL_CATEGORIES = [
         items: [
             { icon: Brain, label: 'Color Psychology', href: '/color-psychology' },
             { icon: Contrast, label: 'Dynamic Contrast', href: '/tools/dynamic-contrast' },
-            { icon: EyeOff, label: 'Blind Viz', href: '/tools/blind-viz' },
             { icon: Brain, label: 'Cognitive Load', href: '/tools/cognitive-load' },
             { icon: Leaf, label: 'Eco Impact', href: '/tools/eco-palette' },
             { icon: Activity, label: 'Biometrics', href: '/tools/biometric' },
-            { icon: Search, label: 'Compare Suites', href: '/compare-generators' },
         ]
     },
     {

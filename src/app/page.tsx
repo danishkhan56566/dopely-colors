@@ -32,5 +32,39 @@ export const revalidate = 3600; // Revalidate every hour (incremental static reg
 export default async function Page() {
   const posts = await getAllPosts();
   const recentPosts = posts.slice(0, 3);
-  return <LandingPage recentPosts={recentPosts} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "WebSite",
+                "name": "Dopely Colors",
+                "url": "https://dopelycolors.com",
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://dopelycolors.com/explore?q={search_term_string}",
+                  "query-input": "required name=search_term_string"
+                }
+              },
+              {
+                "@type": "Organization",
+                "name": "Dopely Colors",
+                "url": "https://dopelycolors.com",
+                "logo": "https://dopelycolors.com/icon.png",
+                "sameAs": [
+                  "https://twitter.com/dopelycolors",
+                  "https://instagram.com/dopelycolors"
+                ]
+              }
+            ]
+          })
+        }}
+      />
+      <LandingPage recentPosts={recentPosts} />
+    </>
+  );
 }

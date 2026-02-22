@@ -43,11 +43,14 @@ export default function PrivacyPage() {
                 </ul>
 
                 <h2>Cookies & Tracking</h2>
-                <p>We use cookies for:</p>
+                <p>
+                    We use cookies to analyze site traffic and enhance your experience.
+                    Additionally, <strong>Third-party vendors</strong>, including Google, use cookies to serve ads based on your prior visits to our website or other websites.
+                </p>
                 <ul>
-                    <li>Authentication</li>
-                    <li>Analytics</li>
-                    <li>Performance optimization</li>
+                    <li><strong>Google AdSense:</strong> Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to Dopely Colors and/or other sites on the Internet.</li>
+                    <li><strong>Personalized Advertising:</strong> You may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Ads Settings</a>. (Alternatively, you can opt out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="http://www.aboutads.info" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.)</li>
+                    <li><strong>Authentication & Analytics:</strong> We use internal cookies to maintain your session and analyze website performance through Vercel Analytics.</li>
                 </ul>
 
                 <h2>Data Security</h2>

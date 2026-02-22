@@ -303,6 +303,31 @@ export default async function ColorPsychologyDetail({ params }: { params: Promis
                     </section>
 
                 </main>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "Article",
+                            "headline": `The Psychology of ${colorData.name} Color`,
+                            "description": colorData.shortDescription,
+                            "author": {
+                                "@type": "Organization",
+                                "name": "Dopely Colors"
+                            },
+                            "publisher": {
+                                "@type": "Organization",
+                                "name": "Dopely Colors",
+                                "logo": {
+                                    "@type": "ImageObject",
+                                    "url": "https://dopelycolors.com/icon.png"
+                                }
+                            },
+                            "datePublished": "2024-01-01",
+                            "image": `https://dopelycolors.com/og-image.png`
+                        })
+                    }}
+                />
             </div>
         </DashboardLayout>
     );

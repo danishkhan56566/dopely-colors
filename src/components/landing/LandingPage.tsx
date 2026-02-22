@@ -31,7 +31,8 @@ import {
     Heart,
     Tag,
     RefreshCw,
-    LayoutGrid
+    LayoutGrid,
+    Info
 } from 'lucide-react';
 import Link from 'next/link';
 import clsx from 'clsx';
@@ -997,6 +998,61 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                 <HomeGuide />
 
                 {/* FAQs */}
+                {/* Editorial Integrity & Research Section (AdSense Quality Signal) */}
+                <div className="max-w-7xl mx-auto px-6 py-24 relative z-10 w-full">
+                    <div className="bg-slate-900 rounded-[3rem] p-12 md:p-20 text-white relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] -mr-40 -mt-40" />
+                        <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tight leading-tight">
+                                    Built for humans,<br />
+                                    <span className="text-blue-400">backed by science.</span>
+                                </h2>
+                                <p className="text-lg text-slate-400 font-medium leading-relaxed mb-8">
+                                    Every tool, guide, and data point on Dopely Colors is meticulously researched and validated by our team of designers and developers. We prioritize accessibility (WCAG), biological color perception, and modern design standards to ensure you're using more than just "pretty colors."
+                                </p>
+                                <div className="flex flex-col gap-4">
+                                    {[
+                                        { title: "People-First Content", desc: "No AI fluff. Every article is written by experts specifically for our community." },
+                                        { title: "Technical Accuracy", desc: "Our conversion algorithms use CIE-Lab and LCH color spaces for 99.9% precision." },
+                                        { title: "Global Standards", desc: "Fully compliant with WCAG 2.1 accessibility and ATAG authoring guidelines." }
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex gap-4 items-start">
+                                            <div className="mt-1 h-5 w-5 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30">
+                                                <div className="h-2 w-2 rounded-full bg-blue-400" />
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-white">{item.title}</div>
+                                                <div className="text-sm text-slate-500">{item.desc}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="bg-slate-800/50 backdrop-blur-md rounded-[2.5rem] p-8 border border-white/5 relative group">
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="relative z-10 space-y-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-12 w-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg">
+                                            <Info size={24} />
+                                        </div>
+                                        <div>
+                                            <div className="font-bold">Editorial Policy</div>
+                                            <div className="text-xs text-slate-500">Updated Feb 2026</div>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm text-slate-400 leading-relaxed italic">
+                                        "Our mission is to democratize high-end color engineering. We combine algorithmic generation with human-curated psychology to provide a toolkit that is both functional and culturally informed."
+                                    </p>
+                                    <Link href="/about" className="inline-block text-blue-400 font-bold text-sm hover:translate-x-1 transition-transform">
+                                        Learn about our process →
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <HomeFAQ />
 
             </div>

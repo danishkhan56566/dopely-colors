@@ -51,17 +51,31 @@ export default async function TheoryTopicPage({ params }: Props) {
                     dangerouslySetInnerHTML={{ __html: topic.content }}
                 />
 
-                <div className="mt-16 pt-8 border-t border-slate-200 dark:border-slate-800">
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 italic">
-                        Want to see these theories in action?
-                    </h3>
-                    <Link
-                        href="/explore"
-                        className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl transition-all shadow-lg hover:shadow-blue-500/20"
-                    >
-                        Explore 10,000+ Palettes
-                    </Link>
-                </div>
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "Article",
+                            "headline": topic.title,
+                            "description": topic.description,
+                            "author": {
+                                "@type": "Organization",
+                                "name": "Dopely Colors"
+                            },
+                            "publisher": {
+                                "@type": "Organization",
+                                "name": "Dopely Colors",
+                                "logo": {
+                                    "@type": "ImageObject",
+                                    "url": "https://dopelycolors.com/icon.png"
+                                }
+                            },
+                            "datePublished": "2024-01-01", // Placeholder, since we don't have dates in DB yet
+                            "image": "https://dopelycolors.com/og-image.png"
+                        })
+                    }}
+                />
             </div>
         </article>
     );
