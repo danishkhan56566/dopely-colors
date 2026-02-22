@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
       { source: '/about', destination: '/company' },
       { source: '/privacy-policy', destination: '/legal/privacy' },
       { source: '/terms-of-service', destination: '/legal/terms' },
+      { source: '/cookie-policy', destination: '/legal/cookie-policy' },
+      { source: '/disclaimer', destination: '/legal/disclaimer' },
+      { source: '/license', destination: '/legal/license' },
 
       // Tools
       { source: '/tools', destination: '/' }, // Landing?
@@ -46,6 +49,8 @@ const nextConfig: NextConfig = {
 
       // Fixes for Search Console 404s
       { source: '/saved', destination: '/favorites' },
+      { source: '/generator', destination: '/generate' },
+      { source: '/palette-generator', destination: '/generate' },
       { source: '/&', destination: '/' },
 
     ];
