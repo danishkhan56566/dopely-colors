@@ -46,6 +46,7 @@ const FOOTER_LINKS = {
         title: "Company",
         links: [
             { label: "About Us", href: "/about" },
+            { label: "Embed Badges", href: "/badges" },
             { label: "Pricing", href: "/pricing" },
             { label: "License", href: "/license" },
             { label: "Terms of Service", href: "/terms-of-service" },
