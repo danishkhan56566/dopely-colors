@@ -3,7 +3,7 @@
 import {
     Search, Menu, X, Plus, TrendingUp, Clock, Shuffle, Heart, Wand2, Image, Contrast, Pipette,
     Smartphone, FileCode, Sparkles, Layers, Layout, Palette, PanelLeftClose, PanelLeftOpen, LayoutGrid,
-    EyeOff, Brain, Leaf, Activity, Fingerprint, Watch, Sun, Box, Shield, BarChart, Terminal
+    EyeOff, Brain, Leaf, Activity, Fingerprint, Watch, Sun, Box, Shield, BarChart, Terminal, Blend
 } from 'lucide-react';
 import { useState, ReactNode, Suspense } from 'react';
 import Link from 'next/link';
@@ -23,6 +23,8 @@ const TOOL_CATEGORIES = [
             { icon: Image, label: 'Gallery Lens', href: '/tools/art-extractor' },
             { icon: Terminal, label: 'Prompt Lab', href: '/tools/ai-prompt' },
             { icon: TrendingUp, label: 'Trend Predictor', href: '/tools/trend-predictor' },
+            { icon: Palette, label: 'Color Wheel', href: '/color-wheel' },
+            { icon: Blend, label: 'Color Mixer', href: '/color-mixer' },
         ]
     },
     {
@@ -44,6 +46,7 @@ const TOOL_CATEGORIES = [
             { icon: Brain, label: 'Cognitive Load', href: '/tools/cognitive-load' },
             { icon: Leaf, label: 'Eco Impact', href: '/tools/eco-palette' },
             { icon: Activity, label: 'Biometrics', href: '/tools/biometric' },
+            { icon: Search, label: 'Compare Suites', href: '/compare-generators' },
         ]
     },
     {

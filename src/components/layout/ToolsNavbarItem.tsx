@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronDown, ArrowRight, Sparkles, Image, Eye, Layers, Grid, Wand2 } from 'lucide-react';
+import { ChevronDown, ArrowRight, Sparkles, Image, Eye, Layers, Grid, Wand2, Palette } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ALL_TOOLS } from '@/data/tools';
 
@@ -18,12 +18,12 @@ export const ToolsNavbarItem = () => {
     // Also maybe specific tools the user mentioned or key ones
     // Let's just hardcode a nice selection if finding is brittle
     const FEATURED_TOOLS = [
-        { name: 'Fluid Gradients', icon: Layers, desc: 'Organic mesh gradients', href: '/tools/fluid' },
+        { name: 'Color Wheel', icon: Palette, desc: 'Interactive harmony explorer', href: '/color-wheel' },
+        { name: 'Color Mixer', icon: Grid, desc: 'Physics-based pigment mixing', href: '/color-mixer' },
+        { name: 'Compare Generators', icon: ArrowRight, desc: 'Dopely vs Adobe vs Coolors', href: '/compare-generators' },
+        { name: 'Blindness Sim', icon: Eye, desc: 'Test WCAG accessibility', href: '/color-blindness-simulator' },
+        { name: 'AI Generator', icon: Sparkles, desc: 'Text to color', href: '/ai' },
         { name: 'Gallery Lens', icon: Image, desc: 'Extract mood from photos', href: '/tools/art-extractor' },
-        { name: 'Atmosphere Lab', icon: Wand2, desc: 'Realistic shadow physics', href: '/tools/shadows' },
-        { name: 'Dynamic Contrast', icon: Eye, desc: 'Advanced legibility', href: '/tools/dynamic-contrast' },
-        { name: 'Color Mixer', icon: Grid, desc: 'Pigment mixing sim', href: '/tools/mixer' },
-        { name: 'AI Palette Generator', icon: Sparkles, desc: 'Text to color', href: '/ai' },
     ];
 
     const [mounted, setMounted] = useState(false);

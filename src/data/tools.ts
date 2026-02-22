@@ -28,6 +28,7 @@ export const ALL_TOOLS = [
             { name: 'Random Color Generator', icon: Shuffle, desc: 'Generate random colors', href: '/explore?sort=random' },
             { name: 'Quick Palette Generator', icon: Zap, desc: 'Instant palette creation', href: '/generate' },
             { name: 'Advanced Harmony Generator', icon: Palette, desc: 'Complex harmonies', href: '/generate?mode=advanced' },
+            { name: 'Color Palette Comparison', icon: ArrowLeftRight, desc: 'Dopely vs Adobe vs Coolors', href: '/compare-generators', badge: 'Hot' },
         ]
     },
     {
@@ -36,18 +37,17 @@ export const ALL_TOOLS = [
             { name: 'Image Color Picker', icon: Image, desc: 'Extract colors from images', href: '/image' },
             { name: 'Contrast Checker', icon: Eye, desc: 'Check accessibility', href: '/contrast' },
             { name: 'Contrast Grid', icon: LayoutGrid, desc: 'Check all palette combinations', href: '/tools/contrast-grid' },
-            { name: 'Color Blindness Simulator', icon: Accessibility, desc: 'Test accessibility', href: '/tools/blindness' },
+            { name: 'Color Blindness Simulator', icon: Accessibility, desc: 'Test accessibility', href: '/color-blindness-simulator', badge: 'New' },
             { name: 'Color Analyzer', icon: Monitor, desc: 'Analyze color properties', href: '/colors' },
         ]
     },
     {
         category: 'Converters & Editors',
         items: [
-            { name: 'Color Converter', icon: RefreshCw, desc: 'Convert color formats', href: '/tools/converter' },
-            { name: 'Color Mixer', icon: Blend, desc: 'Mix colors with ratios', href: '/tools/mixer' },
-            { name: 'Color Blender', icon: Droplet, desc: 'Blend color transitions', href: '/tools/mixer?view=steps' },
+            { name: 'Color Mixer', icon: Blend, desc: 'Mix colors with ratios', href: '/color-mixer', badge: 'New' },
+            { name: 'Color Blender', icon: Droplet, desc: 'Blend color transitions', href: '/color-mixer?view=steps' },
             { name: 'Color Toner', icon: Printer, desc: 'Generate tints & shades', href: '/tools/toner' },
-            { name: 'Color Harmony Wheel', icon: RefreshCw, desc: 'Explore color relationships', href: '/tools/wheel' },
+            { name: 'Color Harmony Wheel', icon: RefreshCw, desc: 'Explore color relationships', href: '/color-wheel', badge: 'New' },
         ]
     },
     {
@@ -56,7 +56,6 @@ export const ALL_TOOLS = [
             { name: 'Color Names', icon: BookOpen, desc: 'Explore vast library of colors', href: '/colors' },
             { name: 'Color Name Finder', icon: Search, desc: 'Find names for any color', href: '/colors' },
             { name: 'Color Name Generator', icon: Type, desc: 'Generate creative names', href: '/colors' },
-            { name: 'Contrast Grid', icon: Grid, desc: 'Check all palette combinations', href: '/tools/contrast-grid' },
             { name: 'Zombie Color Linter', icon: Search, desc: 'Find duplicate/similar colors', href: '/tools/linter', badge: 'Dev' },
             { name: 'Color Distance (Delta E)', icon: Ruler, desc: 'Calculate color difference', href: '/tools/delta' },
             { name: 'Advanced Accessibility Suit', icon: Settings2, desc: 'Comprehensive testing', href: '/tools/accessibility' },
