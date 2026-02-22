@@ -42,6 +42,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { HomeGuide } from '@/components/content/PageGuides';
 import { HomeFAQ } from '@/components/content/PageFAQs';
 import type { BlogPost } from '@/lib/blog';
+import { colorPsychologyDb } from '@/data/colorPsychology';
 
 type DesignState = {
     text: string;
@@ -740,6 +741,65 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                             </div>
                         </Link>
 
+                    </div>
+                </div>
+
+                {/* Color Psychology Showcase Section */}
+                <div className="max-w-7xl mx-auto px-6 py-24 relative z-10 w-full">
+                    <div className="bg-white rounded-[3rem] border border-gray-100 shadow-2xl p-8 md:p-16 overflow-hidden relative">
+                        {/* Background Gradients */}
+                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-rose-100 via-fuchsia-100 to-transparent rounded-full blur-[100px] opacity-50 -mr-40 -mt-40 pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-blue-100 via-emerald-100 to-transparent rounded-full blur-[80px] opacity-50 -ml-20 -mb-20 pointer-events-none" />
+
+                        <div className="relative z-10 flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
+                            {/* Content Side */}
+                            <div className="flex-1 text-center lg:text-left">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 text-rose-600 font-bold text-xs uppercase tracking-widest mb-6 border border-rose-100">
+                                    <Sparkles size={14} className="fill-rose-600" />
+                                    The Color Encyclopedia
+                                </div>
+                                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 tracking-tighter mb-6 leading-[1.1]">
+                                    Master the <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-violet-600">Psychology</span> of Color.
+                                </h2>
+                                <p className="text-lg md:text-xl text-gray-500 font-medium mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                                    Why do banks use blue? Why does fast food use red? Dive deep into the history, symbolism, and psychological impact of 45+ distinct colors in our comprehensive encyclopedia.
+                                </p>
+
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                    <Link href="/color-psychology" className="px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-lg hover:bg-black transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center justify-center gap-2 min-w-[200px]">
+                                        Read the Encyclopedia <ArrowRight size={20} />
+                                    </Link>
+                                </div>
+                            </div>
+
+                            {/* Cards Side */}
+                            <div className="flex-1 w-full max-w-lg lg:max-w-none relative">
+                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative">
+                                    {colorPsychologyDb.slice(0, 6).map((color, idx) => (
+                                        <Link
+                                            href={`/color-psychology/${color.slug}`}
+                                            key={color.slug}
+                                            className={clsx(
+                                                "group relative bg-white rounded-3xl p-5 shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col",
+                                                idx === 1 ? "lg:translate-y-8" : "",
+                                                idx === 4 ? "lg:translate-y-8" : ""
+                                            )}
+                                        >
+                                            <div
+                                                className="w-full aspect-square rounded-2xl mb-4 relative overflow-hidden shadow-inner group-hover:scale-105 transition-transform duration-500"
+                                                style={{ backgroundColor: color.hex }}
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+                                            </div>
+                                            <h4 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-rose-600 transition-colors">{color.name}</h4>
+                                            <p className="text-sm text-gray-500 font-medium line-clamp-2 leading-relaxed">
+                                                {color.shortDescription}
+                                            </p>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

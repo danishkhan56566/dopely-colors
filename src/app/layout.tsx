@@ -31,6 +31,14 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://dopelycolors.com'),
   alternates: {
     canonical: './',
+    languages: {
+      'en-US': '/en-US',
+      'ko-KR': '/ko-KR',
+      'zh-CN': '/zh-CN',
+      'fr-FR': '/fr-FR',
+      'de-DE': '/de-DE',
+      'x-default': '/',
+    },
   },
   title: "Dopely Colors – AI Color Palette Generator for Designers & Developers",
   description: "Dopely Colors is an AI-powered color and design toolkit for designers and developers. Generate color palettes, gradients, Tailwind colors, and complete design systems instantly.",

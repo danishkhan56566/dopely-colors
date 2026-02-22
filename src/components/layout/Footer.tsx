@@ -9,7 +9,10 @@ const FOOTER_LINKS = {
             { label: "Explore Popular", href: "/explore?sort=popular" },
             { label: "Extract from Image", href: "/image" },
             { label: "AI Palette Generator", href: "/ai" },
-            { label: "Contrast Checker", href: "/contrast" },
+            { label: "Color Wheel", href: "/color-wheel" },
+            { label: "Color Blindness", href: "/color-blindness-simulator" },
+            { label: "Color Mixer", href: "/color-mixer" },
+            { label: "Contrast Checker", href: "/contrast-checker" },
             { label: "Preview on Designs", href: "/generate?view=visualize" },
             { label: "Color Picker", href: "/picker" },
             { label: "Gradient Generator", href: "/explore" },
@@ -22,6 +25,8 @@ const FOOTER_LINKS = {
         links: [
             { label: "Blog & Articles", href: "/blog" },
             { label: "Guides & Tutorials", href: "/guides" },
+            { label: "Compare Generators", href: "/compare-generators" },
+            { label: "Color Theory & Science", href: "/color-theory" },
             { label: "Color Psychology", href: "/color-psychology" },
             { label: "List of Colors", href: "/explore" },
             { label: "Browse Gradients", href: "/explore" },
@@ -57,6 +62,20 @@ const FOOTER_LINKS = {
             { label: "Feature Requests", href: "/requests" },
             { label: "Contact", href: "/contact" },
         ]
+    },
+    categories: {
+        title: "Popular Categories",
+        links: [
+            { label: "Vintage Palettes", href: "/palettes/vintage" },
+            { label: "Neon Palettes", href: "/palettes/neon" },
+            { label: "Pastel Palettes", href: "/palettes/pastel" },
+            { label: "Dark Mode Palettes", href: "/palettes/dark" },
+            { label: "Cyberpunk Palettes", href: "/palettes/cyberpunk" },
+            { label: "Sunset Palettes", href: "/palettes/sunset" },
+            { label: "Winter Palettes", href: "/palettes/winter" },
+            { label: "Retro Palettes", href: "/palettes/retro" },
+            { label: "Earth Palettes", href: "/palettes/earth" },
+        ]
     }
 };
 
@@ -64,9 +83,9 @@ export const Footer = () => {
     return (
         <footer className="bg-white border-t border-gray-100 pt-16 pb-8">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
-                    {Object.entries(FOOTER_LINKS).map(([key, section]) => (
-                        <div key={key}>
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 max-w-7xl mx-auto px-6 py-16">
+                    {Object.values(FOOTER_LINKS).map((section, index) => (
+                        <div key={section.title || index}>
                             <h3 className="font-bold text-gray-900 mb-6">{section.title}</h3>
                             <ul className="space-y-3">
                                 {section.links.map((link) => (
