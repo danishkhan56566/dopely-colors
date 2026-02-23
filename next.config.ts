@@ -18,10 +18,13 @@ const nextConfig: NextConfig = {
       { source: '/license', destination: '/legal/license', permanent: true },
       { source: '/generator', destination: '/generate', permanent: true },
       { source: '/palette-generator', destination: '/generate', permanent: true },
+      { source: '/palettes', destination: '/explore', permanent: true },
       { source: '/saved', destination: '/favorites', permanent: true },
       { source: '/ai-palette-generator', destination: '/ai', permanent: true },
       { source: '/image-to-palette', destination: '/image', permanent: true },
       { source: '/&', destination: '/', permanent: true },
+      // Favicon fallback for broken/hashed links
+      { source: '/favicon.ico(.+)', destination: '/favicon.ico', permanent: true, has: [{ type: 'query', key: 'favicon' }] },
     ];
   },
   async rewrites() {
