@@ -13,10 +13,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 1. Core Pages
     const coreRoutes = [
         { url: '/', priority: 1.0 },
-        { url: '/license', priority: 0.5 },
-        { url: '/terms-of-service', priority: 0.5 },
-        { url: '/privacy-policy', priority: 0.5 },
-        { url: '/cookie-policy', priority: 0.5 },
+        { url: '/legal/license', priority: 0.5 },
+        { url: '/legal/terms', priority: 0.5 },
+        { url: '/legal/privacy', priority: 0.5 },
+        { url: '/legal/cookie-policy', priority: 0.5 },
     ];
 
     // 2. Tools (Rewrites mapped to actual internal routes usually, but if these are the public URLs...)

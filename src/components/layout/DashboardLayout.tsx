@@ -69,7 +69,7 @@ const SIDEBAR_LINKS = [
     { icon: Clock, label: 'New', href: '/explore?sort=new' },
     { icon: Shuffle, label: 'Random', href: '/explore?sort=random' },
     { icon: Heart, label: 'Favorites', href: '/favorites' },
-    { icon: LayoutGrid, label: 'View All Tools', href: '/tools' },
+    { icon: LayoutGrid, label: 'View All Tools', href: '/' },
 ];
 
 const TAGS = ['Pastel', 'Neon', 'Vintage', 'Retro', 'Dark', 'Light', 'Warm', 'Cold', 'Summer', 'Winter'];

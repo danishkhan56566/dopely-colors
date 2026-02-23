@@ -7,16 +7,26 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true, // CRITICAL: Disable server-side image optimization to save Vercel Usage (Fast Origin Transfer)
   },
+  async redirects() {
+    return [
+      // Renames to Canonical
+      { source: '/about', destination: '/company', permanent: true },
+      { source: '/privacy-policy', destination: '/legal/privacy', permanent: true },
+      { source: '/terms-of-service', destination: '/legal/terms', permanent: true },
+      { source: '/cookie-policy', destination: '/legal/cookie-policy', permanent: true },
+      { source: '/disclaimer', destination: '/legal/disclaimer', permanent: true },
+      { source: '/license', destination: '/legal/license', permanent: true },
+      { source: '/generator', destination: '/generate', permanent: true },
+      { source: '/palette-generator', destination: '/generate', permanent: true },
+      { source: '/saved', destination: '/favorites', permanent: true },
+      { source: '/ai-palette-generator', destination: '/ai', permanent: true },
+      { source: '/image-to-palette', destination: '/image', permanent: true },
+      { source: '/&', destination: '/', permanent: true },
+    ];
+  },
   async rewrites() {
     return [
-      // Marketing Paths -> Internal Routes
-      { source: '/about', destination: '/company' },
-      { source: '/privacy-policy', destination: '/legal/privacy' },
-      { source: '/terms-of-service', destination: '/legal/terms' },
-      { source: '/cookie-policy', destination: '/legal/cookie-policy' },
-      { source: '/disclaimer', destination: '/legal/disclaimer' },
-      { source: '/license', destination: '/legal/license' },
-
+      // Marketing Paths -> Internal Routes (Only if non-permanent or internal only)
       // Tools
       { source: '/tools', destination: '/' }, // Landing?
       { source: '/tools/generate-palettes', destination: '/generate' },
@@ -40,19 +50,10 @@ const nextConfig: NextConfig = {
       { source: '/discover/community-palettes', destination: '/explore' },
 
       // Legacy/SEO Specific (Keep previous ones if needed, or remove if superceded)
-      { source: '/ai-palette-generator', destination: '/ai' },
-      { source: '/image-to-palette', destination: '/image' },
       { source: '/gradient-generator', destination: '/gradients' },
       { source: '/contrast-checker', destination: '/contrast' },
       { source: '/tailwind-colors', destination: '/tailwind' },
       { source: '/design-system-builder', destination: '/design-system' },
-
-      // Fixes for Search Console 404s
-      { source: '/saved', destination: '/favorites' },
-      { source: '/generator', destination: '/generate' },
-      { source: '/palette-generator', destination: '/generate' },
-      { source: '/&', destination: '/' },
-
     ];
   },
 };
