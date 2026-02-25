@@ -54,6 +54,19 @@ export default async function BlogPost({ params }: PageProps) {
     // Calculate full URL for sharing
     const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://dopelycolors.com'}/blog/${post.slug}`;
 
+    // Helper to format Google Drive links to direct image links
+    const getPreviewUrl = (url: string) => {
+        if (!url) return '';
+        const trimmed = url.trim();
+        if (trimmed.includes('drive.google.com/file/d/')) {
+            const match = trimmed.match(/\/d\/(.*?)\//);
+            if (match && match[1]) {
+                return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
+            }
+        }
+        return trimmed;
+    };
+
     return (
         <DashboardLayout>
             <div className="min-h-screen bg-white">
@@ -227,7 +240,7 @@ export default async function BlogPost({ params }: PageProps) {
                     {post.featured_image && (
                         <div className="relative w-full aspect-video rounded-3xl overflow-hidden mb-16 shadow-xl ring-1 ring-gray-900/5">
                             <img
-                                src={post.featured_image}
+                                src={getPreviewUrl(post.featured_image)}
                                 alt={post.title}
                                 className="object-cover w-full h-full transform transition-transform duration-[2s] hover:scale-105"
                             />

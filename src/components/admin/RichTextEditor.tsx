@@ -108,10 +108,68 @@ export default function RichTextEditor({
 
     const addImage = useCallback(() => {
         if (!editor) return;
-        const url = window.prompt('Image URL');
-        if (url) {
-            editor.chain().focus().setImage({ src: url }).run();
-        }
+
+        // Create an input element of type file
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = async (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (!file) return;
+
+            // Optional: Check file size (e.g., limit to 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size exceeds 5MB limit.');
+                return;
+            }
+
+            try {
+                // Generate a unique file name
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+                const filePath = `blog-images/${fileName}`;
+
+                // Import supabase client dynamically or expect it to be available (we should ideally pass an upload handler or use the app's supabase client)
+                // Assuming we use the standard API route or supabase client directly if available in the component. We will use the client side supabase instance.
+                const { createClient } = await import('@supabase/supabase-js');
+                const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://cafwmpzdgatxpavuwnvh.supabase.co';
+                const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_S5cNoYZ_FXWt9nHOwWGHjg_N1mVxbvV'; // Use anon key for client, or better, pass an upload function
+
+                // Fallback: Use the same approach as elsewhere if we must use direct client
+                const supabase = createClient(supabaseUrl, supabaseKey);
+
+                // Upload to the existing 'assets' bucket, or a dedicated 'blog-images' bucket if it exists. Reusing 'assets' is safest.
+                const { data, error } = await supabase.storage
+                    .from('assets')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false,
+                    });
+
+                if (error) {
+                    console.error('Upload Error:', error);
+                    alert('Error uploading image: ' + error.message);
+                    return;
+                }
+
+                // Get public URL
+                const { data: publicUrlData } = supabase.storage
+                    .from('assets')
+                    .getPublicUrl(filePath);
+
+                if (publicUrlData && publicUrlData.publicUrl) {
+                    // Insert the image into the editor
+                    editor.chain().focus().setImage({ src: publicUrlData.publicUrl }).run();
+                }
+
+            } catch (err: any) {
+                console.error('Failed to upload image', err);
+                alert('Failed to upload image. Please try again.');
+            }
+        };
+
+        input.click();
     }, [editor]);
 
     if (!editor) return null;

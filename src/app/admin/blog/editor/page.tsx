@@ -164,6 +164,22 @@ function BlogEditorContent() {
         }
     };
 
+    // Helper to format Google Drive links to direct image links
+    const getPreviewUrl = (url: string) => {
+        if (!url) return '';
+        const trimmed = url.trim();
+        // Convert Google Drive view links to direct image links
+        if (trimmed.includes('drive.google.com/file/d/')) {
+            const match = trimmed.match(/\/d\/(.*?)\//);
+            if (match && match[1]) {
+                // The /uc?export=view endpoint often fails due to CORS or redirecting to an HTML page for larger files.
+                // The thumbnail endpoint is much more reliable for embedding Drive images.
+                return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
+            }
+        }
+        return trimmed;
+    };
+
     if (isLoading) return <div className="p-8">Loading editor...</div>;
 
     return (
@@ -321,11 +337,16 @@ function BlogEditorContent() {
                                     <strong>Warning:</strong> This looks like an Unsplash <em>Page</em> URL. Right-click the image and select "Copy Image Address".
                                 </div>
                             )}
+                            {formData.featured_image && formData.featured_image.includes('drive.google.com/file/d/') && (
+                                <div className="text-blue-600 text-xs mb-2 bg-blue-50 p-2 rounded border border-blue-200">
+                                    <strong>Info:</strong> Google Drive link detected. We will automatically use the direct image URL for the preview. Make sure the file is set to "Anyone with the link can view".
+                                </div>
+                            )}
                             {formData.featured_image && (
                                 <div className="rounded-lg overflow-hidden border border-gray-200 aspect-video relative bg-gray-100 flex items-center justify-center">
                                     {!imageLoadError ? (
                                         <img
-                                            src={formData.featured_image.trim()}
+                                            src={getPreviewUrl(formData.featured_image)}
                                             alt="Preview"
                                             className="w-full h-full object-cover"
                                             referrerPolicy="no-referrer"
