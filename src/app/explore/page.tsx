@@ -1,5 +1,5 @@
 import { ExploreLayout } from '@/components/explore/ExploreLayout';
-import { createClient } from '@/lib/supabase-server';
+import { createPublicClient } from '@/lib/supabase-server';
 import { fetchPalettesAction } from './actions';
 
 // export const dynamic = 'force-dynamic'; // DISABLED to save CPU
@@ -14,7 +14,7 @@ export const metadata = {
 };
 
 export default async function ExplorePage() {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
 
     // Fetch categories sorted by name
     const { data: categories } = await supabase

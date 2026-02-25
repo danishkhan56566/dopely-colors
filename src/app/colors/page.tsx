@@ -1,11 +1,11 @@
-import { createClient } from '@/lib/supabase-server';
+import { createPublicClient } from '@/lib/supabase-server';
 import { ColorList } from '@/components/colors/ColorList';
 import { getSystematicColors } from '@/lib/color-utils';
 
 export const revalidate = 86400; // Cache for 24 hours
 
 async function getPublishedColors() {
-    const supabase = await createClient(); // Await createClient!
+    const supabase = createPublicClient();
     const { data } = await supabase
         .from('colors')
         .select('name, hex')

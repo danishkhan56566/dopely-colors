@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase-server';
+import { createPublicClient } from '@/lib/supabase-server';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { PaletteDetail } from '@/components/explore/PaletteDetail';
@@ -8,7 +8,7 @@ import { cache } from 'react';
 export const revalidate = 86400; // Cache for 24 hours (Critical for Cost Savings)
 
 const getPalette = cache(async (id: string) => {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data: palette } = await supabase
         .from('palettes')
         .select('*')

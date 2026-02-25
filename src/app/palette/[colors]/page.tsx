@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
 // Stop ISR Writes (Vercel Limit Fix)
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic'; // DISABLED to save CPU
+export const revalidate = 86400; // Cache for 24 hours
 
 type Props = {
     params: Promise<{ colors: string }>

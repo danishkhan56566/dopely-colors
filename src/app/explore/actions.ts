@@ -1,9 +1,9 @@
 'use server';
 
-import { createClient } from '@/lib/supabase-server';
+import { createPublicClient } from '@/lib/supabase-server';
 
 export async function fetchPalettesAction(page = 0, filter: string | null = null, sort = 'popular') {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const ITEMS_PER_PAGE = 24;
 
     try {
