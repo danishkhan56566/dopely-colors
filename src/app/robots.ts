@@ -4,14 +4,14 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: '*',
-      allow: '/',
+      allow: ['/', '/generate'],
       disallow: [
         '/api/',
         '/admin/',
         '/dashboard/',
         '/profile/',
         '/settings/',
-        '/generate/',   // Prevents indexing infinite AI generations
+        '/generate/',   // Blocks sub-paths but allows the root tool
         '/favorites'    // Private user data
       ],
     },

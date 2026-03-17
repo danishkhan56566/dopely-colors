@@ -32,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/contrast',
         '/picker',
         '/gradients',
+        '/tailwind',
         '/explore/tailwind',
         '/tools/material',
         '/design-system',

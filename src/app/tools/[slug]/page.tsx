@@ -5,6 +5,29 @@ import { PremiumToolLayout } from '@/components/layout/PremiumToolLayout';
 import { Hammer, ArrowLeft, Construction } from 'lucide-react';
 import Link from 'next/link';
 import { ALL_TOOLS } from '@/data/tools';
+import { Metadata } from 'next';
+
+type Props = {
+    params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { slug } = await params;
+    const tool = ALL_TOOLS
+        .flatMap(cat => cat.items)
+        .find(t => t.href.endsWith(slug));
+
+    const title = tool ? `${tool.name} | Dopely Colors` : `${slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} | Dopely Colors`;
+    const description = tool?.desc || "Experience professional color design with Dopely Colors tools.";
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: `https://dopelycolors.com/tools/${slug}`,
+        }
+    };
+}
 
 export default async function ToolPlaceholder({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
