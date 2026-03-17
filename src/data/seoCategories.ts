@@ -77,12 +77,57 @@ export const seoCategoriesDb: SeoCategory[] = [
         `
     },
     {
+        slug: 'retro',
+        title: 'Retro Color Palettes',
+        description: 'Explore curated retro color schemes inspired by the 70s, 80s, and 90s. Perfect for nostalgic branding and UI.',
+        seoContent: `
+            <h3>Creating with Retro Color Schemes</h3>
+            <p>Retro color palettes are a staple in modern graphic design, offering a unique blend of nostalgia and style. From the earthy tones of the 1970s—think mustard yellow, avocado green, and burnt orange—to the vibrant, neon-soaked aesthetics of the 80s, retro colors help brands establish a distinct personality. Our collection features thousands of retro hex codes that are perfect for creating vintage-inspired websites and analog-feeling digital products.</p>
+            <h3>Why Retro is Trending in 2026</h3>
+            <p>The "New Retro" movement combines classic mid-century modern colors with sleek, high-contrast digital layouts. This creates a "premium-vintage" feel that appeals to audiences looking for authenticity in a high-tech world. Use these palettes to create high-conversion landing pages that feel both familiar and cutting-edge.</p>
+        `
+    },
+    {
+        slug: 'nature',
+        title: 'Nature Color Palettes & Earth Tones',
+        description: 'Soothing nature-inspired color schemes, featuring forest greens, ocean blues, and organic earth tones.',
+        seoContent: `
+            <h3>Bringing the Outdoors In with Nature Palettes</h3>
+            <p>Nature color palettes are designed to evoke the tranquility and balance of the natural world. Utilizing biophilic design principles, these schemes prioritize colors found in landscapes—deep forest greens, sky blues, sandy beiges, and clay reds. These palettes are ideal for wellness apps, organic food branding, and sustainable architectural design projects.</p>
+            <h3>Using Earth Tones for Accessible UI</h3>
+            <p>Earth tones provide a naturally high level of readability when paired correctly. For example, deep sage green text on a light cream background offers excellent visual comfort for long-form reading. Our nature-inspired collections are pre-vetted for digital accessibility, ensuring your organic design is inclusive for all users.</p>
+        `
+    },
+    {
+        slug: 'summer',
+        title: 'Summer Color Palettes & Tropical Schemes',
+        description: 'Bright, vibrant, and energetic summer color palettes for seasonal branding and marketing.',
+        seoContent: `
+            <p>Summer color palettes are all about energy, warmth, and sunshine. Featuring bright yellows, turquoise blues, and coral pinks, these schemes are perfect for seasonal marketing campaigns, travel websites, and lifestyle brands. Discover the best tropical and beach-inspired color combinations for your next summer project.</p>
+        `
+    },
+    {
+        slug: 'wedding',
+        title: 'Wedding Color Palettes & Elegant Schemes',
+        description: 'Discover beautiful wedding color combinations, from classic white and gold to modern bohemian palettes.',
+        seoContent: `
+            <p>Choosing the perfect wedding color palette is a critical step in event planning and branding. Our collection features sophisticated schemes including champagne gold, blush pink, sage green, and midnight blue. These elegant color combinations are curated to provide a cohesive, premium feel across invitations, decor, and digital guestbooks.</p>
+        `
+    },
+    {
+        slug: 'gold',
+        title: 'Gold Color Palettes & Metallic Schemes',
+        description: 'Explore the best gold color combinations for luxury branding and high-end graphic design.',
+        seoContent: `
+            <p>Gold color palettes represent the pinnacle of luxury, wealth, and prestige. When used in digital design, gold is often paired with deep blacks, navies, or creams to create a high-contrast, premium aesthetic. Our database includes technical hex codes for various types of gold—from bright yellow gold to muted champagne and metallic bronze.</p>
+        `
+    },
+    {
         slug: 'red-orange',
         title: 'Red Orange Color Palettes',
         description: 'Explore 100+ Red Orange color palettes. Discover hex codes, meanings, and combinations for this vibrant and energetic hue.',
         seoContent: `
             <p>Red-Orange is a high-energy, high-impact color that sits at the intersection of passion (red) and excitement (orange). This vibrant hue, often called Cinnabar or Vermilion, is used in branding to convey power, warmth, and urgency. In this collection, you will find palettes ranging from sunset-inspired gradients to bold, high-contrast combinations. Our red-orange palettes are scientifically balanced to ensure they remain accessible and visually striking in any digital environment.</p>
-            <p>Whether you are designing a food delivery app that needs to stimulate appetite or a creative portfolio that demands attention, red-orange provides the perfect psychological edge. Pair it with deep blues for a classic complementary look or with yellows for a warm, analogous feel.</p>
         `
     }
 ];

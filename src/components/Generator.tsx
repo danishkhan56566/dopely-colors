@@ -67,12 +67,42 @@ export default function Generator() {
         }
     }, [colors, isHydrated]);
 
+    const [hoveredColorId, setHoveredColorId] = useState<string | null>(null);
+
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+        // Space: Generate
         if (e.code === 'Space') {
-            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
             e.preventDefault();
             generatePalette();
         }
+
+        // L: Lock Hovered
+        if (e.key.toLowerCase() === 'l' && hoveredColorId) {
+            e.preventDefault();
+            toggleLock(hoveredColorId);
+        }
+
+        // C: Toggle Contrast/Preview
+        if (e.key.toLowerCase() === 'c') {
+            e.preventDefault();
+            setIsPreviewOpen(prev => !prev);
+        }
+
+        // E: Open Export
+        if (e.key.toLowerCase() === 'e') {
+            e.preventDefault();
+            setIsExportOpen(true);
+        }
+
+        // V: Toggle View Mode
+        if (e.key.toLowerCase() === 'v') {
+            e.preventDefault();
+            setViewMode(prev => prev === 'columns' ? 'visualize' : 'columns');
+        }
+
+        // Undo/Redo
         if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
             e.preventDefault();
             if (e.shiftKey) {
@@ -81,7 +111,7 @@ export default function Generator() {
                 undo();
             }
         }
-    }, [generatePalette, undo, redo]);
+    }, [generatePalette, undo, redo, hoveredColorId, toggleLock]);
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
@@ -149,7 +179,12 @@ export default function Generator() {
                                     {colors.map((color, index) => {
                                         const labels = ['Text', 'Background', 'Primary', 'Secondary', 'Accent'];
                                         return (
-                                            <div key={color.id} className="flex-1 min-h-[15vh] md:min-h-auto w-full relative flex items-center">
+                                            <div
+                                                key={color.id}
+                                                className="flex-1 min-h-[15vh] md:min-h-auto w-full relative flex items-center"
+                                                onMouseEnter={() => setHoveredColorId(color.id)}
+                                                onMouseLeave={() => setHoveredColorId(null)}
+                                            >
                                                 <ColorColumn
                                                     color={color}
                                                     onLock={toggleLock}
@@ -197,9 +232,15 @@ export default function Generator() {
 
                     {/* Desktop Hint */}
                     {viewMode === 'columns' && !isSystemOpen && !isPreviewOpen && (
-                        <div className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-                            <span className="bg-white/90 backdrop-blur-sm text-gray-500 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm border border-gray-200/50">
-                                Press Spacebar to Generate
+                        <div className="hidden lg:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+                            <span className="bg-white/90 backdrop-blur-md text-gray-500 px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl border border-gray-100 flex gap-6 items-center">
+                                <span><code className="bg-gray-100 px-1.5 py-0.5 rounded mr-2 text-black">Space</code> Generate</span>
+                                <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                <span><code className="bg-gray-100 px-1.5 py-0.5 rounded mr-2 text-black">L</code> Lock Color</span>
+                                <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                <span><code className="bg-gray-100 px-1.5 py-0.5 rounded mr-2 text-black">C</code> Contrast</span>
+                                <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                <span><code className="bg-gray-100 px-1.5 py-0.5 rounded mr-2 text-black">E</code> Export</span>
                             </span>
                         </div>
                     )}

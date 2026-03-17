@@ -387,6 +387,8 @@ export const analyzeText = (text: string): { type: string; vibe: string } => {
     if (t.includes('real estate') || t.includes('property') || t.includes('home')) return { type: 'realestate', vibe: 'professional' };
     if (t.includes('education') || t.includes('school') || t.includes('learn')) return { type: 'education', vibe: 'friendly' };
 
+    if (t.includes('luxury') || t.includes('gold') || t.includes('premium')) return { type: 'fashion', vibe: 'luxury' };
+    if (t.includes('navy') || t.includes('ocean') || t.includes('sea')) return { type: 'weather', vibe: 'tranquil' };
     if (t.includes('tech') || t.includes('app') || t.includes('startup')) return { type: 'tech', vibe: 'modern' };
     return { type: 'general', vibe: 'modern' };
 };

@@ -18,9 +18,24 @@ interface PaletteDetailProps {
 
 export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
     // States
+    const [activeTab, setActiveTab] = useState<'preview' | 'export'>('preview');
     const [isEmbedOpen, setIsEmbedOpen] = useState(false);
     const [copiedColor, setCopiedColor] = useState<string | null>(null);
     const { toggleFavorite, savedPalettes } = usePaletteStore();
+
+    // JSON-LD Structured Data for the Palette
+    const paletteSchema = {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": `Color Palette: ${colors.join(', ')}`,
+        "description": `A curated color palette featuring ${colors.join(', ')}. Perfect for UI design, branding, and illustration.`,
+        "url": typeof window !== 'undefined' ? window.location.href : '',
+        "creator": {
+            "@type": "Organization",
+            "name": "Dopely Colors"
+        },
+        "keywords": `color palette, ${colors.join(', ')}, hex codes, color scheme, UI design`
+    };
 
     // Generate Related Palettes (Memoized)
     const [relatedPalettes] = useState(() => Array.from({ length: 8 }).map((_, i) => ({
@@ -54,6 +69,11 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
 
     return (
         <DashboardLayout>
+            {/* Inject JSON-LD Schema */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(paletteSchema) }}
+            />
             <div className="min-h-screen bg-[#FBFBFB] flex flex-col relative">
                 {/* Close/Back Button */}
                 <Link
@@ -175,15 +195,48 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
                             </div>
                         </div>
 
+                        {/* Advanced Exports Panel */}
+                        {activeTab === 'export' && (
+                            <div className="px-8 pb-8 animate-in slide-in-from-top-4 duration-300">
+                                <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                                    <h4 className="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider">Professional Export Formats</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {[
+                                            { label: 'Tailwind CSS', content: `// tailwind.config.js\ncolors: {\n  primary: '${colors[0]}',\n  secondary: '${colors[1]}',\n  accent: '${colors[2]}',\n  bg: '${colors[3]}',\n  text: '${colors[4]}'\n}` },
+                                            { label: 'CSS Variables', content: `:root {\n  --primary: ${colors[0]};\n  --secondary: ${colors[1]};\n  --accent: ${colors[2]};\n  --bg: ${colors[3]};\n  --text: ${colors[4]};\n}` },
+                                            { label: 'SCSS', content: `$primary: ${colors[0]};\n$secondary: ${colors[1]};\n$accent: ${colors[2]};\n$bg: ${colors[3]};\n$text: ${colors[4]};` },
+                                            { label: 'JSON', content: JSON.stringify({ colors, roles: { primary: colors[0], secondary: colors[1], accent: colors[2], background: colors[3], text: colors[4] } }, null, 2) }
+                                        ].map((format) => (
+                                            <div key={format.label} className="flex flex-col gap-2">
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-xs font-bold text-slate-500">{format.label}</span>
+                                                    <button 
+                                                        onClick={() => copyToClipboard(format.content)}
+                                                        className="text-[10px] font-bold text-indigo-600 hover:underline"
+                                                    >
+                                                        Copy Code
+                                                    </button>
+                                                </div>
+                                                <pre className="text-[10px] p-4 bg-white border border-slate-200 rounded-xl overflow-x-auto font-mono text-slate-600 block w-full whitespace-pre max-h-32">
+                                                    {format.content}
+                                                </pre>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Tags Section */}
                         <div className="px-8 pb-8 flex flex-wrap gap-2">
                             {['Beige', 'Green', 'Sage', 'Spring', 'Nature', 'Light', 'Pastel', 'Vintage', 'Summer', 'Food'].map(tag => (
-                                <button
+                                <Link
                                     key={tag}
-                                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-600 transition-colors"
+                                    href={`/palettes/${tag.toLowerCase()}`}
+                                    className="px-3 py-1 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg text-sm text-gray-600 transition-colors font-medium border border-transparent hover:border-indigo-100"
                                 >
                                     {tag}
-                                </button>
+                                </Link>
                             ))}
                         </div>
                     </div>

@@ -59,8 +59,10 @@ const TOOL_CATEGORIES = [
     {
         title: "System & Data",
         items: [
+            { icon: FileCode, label: 'Tailwind Palettes', href: '/explore/tailwind' },
             { icon: Shield, label: 'Brand Center', href: '/tools/brand' },
             { icon: FileCode, label: 'Design Tokens', href: '/tools/design-tokens' },
+            { icon: Box, label: 'Material Design', href: '/tools/material' },
             { icon: BarChart, label: 'Data Viz', href: '/tools/data-viz' },
             { icon: Layout, label: 'System Builder', href: '/design-system' },
         ]

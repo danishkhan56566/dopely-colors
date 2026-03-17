@@ -32,7 +32,8 @@ import {
     Tag,
     RefreshCw,
     LayoutGrid,
-    Info
+    Info,
+    Maximize2
 } from 'lucide-react';
 import Link from 'next/link';
 import clsx from 'clsx';
@@ -44,6 +45,17 @@ import { HomeGuide } from '@/components/content/PageGuides';
 import { HomeFAQ } from '@/components/content/PageFAQs';
 import type { BlogPost } from '@/lib/blog';
 import { colorPsychologyDb } from '@/data/colorPsychology';
+import { analyzeText, createInitialDesign, designStateToPalette, AIPalette } from '@/lib/ai-assistant';
+import { toast } from 'sonner';
+
+function getContrastYIQ(hexcolor: string) {
+    hexcolor = hexcolor.replace("#", "");
+    var r = parseInt(hexcolor.substr(0, 2), 16);
+    var g = parseInt(hexcolor.substr(2, 2), 16);
+    var b = parseInt(hexcolor.substr(4, 2), 16);
+    var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return (yiq >= 128) ? 'black' : 'white';
+}
 
 type DesignState = {
     text: string;
@@ -78,9 +90,29 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
     const [activePreview, setActivePreview] = useState<'dashboard' | 'mobile' | 'marketing'>('mobile');
     const [design, setDesign] = useState<DesignState>(DEFAULT_DESIGN);
     const [activePicker, setActivePicker] = useState<keyof DesignState | null>(null);
+    const [aiQuery, setAiQuery] = useState('');
+    const [isAILoading, setIsAILoading] = useState(false);
+    const [generatedPalette, setGeneratedPalette] = useState<AIPalette | null>(null);
 
     const handleColorChange = (key: keyof DesignState, color: string) => {
         setDesign(prev => ({ ...prev, [key]: color }));
+    };
+
+    const handleAIGenerate = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (!aiQuery.trim()) return;
+
+        setIsAILoading(true);
+        // Small fake delay for "thinking" effect
+        await new Promise(r => setTimeout(r, 800));
+
+        const analysis = analyzeText(aiQuery);
+        const newDesign = createInitialDesign(analysis.type, analysis.vibe);
+        const palette = designStateToPalette(newDesign);
+        
+        setGeneratedPalette(palette);
+        setIsAILoading(false);
+        toast.success("AI Palette Generated!");
     };
 
     return (
@@ -122,29 +154,26 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                         </p>
 
                         {/* AI Input Box - Professional Style */}
-                        <div className="max-w-3xl mx-auto relative group w-full mb-10 z-20">
+                        <div className="max-w-3xl mx-auto relative group w-full mb-6 z-20">
                             {/* Glow Effect */}
                             <div className="absolute -inset-1.5 bg-gradient-to-r from-pink-200 via-orange-200 to-yellow-200 rounded-[2rem] blur opacity-40 group-hover:opacity-60 transition duration-1000 group-hover:duration-200" />
 
                             <form
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    const query = (e.currentTarget.elements.namedItem('aiQuery') as HTMLInputElement).value;
-                                    if (query) window.location.href = `/ai?q=${encodeURIComponent(query)}`;
-                                }}
+                                onSubmit={handleAIGenerate}
                                 className="relative bg-white rounded-[1.8rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 flex items-center gap-2"
                             >
                                 <div className="pl-5 text-gray-500">
-                                    <Sparkles size={24} className="text-orange-400 fill-orange-400/20" />
+                                    {isAILoading ? <RefreshCw size={24} className="text-violet-500 animate-spin" /> : <Sparkles size={24} className="text-orange-400 fill-orange-400/20" />}
                                 </div>
                                 <input
                                     type="text"
-                                    name="aiQuery"
-                                    placeholder="Describe your project..."
+                                    value={aiQuery}
+                                    onChange={(e) => setAiQuery(e.target.value)}
+                                    placeholder="e.g. A luxury hotel brand with gold and navy..."
                                     className="flex-1 bg-transparent border-none outline-none text-lg text-gray-900 placeholder:text-gray-500 h-16 min-w-0 font-medium"
                                 />
-                                <button type="submit" className="hidden sm:flex px-8 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-all active:scale-95 whitespace-nowrap text-base">
-                                    Start Exploring <ArrowRight size={18} />
+                                <button type="submit" disabled={isAILoading} className="hidden sm:flex px-8 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold items-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 transition-all active:scale-95 whitespace-nowrap text-base disabled:opacity-50">
+                                    {isAILoading ? 'Thinking...' : 'Generate with AI'} <ArrowRight size={18} />
                                 </button>
                                 <button type="submit" aria-label="Generate" className="sm:hidden px-4 py-4 bg-rainbow text-white rounded-[1.4rem] font-bold flex items-center gap-2 hover:shadow-lg transition-all active:scale-95 shrink-0">
                                     <ArrowRight size={20} />
@@ -152,11 +181,45 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                             </form>
                         </div>
 
+                        {/* Live Preview Dropdown (New!) */}
+                        <div className={clsx(
+                            "max-w-2xl mx-auto transition-all duration-500 overflow-hidden",
+                            generatedPalette ? "max-h-[200px] mb-12 opacity-100 scale-100" : "max-h-0 opacity-0 scale-95"
+                        )}>
+                            {generatedPalette && (
+                                <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 flex flex-col md:flex-row items-center gap-6 animate-in slide-in-from-top-4">
+                                    <div className="flex-1 w-full h-16 rounded-2xl overflow-hidden flex shadow-inner">
+                                        {generatedPalette.colors.map(c => (
+                                            <div key={c} className="flex-1 h-full" style={{ backgroundColor: c }} />
+                                        ))}
+                                    </div>
+                                    <div className="flex gap-4 shrink-0">
+                                        <Link 
+                                            href={`/generate/${generatedPalette.colors.map(c => c.replace('#', '')).join('-')}`}
+                                            className="px-6 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-black transition-colors flex items-center gap-2 whitespace-nowrap shadow-lg shadow-black/10"
+                                        >
+                                            Open in Generator <Maximize2 size={16} />
+                                        </Link>
+                                        <button 
+                                            onClick={() => setGeneratedPalette(null)}
+                                            className="p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+                                        >
+                                            <RotateCcw size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
                         {/* Quick Suggestions - Pills */}
                         <div className="flex flex-wrap justify-center items-center gap-3 mb-16">
                             <span className="font-bold text-xs uppercase tracking-widest text-gray-500 mr-2">Try:</span>
                             {['Minimalist Dashboard', 'Luxury Brand', 'Neon Cyberpunk', 'Pastel App', 'Ocean Vibes'].map((tag) => (
-                                <button key={tag} className="px-4 py-2 bg-white rounded-full border border-gray-200 text-gray-600 hover:border-gray-900 hover:text-gray-900 hover:shadow-md transition-all text-[11px] font-bold uppercase tracking-wide">
+                                <button 
+                                    key={tag} 
+                                    onClick={() => { setAiQuery(tag); handleAIGenerate(); }}
+                                    className="px-4 py-2 bg-white rounded-full border border-gray-200 text-gray-600 hover:border-gray-900 hover:text-gray-900 hover:shadow-md transition-all text-[11px] font-bold uppercase tracking-wide"
+                                >
                                     {tag}
                                 </button>
                             ))}
@@ -1058,14 +1121,4 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
             </div>
         </DashboardLayout>
     );
-}
-
-// Utility function (you might need to ensure this is available or inline it)
-function getContrastYIQ(hexcolor: string) {
-    hexcolor = hexcolor.replace("#", "");
-    var r = parseInt(hexcolor.substr(0, 2), 16);
-    var g = parseInt(hexcolor.substr(2, 2), 16);
-    var b = parseInt(hexcolor.substr(4, 2), 16);
-    var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-    return (yiq >= 128) ? 'black' : 'white';
 }

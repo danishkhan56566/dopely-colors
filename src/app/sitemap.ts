@@ -3,6 +3,7 @@ import { getAllPosts } from '@/lib/blog';
 import { COLOR_NAMES, getSystematicColors } from '@/lib/color-utils';
 import { colorPsychologyDb } from '@/data/colorPsychology';
 import { colorTheoryDb } from '@/data/colorTheory';
+import { seoCategoriesDb } from '@/data/seoCategories';
 import chroma from 'chroma-js';
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
@@ -31,7 +32,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/contrast',
         '/picker',
         '/gradients',
-        '/tailwind',
+        '/explore/tailwind',
+        '/tools/material',
         '/design-system',
         '/color-wheel',
         '/color-mixer',
@@ -125,6 +127,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
     }));
 
+    // 5.7. Vibe Category Pages (SEO Dominance)
+    const vibeRoutes = seoCategoriesDb.map((cat) => ({
+        url: `/palettes/${cat.slug}`,
+        priority: 0.85,
+    }));
+
     // 6. Colors (Popular & Named)
     const colorRoutes: MetadataRoute.Sitemap = [];
     const seenColors = new Set<string>();
@@ -178,6 +186,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...blogPosts,
         ...colorPsychologyPages,
         ...colorTheoryPages,
+        ...vibeRoutes,
     ].map(post => ({
         url: `${baseUrl}${post.url}`,
         lastModified: new Date(),

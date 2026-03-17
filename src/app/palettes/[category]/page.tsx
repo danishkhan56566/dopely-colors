@@ -5,7 +5,7 @@ import { PaletteCard } from '@/components/explore/PaletteCard';
 import { fetchPalettesAction } from '@/app/explore/actions';
 import { seoCategoriesDb, generateGenericSeoContent } from '@/data/seoCategories';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Sparkles, ArrowRight, Tag } from 'lucide-react';
 
 interface Props {
     params: {
@@ -137,6 +137,64 @@ export default async function CategoryPage({ params }: Props) {
                     )}
                 </div>
             </main>
+                {/* AI-Powered Generation CTA - (Competitive Edge over Color Hunt) */}
+                <div className="max-w-7xl mx-auto px-6 md:px-10 mb-20">
+                    <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-[3rem] p-8 md:p-16 text-white relative overflow-hidden shadow-2xl shadow-purple-500/20">
+                        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/10 rounded-full blur-[120px] -mr-40 -mt-40 animate-pulse" />
+                        
+                        <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-widest mb-6">
+                                    <Sparkles size={14} className="fill-white" />
+                                    AI-Driven Intentionality
+                                </div>
+                                <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight leading-tight">
+                                    Can't find the perfect <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-200 to-yellow-200">{categorySlug}</span> palette?
+                                </h2>
+                                <p className="text-xl text-indigo-100 font-medium leading-relaxed mb-8 opacity-90">
+                                    Our AI understand the psychology of "{categorySlug}" colors. Tell our engine about your project, and we'll build a unique, accessible system just for you.
+                                </p>
+                                <Link 
+                                    href={`/ai?q=A top-tier ${categorySlug} palette for a modern project`}
+                                    className="inline-flex items-center gap-3 px-10 py-5 bg-white text-indigo-600 rounded-[1.5rem] font-black text-lg hover:scale-105 transition-transform shadow-xl"
+                                >
+                                    Generate with AI <ArrowRight size={20} />
+                                </Link>
+                            </div>
+                            <div className="hidden md:block">
+                                <div className="bg-white/10 backdrop-blur-3xl rounded-[2.5rem] p-8 border border-white/20 relative rotate-2 scale-105">
+                                    <div className="space-y-4">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="h-12 w-full bg-white/5 rounded-xl animate-pulse" style={{ animationDelay: `${i * 200}ms` }} />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Related Categories (SEO Cross-Linking) */}
+                <div className="max-w-7xl mx-auto px-6 md:px-10 pb-24 border-t border-gray-100 pt-20">
+                    <h3 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+                        <Tag size={20} className="text-indigo-600" />
+                        Related Color Vibes
+                    </h3>
+                    <div className="flex flex-wrap gap-3">
+                        {seoCategoriesDb
+                            .filter(c => c.slug !== categorySlug)
+                            .slice(0, 12)
+                            .map(cat => (
+                                <Link 
+                                    key={cat.slug}
+                                    href={`/palettes/${cat.slug}`}
+                                    className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-gray-600 hover:border-indigo-600 hover:text-indigo-600 hover:shadow-lg transition-all"
+                                >
+                                    {cat.title.replace(' Palettes', '')}
+                                </Link>
+                            ))}
+                    </div>
+                </div>
         </DashboardLayout>
     );
 }
