@@ -88,7 +88,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const discoverRoutes = [
         '/colors',
         '/gradients',
-        '/palettes',
     ].map(slug => ({ url: slug, priority: 0.8 }));
 
     // 4. Guides

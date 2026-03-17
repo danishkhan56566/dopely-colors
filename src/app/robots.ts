@@ -5,7 +5,15 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: '/private/',
+      disallow: [
+        '/api/',
+        '/admin/',
+        '/dashboard/',
+        '/profile/',
+        '/settings/',
+        '/generate/',   // Prevents indexing infinite AI generations
+        '/favorites'    // Private user data
+      ],
     },
     sitemap: 'https://dopelycolors.com/sitemap.xml',
   };

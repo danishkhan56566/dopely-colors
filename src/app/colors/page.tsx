@@ -71,7 +71,7 @@ export default async function ColorsIndexPage() {
                                     {groups[letter].map(color => (
                                         <Link 
                                             key={color.hex} 
-                                            href={`/colors/${color.hex.replace('#', '')}`}
+                                            href={`/colors/${color.hex.replace('#', '').toUpperCase()}`}
                                             className="group relative bg-white border border-gray-100 rounded-2xl p-3 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all"
                                         >
                                             <div 

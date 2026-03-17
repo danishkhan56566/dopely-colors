@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             images: [`/api/og/color?hex=${rawHex}`],
         },
         alternates: {
-            canonical: `https://dopelycolors.com/colors/${rawHex}`,
+            canonical: `https://dopelycolors.com/colors/${rawHex.toUpperCase()}`,
         }
     };
 }
@@ -167,7 +167,7 @@ export default async function ColorPage({ params }: Props) {
                             {similar.map((s) => (
                                 <Link 
                                     key={s.hex} 
-                                    href={`/colors/${s.hex.replace('#', '')}`}
+                                    href={`/colors/${s.hex.replace('#', '').toUpperCase()}`}
                                     className="group"
                                 >
                                     <div 
