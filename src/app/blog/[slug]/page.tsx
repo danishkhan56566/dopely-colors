@@ -28,9 +28,32 @@ export async function generateMetadata({ params }: PageProps) {
         };
     }
 
+    const previewUrl = post.featured_image 
+        ? (post.featured_image.includes('drive.google.com') 
+            ? `https://drive.google.com/thumbnail?id=${post.featured_image.match(/\/d\/(.*?)\//)?.[1]}&sz=w1200` 
+            : post.featured_image)
+        : 'https://dopelycolors.com/og-blog-default.png';
+
     return {
-        title: `${post.title} | Dopley Colors`,
+        title: `${post.title} | Dopley Colors Blog`,
         description: post.excerpt,
+        openGraph: {
+            title: post.title,
+            description: post.excerpt,
+            type: 'article',
+            publishedTime: post.date,
+            authors: [post.author || 'Dopely Colors'],
+            images: [previewUrl],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: post.title,
+            description: post.excerpt,
+            images: [previewUrl],
+        },
+        alternates: {
+            canonical: `https://dopelycolors.com/blog/${slug}`,
+        }
     };
 }
 
@@ -67,8 +90,38 @@ export default async function BlogPost({ params }: PageProps) {
         return trimmed;
     };
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "description": post.excerpt,
+        "image": getPreviewUrl(post.featured_image || ''),
+        "datePublished": new Date(post.date).toISOString(),
+        "author": {
+            "@type": "Person",
+            "name": post.author || "Dopely Colors Team",
+            "url": "https://dopelycolors.com/blog"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Dopely Colors",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://dopelycolors.com/icon.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": shareUrl
+        }
+    };
+
     return (
         <DashboardLayout>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <div className="min-h-screen bg-white">
                 {/* Global Blog Styles */}
                 <style dangerouslySetInnerHTML={{

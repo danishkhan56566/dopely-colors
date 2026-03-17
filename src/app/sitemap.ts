@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 1. Core Pages
     const coreRoutes = [
         { url: '/', priority: 1.0 },
+        { url: '/trends', priority: 0.95 },
         { url: '/legal/license', priority: 0.5 },
         { url: '/legal/terms', priority: 0.5 },
         { url: '/legal/privacy', priority: 0.5 },
@@ -133,7 +134,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const cleanHex = hex.replace('#', '').toUpperCase();
         if (!seenColors.has(cleanHex)) {
             colorRoutes.push({
-                url: `${baseUrl}/colors/${cleanHex}/about`,
+                url: `${baseUrl}/colors/${cleanHex}`,
                 lastModified: new Date(),
                 changeFrequency: 'monthly',
                 priority: 0.8,
@@ -143,17 +144,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
 
     // B. Generated Popular Colors (Systematic sampling of the color wheel)
-    // Uses centralized logic from lib/color-utils to ensure sitemap matches allowed specific/static pages
     const systematicColors = getSystematicColors();
 
     systematicColors.forEach(color => {
         const cleanHex = color.hex.replace('#', '').toUpperCase();
         if (!seenColors.has(cleanHex)) {
             colorRoutes.push({
-                url: `${baseUrl}/colors/${cleanHex}/about`,
+                url: `${baseUrl}/colors/${cleanHex}`,
                 lastModified: new Date(),
                 changeFrequency: 'yearly',
-                priority: 0.5,
+                priority: 0.6,
             });
             seenColors.add(cleanHex);
         }

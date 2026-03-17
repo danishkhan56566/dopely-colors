@@ -161,9 +161,12 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
                                         >
                                             <Check size={20} className={`text-white drop-shadow-md transition-all duration-200 ${copiedColor === color ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`} />
                                         </div>
-                                        <span className="font-bold text-slate-700 font-mono text-sm uppercase group-hover:text-blue-600 transition-colors">
+                                        <Link
+                                            href={`/colors/${color.replace('#', '')}`}
+                                            className="font-bold text-slate-700 font-mono text-sm uppercase hover:text-blue-600 transition-colors"
+                                        >
                                             {color.replace('#', '')}
-                                        </span>
+                                        </Link>
                                         <span className="text-[10px] text-slate-400 font-mono">
                                             {chroma(color).css('rgb')}
                                         </span>

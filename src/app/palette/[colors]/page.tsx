@@ -1,6 +1,7 @@
 import { PaletteDetail } from '@/components/explore/PaletteDetail';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
+import { getNearestColorName } from '@/lib/color-utils';
 
 // Stop ISR Writes (Vercel Limit Fix)
 // export const dynamic = 'force-dynamic'; // DISABLED to save CPU
@@ -13,13 +14,25 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { colors: colorString } = await params;
     const hexCodes = colorString.split('-').map(c => '#' + c.toUpperCase());
+    
+    // Get human-readable names for the first few colors
+    const colorNames = hexCodes.slice(0, 3).map(hex => getNearestColorName(hex));
+    const titleSuffix = colorNames.join(', ') + (hexCodes.length > 3 ? '...' : '');
 
     return {
-        title: `Color Palette ${hexCodes.join(' - ')} - Dopely Colors`,
-        description: `View and edit this color palette: ${hexCodes.join(', ')}. Create variations, check contrast, and export for your projects.`,
+        title: `${titleSuffix} Color Palette (${hexCodes.join(' - ')}) - Dopely Colors`,
+        description: `Explore the ${titleSuffix} color palette with hex codes ${hexCodes.join(', ')}. Create variations, check contrast ratios, and export to CSS, Tailwind, or Figma.`,
         openGraph: {
-            title: `Color Palette ${hexCodes.join(' ')}`,
-            description: `Beautiful color palette containing ${hexCodes.join(', ')}`,
+            title: `${titleSuffix} Color Palette`,
+            description: `A beautiful color scheme featuring ${hexCodes.join(', ')}.`,
+            images: [`/api/og/palette?colors=${colorString}`],
+            type: 'website',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${titleSuffix} Color Palette`,
+            description: `A beautiful color scheme featuring ${hexCodes.join(', ')}.`,
+            images: [`/api/og/palette?colors=${colorString}`],
         },
         alternates: {
             canonical: `/palette/${colorString}`,

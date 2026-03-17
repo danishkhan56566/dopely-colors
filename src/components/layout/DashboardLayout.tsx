@@ -3,7 +3,7 @@
 import {
     Search, Menu, X, Plus, TrendingUp, Clock, Shuffle, Heart, Wand2, Image, Contrast, Pipette,
     Smartphone, FileCode, Sparkles, Layers, Layout, Palette, PanelLeftClose, PanelLeftOpen, LayoutGrid,
-    EyeOff, Brain, Leaf, Activity, Fingerprint, Watch, Sun, Box, Shield, BarChart, Terminal, Blend
+    EyeOff, Brain, Leaf, Activity, Fingerprint, Watch, Sun, Box, Shield, BarChart, Terminal, Blend, List
 } from 'lucide-react';
 import { useState, ReactNode, Suspense } from 'react';
 import Link from 'next/link';
@@ -20,6 +20,7 @@ const TOOL_CATEGORIES = [
         items: [
             { icon: Palette, label: 'Color Wheel', href: '/color-wheel' },
             { icon: Blend, label: 'Color Mixer', href: '/color-mixer' },
+            { icon: Layers, label: 'Mesh Gradient', href: '/tools/mesh' },
             { icon: Search, label: 'Compare Suites', href: '/compare-generators' },
             { icon: EyeOff, label: 'Blindness Sim', href: '/color-blindness-simulator' },
         ]
@@ -48,6 +49,7 @@ const TOOL_CATEGORIES = [
         title: "Science & Analysis",
         items: [
             { icon: Brain, label: 'Color Psychology', href: '/color-psychology' },
+            { icon: List, label: 'Color Names', href: '/colors' },
             { icon: Contrast, label: 'Dynamic Contrast', href: '/tools/dynamic-contrast' },
             { icon: Brain, label: 'Cognitive Load', href: '/tools/cognitive-load' },
             { icon: Leaf, label: 'Eco Impact', href: '/tools/eco-palette' },
