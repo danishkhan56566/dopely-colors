@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   experimental: {
     optimizePackageImports: ['lucide-react', 'react-colorful', 'framer-motion', 'date-fns', 'clsx', 'tailwind-merge'],
   },
@@ -31,7 +32,6 @@ const nextConfig: NextConfig = {
     return [
       // Marketing Paths -> Internal Routes (Only if non-permanent or internal only)
       // Tools
-      { source: '/tools', destination: '/' }, // Landing?
       { source: '/tools/generate-palettes', destination: '/generate' },
       { source: '/tools/explore-popular', destination: '/explore' },
       { source: '/tools/extract-from-image', destination: '/image' },

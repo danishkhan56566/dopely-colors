@@ -2,8 +2,6 @@ import { ImageResponse } from 'next/og';
 import { getNearestColorName } from '@/lib/color-utils';
 import chroma from 'chroma-js';
 
-export const runtime = 'edge';
-
 export const alt = 'Dopely Colors Analysis';
 export const size = {
     width: 1200,

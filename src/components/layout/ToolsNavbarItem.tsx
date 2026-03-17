@@ -70,7 +70,7 @@ export const ToolsNavbarItem = () => {
 
                 <div className="p-1 mt-1 border-t border-gray-50">
                     <Link
-                        href="/"
+                        href="/tools"
                         className="flex items-center justify-between w-full p-3 rounded-xl hover:bg-gray-50 text-sm font-bold text-gray-900 group"
                     >
                         View All Tools
