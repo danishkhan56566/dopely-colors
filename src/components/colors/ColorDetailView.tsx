@@ -446,7 +446,7 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             {similarColors.map(c => (
                                 <Link
-                                    href={`/colors/${c.hex.replace('#', '')}/about`}
+                                    href={`/colors/${c.hex.replace('#', '')}`}
                                     key={c.hex}
                                     className="group aspect-[4/5] rounded-3xl relative overflow-hidden shadow-sm hover:shadow-xl transition-shadow"
                                 >

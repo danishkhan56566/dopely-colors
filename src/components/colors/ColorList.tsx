@@ -80,7 +80,7 @@ export function ColorList({ initialColors }: { initialColors: Color[] }) {
                         ) : filteredColors.map((color) => (
                             <Link
                                 key={color.hex}
-                                href={`/colors/${color.hex.replace('#', '')}/about`}
+                                href={`/colors/${color.hex.replace('#', '')}`}
                                 className="group relative aspect-[4/5] rounded-3xl overflow-hidden bg-white border border-neutral-100 hover:border-neutral-200 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10"
                             >
                                 {/* Color Block */}

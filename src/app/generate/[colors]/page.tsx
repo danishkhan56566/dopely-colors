@@ -18,6 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         alternates: {
             canonical: `https://dopelycolors.com/generate/${colors}`,
         },
+        robots: {
+            index: false,
+            follow: true,
+        },
     };
 }
 

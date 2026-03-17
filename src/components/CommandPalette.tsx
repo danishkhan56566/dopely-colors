@@ -79,7 +79,7 @@ export function CommandPalette() {
                                 <Command.Empty className="py-12 text-center text-sm text-neutral-500">
                                     {isHex ? (
                                         <button
-                                            onClick={() => runCommand(() => router.push(`/colors/${search.replace('#', '')}/about`))}
+                                            onClick={() => runCommand(() => router.push(`/colors/${search.replace('#', '')}`))}
                                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-900 text-white hover:scale-105 transition-transform"
                                         >
                                             <div
@@ -96,7 +96,7 @@ export function CommandPalette() {
                                 {isHex && (
                                     <Command.Group heading="Direct Navigation">
                                         <Command.Item
-                                            onSelect={() => runCommand(() => router.push(`/colors/${search.replace('#', '')}/about`))}
+                                            onSelect={() => runCommand(() => router.push(`/colors/${search.replace('#', '')}`))}
                                             className="relative flex cursor-pointer select-none items-center gap-3 rounded-xl px-4 py-3 text-sm text-neutral-600 aria-selected:bg-neutral-100 aria-selected:text-neutral-900 transition-colors"
                                         >
                                             <div

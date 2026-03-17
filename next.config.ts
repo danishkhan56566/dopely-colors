@@ -24,6 +24,9 @@ const nextConfig: NextConfig = {
       { source: '/ai-palette-generator', destination: '/ai', permanent: true },
       { source: '/image-to-palette', destination: '/image', permanent: true },
       { source: '/&', destination: '/', permanent: true },
+      // Redirect consolidated color pages
+      { source: '/colors/:hex/about', destination: '/colors/:hex', permanent: true },
+      { source: '/colors/:hex/generate', destination: '/colors/:hex', permanent: true }, // 301 redirect for consolidated color pages
       // Favicon fallback for broken/hashed links
       { source: '/favicon.ico(.+)', destination: '/favicon.ico', permanent: true, has: [{ type: 'query', key: 'favicon' }] },
     ];

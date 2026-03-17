@@ -1107,7 +1107,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                     <p className="text-sm text-slate-400 leading-relaxed italic">
                                         "Our mission is to democratize high-end color engineering. We combine algorithmic generation with human-curated psychology to provide a toolkit that is both functional and culturally informed."
                                     </p>
-                                    <Link href="/about" className="inline-block text-blue-400 font-bold text-sm hover:translate-x-1 transition-transform">
+                                    <Link href="/company" className="inline-block text-blue-400 font-bold text-sm hover:translate-x-1 transition-transform">
                                         Learn about our process →
                                     </Link>
                                 </div>

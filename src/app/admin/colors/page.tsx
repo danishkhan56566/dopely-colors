@@ -234,7 +234,7 @@ export default function ColorsManager() {
                                                     style={{ backgroundColor: color.hex }}
                                                 />
                                                 <Link
-                                                    href={`/colors/${color.hex.replace('#', '')}/about`}
+                                                    href={`/colors/${color.hex.replace('#', '')}`}
                                                     target="_blank"
                                                     className="hover:underline"
                                                 >
