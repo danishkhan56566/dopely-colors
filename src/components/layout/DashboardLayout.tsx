@@ -16,54 +16,54 @@ import { ToolsNavbarItem } from '@/components/layout/ToolsNavbarItem';
 
 const TOOL_CATEGORIES = [
     {
-        title: "Featured Suite",
+        title: "Smart AI Suite",
         items: [
-            { icon: Palette, label: 'Color Wheel', href: '/color-wheel' },
-            { icon: Blend, label: 'Color Mixer', href: '/color-mixer' },
-            { icon: Layers, label: 'Mesh Gradient', href: '/tools/mesh' },
-            { icon: Search, label: 'Compare Suites', href: '/compare-generators' },
-            { icon: EyeOff, label: 'Blindness Sim', href: '/color-blindness-simulator' },
+            { icon: Wand2, label: 'AI Palette Generator', href: '/' },
+            { icon: Sparkles, label: 'AI Image-to-Palette', href: '/ai' },
+            { icon: Terminal, label: 'AI Prompt Lab', href: '/tools/ai-prompt' },
+            { icon: TrendingUp, label: 'Trend Predictor 2026', href: '/tools/trend-predictor' },
+            { icon: Image, label: 'Gallery Art Extractor', href: '/tools/art-extractor' },
         ]
     },
     {
-        title: "Generative & AI",
+        title: "Featured High-Engagement",
         items: [
-            { icon: Wand2, label: 'Generate Palettes', href: '/' },
-            { icon: Sparkles, label: 'AI Generator', href: '/ai' },
-            { icon: Image, label: 'Gallery Lens', href: '/tools/art-extractor' },
-            { icon: Terminal, label: 'Prompt Lab', href: '/tools/ai-prompt' },
-            { icon: TrendingUp, label: 'Trend Predictor', href: '/tools/trend-predictor' },
+            { icon: Palette, label: 'Interactive Color Wheel', href: '/color-wheel' },
+            { icon: Blend, label: 'Universal Color Mixer', href: '/color-mixer' },
+            { icon: Layers, label: 'Mesh Gradient Maker', href: '/tools/mesh' },
+            { icon: Search, label: 'Compare Tool Suites', href: '/compare-generators' },
+            { icon: EyeOff, label: 'Accessibility (Blindness)', href: '/color-blindness-simulator' },
         ]
     },
     {
-        title: "Simulation & FX",
+        title: "Simulation & Reality",
         items: [
-            { icon: Smartphone, label: 'Context Sim', href: '/tools/context-optimizer' },
-            { icon: Sun, label: 'Atmosphere (Shadows)', href: '/tools/shadows' },
-            { icon: Box, label: '3D Space', href: '/tools/3d-space' },
-            { icon: Watch, label: 'Wearable Display', href: '/tools/wearable' },
-            { icon: Layers, label: 'Lighting Sim', href: '/tools/lighting-sim' },
+            { icon: Smartphone, label: 'Context Sim (UI)', href: '/tools/context-optimizer' },
+            { icon: Sun, label: 'Lighting & Shadows', href: '/tools/shadows' },
+            { icon: Box, label: '3D Spatial Color', href: '/tools/3d-space' },
+            { icon: Watch, label: 'Wearable Displays', href: '/tools/wearable' },
+            { icon: Layers, label: 'Environmental Light', href: '/tools/lighting-sim' },
         ]
     },
     {
-        title: "Science & Analysis",
+        title: "Color Science",
         items: [
             { icon: Brain, label: 'Color Psychology', href: '/color-psychology' },
-            { icon: List, label: 'Color Names', href: '/colors' },
+            { icon: List, label: 'Complete Color Names', href: '/colors' },
             { icon: Contrast, label: 'Dynamic Contrast', href: '/tools/dynamic-contrast' },
-            { icon: Brain, label: 'Cognitive Load', href: '/tools/cognitive-load' },
-            { icon: Leaf, label: 'Eco Impact', href: '/tools/eco-palette' },
-            { icon: Activity, label: 'Biometrics', href: '/tools/biometric' },
+            { icon: Brain, label: 'Cognitive Science', href: '/tools/cognitive-load' },
+            { icon: Leaf, label: 'Eco-Impact Analysis', href: '/tools/eco-palette' },
+            { icon: Activity, label: 'Biometric Colors', href: '/tools/biometric' },
         ]
     },
     {
-        title: "System & Data",
+        title: "Design Systems & Pro",
         items: [
-            { icon: FileCode, label: 'Tailwind Palettes', href: '/explore/tailwind' },
+            { icon: FileCode, label: 'Tailwind Palette Lab', href: '/explore/tailwind' },
             { icon: Shield, label: 'Brand Center', href: '/tools/brand' },
-            { icon: FileCode, label: 'Design Tokens', href: '/tools/design-tokens' },
-            { icon: Box, label: 'Material Design', href: '/tools/material' },
-            { icon: BarChart, label: 'Data Viz', href: '/tools/data-viz' },
+            { icon: FileCode, label: 'Design Tokens (JSON)', href: '/tools/design-tokens' },
+            { icon: Box, label: 'Material Design Gen', href: '/tools/material' },
+            { icon: BarChart, label: 'Data Viz Palettes', href: '/tools/data-viz' },
             { icon: Layout, label: 'System Builder', href: '/design-system' },
         ]
     }
@@ -181,7 +181,7 @@ export const DashboardLayout = ({ children, showUserInfo = true }: { children: R
                         className="flex items-center justify-center gap-2 w-full py-4 bg-rainbow text-white rounded-xl font-bold hover:brightness-110 hover:shadow-lg hover:shadow-purple-500/20 transition-all active:scale-95"
                     >
                         <Plus size={20} />
-                        Create Palette
+                        Create AI Palette
                     </Link>
                 </div>
             </aside>
