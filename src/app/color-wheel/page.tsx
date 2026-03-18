@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import chroma from 'chroma-js';
 import { MousePointer2, Copy, RefreshCw } from 'lucide-react';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
 export default function ColorWheelPage() {
     const [rotation, setRotation] = useState(0);
@@ -37,7 +38,8 @@ export default function ColorWheelPage() {
     };
 
     return (
-        <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 pb-20 px-6">
+        <DashboardLayout>
+            <div className="py-12 md:py-20 px-6">
             <div className="max-w-6xl mx-auto">
                 <header className="text-center mb-16">
                     <h1 className="text-4xl md:text-7xl font-black text-slate-900 dark:text-white mb-6 tracking-tight uppercase">
@@ -121,6 +123,7 @@ export default function ColorWheelPage() {
                     <p>Using a color wheel isn't just about picking pretty colors; it's about accessibility and psychology. Complementary colors (opposites) provide the highest contrast, making them perfect for Call-to-Action buttons. Analogous colors (neighbors) create a serene and uniform feeling, ideal for background surfaces and secondary elements.</p>
                 </section>
             </div>
-        </main>
+            </div>
+        </DashboardLayout>
     );
 }

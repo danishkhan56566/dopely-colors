@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Eye, Info, CheckCircle2 } from 'lucide-react';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
 const PALETTES_EXAMPLES = [
     ['#FF5F6D', '#FFC371'],
@@ -35,7 +36,8 @@ export default function ColorBlindnessSimulator() {
     };
 
     return (
-        <main className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-32 pb-20 px-6">
+        <DashboardLayout>
+            <div className="py-12 md:py-20 px-6">
             <div className="max-w-6xl mx-auto">
                 <header className="text-center mb-16">
                     <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-full font-bold text-sm uppercase tracking-widest mb-4">
@@ -146,6 +148,7 @@ export default function ColorBlindnessSimulator() {
                     </div>
                 </div>
             </div>
-        </main>
+            </div>
+        </DashboardLayout>
     );
 }

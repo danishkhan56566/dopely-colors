@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import chroma from 'chroma-js';
 import { Pipette, ArrowRight } from 'lucide-react';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
 export default function ColorMixer() {
     const [color1, setColor1] = useState('#ff0000');
@@ -19,7 +20,8 @@ export default function ColorMixer() {
     }, [color1, color2]);
 
     return (
-        <main className="min-h-screen bg-white dark:bg-slate-950 pt-32 pb-20 px-6">
+        <DashboardLayout>
+            <div className="py-12 md:py-20 px-6">
             <div className="max-w-4xl mx-auto text-center">
                 <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 uppercase tracking-tight">
                     Universal <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500">Color Mixer</span>
@@ -105,6 +107,7 @@ export default function ColorMixer() {
                     <p>For example, if you mix Red (#FF0000) and Yellow (#FFFF00), you get a vibrant Orange. The specific shade depends on the ratio, and our tool allows you to see the perfect 50/50 split every time.</p>
                 </section>
             </div>
-        </main>
+            </div>
+        </DashboardLayout>
     );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, X, ShieldCheck, Zap, Laptop, Globe } from 'lucide-react';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 
 const COMPARISON_DATA = [
     { feature: 'AI-Powered Generation', dopely: true, coolors: true, adobe: false },
@@ -15,7 +16,8 @@ const COMPARISON_DATA = [
 
 export default function ComparisonPage() {
     return (
-        <main className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-32 pb-20 px-6">
+        <DashboardLayout>
+            <div className="py-12 md:py-20 px-6">
             <div className="max-w-6xl mx-auto">
                 <header className="text-center mb-20">
                     <span className="inline-block px-4 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest mb-4">
@@ -99,6 +101,7 @@ export default function ComparisonPage() {
                     <p>Dopely Colors was built to be the most comprehensive suite on the web, combining the simplicity of a generator with the depth of a color-theory encyclopedia. Whether you're a student learning about primary colors or a senior UX designer building a design system, Dopely provides the technical depth that competitors lack.</p>
                 </section>
             </div>
-        </main>
+            </div>
+        </DashboardLayout>
     );
 }
