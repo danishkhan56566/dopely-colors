@@ -4,6 +4,7 @@ import { COLOR_NAMES, getSystematicColors } from '@/lib/color-utils';
 import { colorPsychologyDb } from '@/data/colorPsychology';
 import { colorTheoryDb } from '@/data/colorTheory';
 import { seoCategoriesDb } from '@/data/seoCategories';
+import { fetchPalettesAction } from '@/app/explore/actions';
 import chroma from 'chroma-js';
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
@@ -133,6 +134,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.85,
     }));
 
+    // 5.8. Trending Palettes (High Quality Seed)
+    const { palettes: trendingPalettes } = await fetchPalettesAction(0, 'all', 'popular');
+    const paletteRoutes = (trendingPalettes || []).slice(0, 100).map(p => ({
+        url: `/palette/${p.colors.map((c: string) => c.replace('#', '')).join('-')}`,
+        priority: 0.75,
+    }));
+
     // 6. Colors (Popular & Named)
     const colorRoutes: MetadataRoute.Sitemap = [];
     const seenColors = new Set<string>();
@@ -151,8 +159,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }
     });
 
-    // B. Generated Popular Colors (Systematic sampling of the color wheel)
-    const systematicColors = getSystematicColors();
+    // B. Generated Popular Colors (Strategic sampling to avoid sitemap bloat)
+    const systematicColors = getSystematicColors().slice(0, 100); 
 
     systematicColors.forEach(color => {
         const cleanHex = color.hex.replace('#', '').toUpperCase();
@@ -187,6 +195,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...colorPsychologyPages,
         ...colorTheoryPages,
         ...vibeRoutes,
+        ...paletteRoutes,
     ].map(post => ({
         url: `${baseUrl}${post.url}`,
         lastModified: new Date(),

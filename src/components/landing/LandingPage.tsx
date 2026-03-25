@@ -1,9 +1,11 @@
 'use client';
 
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Sparkles,
     Zap,
+    Search,
     Image as ImageIcon,
     Droplet,
     Layers,
@@ -37,7 +39,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 const HexColorPicker = dynamic(() => import('react-colorful').then(mod => mod.HexColorPicker), { ssr: false });
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -139,14 +141,20 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                         </div>
 
                         {/* Main Headline */}
-                        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-gray-900 tracking-tight leading-[0.95] mb-8 text-balance drop-shadow-sm max-w-6xl mx-auto">
-                            Build smarter<br />
-                            <span className="relative inline-block">
-                                <span className="text-rainbow mr-3">color</span>
-                                <span className="text-rainbow">systems</span>
-                            </span><br />
-                            instantly
-                        </h1>
+                                <h1 className="text-[2.75rem] md:text-[5rem] lg:text-[6.5rem] font-black leading-[0.9] tracking-[-0.04em] text-gray-900 group">
+                                    <span className="block mb-2">Build smarter</span>
+                                    <span className="relative inline-block">
+                                        <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 animate-gradient-x">AI color systems</span>
+                                        <motion.span
+                                            initial={{ width: 0 }}
+                                            whileInView={{ width: '100%' }}
+                                            transition={{ duration: 1, delay: 0.5 }}
+                                            className="absolute bottom-2 left-0 h-3 bg-indigo-100 -z-0 rounded-full opacity-50"
+                                        />
+                                    </span>
+                                    <br />
+                                    <span className="text-gray-400 group-hover:text-gray-900 transition-colors duration-500">instantly.</span>
+                                </h1>
 
                         {/* Subheadline */}
                         <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-12 font-medium opacity-90">

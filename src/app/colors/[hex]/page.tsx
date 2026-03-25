@@ -60,9 +60,9 @@ export async function generateMetadata(
 
     if (!isValid) return { title: 'Color Not Found | Dopely Colors' };
 
+    const normalizedHex = hex.replace('#', '').toUpperCase();
     const colorName = data?.name || getNearestColorName(hex);
     const conversions = getFullConversions(hex);
-    const normalizedHex = hex.replace('#', '').toUpperCase();
 
     const description = data?.description ||
         `${colorName} (${hex}) hex color code details. Explore RGB, HSL, CMYK conversions, color psychology, and matching palettes for ${colorName}.`;
@@ -91,15 +91,72 @@ export default async function Page({ params }: Props) {
         notFound();
     }
 
+    const normalizedHex = hex.replace('#', '').toUpperCase();
     const colorName = data?.name || getNearestColorName(hex);
     const conversions = getFullConversions(hex);
 
-    const jsonLd = {
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://dopelycolors.com"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Color Library",
+                "item": "https://dopelycolors.com/colors"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": colorName,
+                "item": `https://dopelycolors.com/colors/${normalizedHex}`
+            }
+        ]
+    };
+
+    const faqJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": `What is the RGB value of ${colorName} (${hex})?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `The RGB color code for ${colorName} (${hex}) is ${conversions.rgb}.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `What is the CMYK for the color ${hex}?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `The CMYK values for ${hex} are ${conversions.cmyk}.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `What does the color ${colorName} symbolize?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": data?.description || `${colorName} is a versatile color often used to convey specific emotions in design. Explore its psychology and matching palettes on Dopely Colors.`
+                }
+            }
+        ]
+    };
+
+    const productJsonLd = {
         "@context": "https://schema.org",
         "@type": "Product",
         "name": `${colorName} Color`,
         "color": hex,
-        "description": data?.description || `${colorName} is a ${hex} hex color code.`,
+        "description": data?.description || `${colorName} is a ${hex} hex color code details and conversions.`,
         "brand": {
             "@type": "Brand",
             "name": "Dopely Colors"
@@ -107,7 +164,8 @@ export default async function Page({ params }: Props) {
         "additionalProperty": [
             { "@type": "PropertyValue", "name": "HEX", "value": hex },
             { "@type": "PropertyValue", "name": "RGB", "value": conversions.rgb },
-            { "@type": "PropertyValue", "name": "CMYK", "value": conversions.cmyk }
+            { "@type": "PropertyValue", "name": "CMYK", "value": conversions.cmyk },
+            { "@type": "PropertyValue", "name": "HSL", "value": conversions.hsl }
         ]
     };
 
@@ -115,7 +173,15 @@ export default async function Page({ params }: Props) {
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
             />
             <ColorDetailView hex={hex} initialDbColor={data} />
         </>

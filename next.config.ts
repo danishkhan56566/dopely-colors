@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', 'react-colorful', 'framer-motion', 'date-fns', 'clsx', 'tailwind-merge'],
   },
   images: {
-    unoptimized: true, // CRITICAL: Disable server-side image optimization to save Vercel Usage (Fast Origin Transfer)
+    // Re-enabled optimization for known good domains or local. 
+    // Unoptimized: true was hurting LCP 0.01 score.
   },
   async redirects() {
     return [
@@ -24,15 +25,18 @@ const nextConfig: NextConfig = {
       { source: '/ai-palette-generator', destination: '/ai', permanent: true },
       { source: '/image-to-palette', destination: '/image', permanent: true },
       { source: '/&', destination: '/', permanent: true },
+      { source: '/en-US', destination: '/', permanent: true },
+      { source: '/en-US/:path*', destination: '/:path*', permanent: true },
       // GSC 404 Fixes (Blog)
-      { source: '/blog/%20how-ai-is-changing-color-selection-design', destination: '/blog/2026-color-trends-the-palettes-defining-the-future-of-web-design', permanent: true }, // Fix space in slug
+      { source: '/blog/how-ai-is-changing-color-selection-design', destination: '/blog/2026-color-trends-the-palettes-defining-the-future-of-web-design', permanent: true }, // Fixed space in slug
       { source: '/blog/safe-colors-for-data-visualization-charts', destination: '/blog/accessible-color-palettes', permanent: true },
       { source: '/blog/automating-design-system-tokens-to-code', destination: '/blog/convert-design-tokens-guide', permanent: true },
+      { source: '/blog/cyberpunk-neon-gaming-ui-guide', destination: '/blog/2026-color-trends-the-palettes-defining-the-future-of-web-design', permanent: true },
       // Redirect consolidated color pages
       { source: '/colors/:hex/about', destination: '/colors/:hex', permanent: true },
       { source: '/colors/:hex/generate', destination: '/colors/:hex', permanent: true }, // 301 redirect for consolidated color pages
       // Favicon fallback for broken/hashed links
-      { source: '/favicon.ico(.+)', destination: '/favicon.ico', permanent: true, has: [{ type: 'query', key: 'favicon' }] },
+      { source: '/favicon.ico', destination: '/favicon.ico', permanent: true, has: [{ type: 'query', key: 'favicon' }] },
     ];
   },
   async rewrites() {

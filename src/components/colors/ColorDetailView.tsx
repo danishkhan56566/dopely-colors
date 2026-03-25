@@ -139,27 +139,39 @@ export function ColorDetailView({ hex: initialHex, initialDbColor }: ColorDetail
                     />
 
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={false} // Prevent LCP delay from initial hidden state
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
                         className="relative z-10 w-full max-w-[1920px] mx-auto"
                     >
                         <div className="flex flex-col md:flex-row justify-between items-end gap-12">
                             <div className="space-y-4">
+                                {/* Breadcrumbs */}
+                                <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/60 mb-6">
+                                    <Link href="/" className="hover:text-white transition-colors">Home</Link>
+                                    <ChevronRight size={10} />
+                                    <Link href="/colors" className="hover:text-white transition-colors">Library</Link>
+                                    <ChevronRight size={10} />
+                                    <span className="text-white/90">{dbColor?.name || colorName}</span>
+                                </div>
+
                                 <motion.div
-                                    initial={{ opacity: 0, x: -20 }}
+                                    initial={false}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.2 }}
+                                    transition={{ delay: 0.1 }}
                                     className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-xs font-bold uppercase tracking-widest text-white shadow-sm"
                                 >
                                     <Sparkles size={12} /> Premium Color
                                 </motion.div>
                                 <h1
-                                    className="text-7xl md:text-[180px] font-black tracking-tighter leading-[0.85] select-text"
+                                    className="text-7xl md:text-[140px] font-black tracking-tighter leading-[0.85] select-text"
                                     style={{ color: 'white', textShadow: '0 10px 30px rgba(0,0,0,0.15)' }}
                                 >
-                                    {hex.replace('#', '')}
+                                    {dbColor?.name || colorName}
                                 </h1>
+                                <div className="text-2xl md:text-3xl font-mono text-white/80 mt-[-10px] mb-4">
+                                    #{hex.replace('#', '')} Color Code
+                                </div>
                                 <div className="flex items-center gap-6">
                                     <h2 className="text-3xl md:text-5xl font-medium tracking-tight text-white/90">
                                         {dbColor ? dbColor.name : colorName}

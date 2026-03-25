@@ -12,14 +12,18 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { colors } = await params;
+    const hexList = colors.split('-').map(c => '#' + c.toUpperCase());
+    const title = `Color Palette: ${hexList.join(' , ')} | Dopely Colors`;
+    const description = `Explore this beautiful ${hexList.length}-color palette featuring ${hexList.join(', ')}. Get hex codes, conversion data, and accessible design tokens for your next creative project.`;
+
     return {
-        title: `Color Palette Generator - ${colors.split('-').map(c => '#' + c).join(', ')}`,
-        description: `Generate, visualize and export your color palette. Hex codes: ${colors.split('-').map(c => '#' + c.toUpperCase()).join(', ')}`,
+        title,
+        description,
         alternates: {
             canonical: `https://dopelycolors.com/generate/${colors}`,
         },
         robots: {
-            index: false,
+            index: true,
             follow: true,
         },
     };

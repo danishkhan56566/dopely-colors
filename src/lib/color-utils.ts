@@ -655,10 +655,14 @@ export function getColorPsychology(hex: string): ColorPsychology {
     const mood = l > 0.8 ? 'ethereal' : l < 0.2 ? 'mysterious' : s > 0.7 ? 'energetic' : 'subdued';
     const temp = h > 0 && h < 180 ? 'warm' : 'cool';
 
+    // New: Granular Saturation Adjectives
+    const saturationAdjective = s > 0.8 ? 'vibrant' : s > 0.5 ? 'balanced' : s > 0.2 ? 'muted' : 'desaturated';
+    const lightnessAdjective = l > 0.8 ? 'brilliant' : l > 0.5 ? 'clear' : l > 0.2 ? 'deep' : 'somber';
+
     // Accessibility Logic
     const onWhite = chroma.contrast(hex, 'white');
     const onBlack = chroma.contrast(hex, 'black');
-    let a11yText = `For readable text, this ${mood} color works best with high-contrast pairings. `;
+    let a11yText = `For readable text, this ${lightnessAdjective} and ${mood} color works best with high-contrast pairings. `;
     if (onWhite > 4.5 && onBlack > 4.5) {
         a11yText += "It is versatile and readable on both light and dark backgrounds.";
     } else if (onWhite > 4.5) {
@@ -669,33 +673,33 @@ export function getColorPsychology(hex: string): ColorPsychology {
         a11yText += "Ideally used for large decorative text or graphical elements, rather than body copy.";
     }
 
-    // Dynamic Description
-    const description = `This ${content.adjectives[0]} shade exudes ${content.adjectives[1]} qualities. Its ${temp} tone is both ${content.adjectives[2]} and ${content.adjectives[3]}, perfect for making a ${mood} visual impact. The richness of this hue lends a ${content.adjectives[4]} feel, often seen as both ${content.adjectives[5]} and refined.`;
+    // Enhanced Dynamic Description: Mixing Hue content with Saturation/Lightness context
+    const description = `This ${saturationAdjective} ${content.adjectives[0]} shade exudes ${content.adjectives[1]} and ${lightnessAdjective} qualities. Its ${temp} tone is both ${content.adjectives[2]} and ${content.adjectives[3]}, perfect for making a ${mood} visual impact. The ${s > 0.5 ? 'intensity' : 'subtlety'} of this hue lends a ${content.adjectives[4]} feel, often seen as both ${content.adjectives[5]} and refined in modern design systems.`;
 
     return {
         description,
         psychology: {
-            main: `This striking color evokes ${content.adjectives[0]} energy and ${content.adjectives[1]} feelings.`,
+            main: `This ${lightnessAdjective} color evokes ${content.adjectives[0]} energy and ${content.adjectives[1]} feelings, balanced by a ${saturationAdjective} chromatic profile.`,
             traits: content.traits
         },
         meaning: {
-            main: `This hue typically suggests ${content.meanings[0].name.toLowerCase()} and ${content.meanings[1].name.toLowerCase()}.`,
+            main: `In visual communication, this ${mood} hue typically suggests ${content.meanings[0].name.toLowerCase()} and ${content.meanings[1].name.toLowerCase()}.`,
             associations: content.meanings
         },
         usage: {
-            main: "This color is chosen to create emotional resonance and highlight important elements.",
+            main: `Architects and designers choose this ${temp} ${saturationAdjective} shade to create emotional resonance and highlight important structural elements.`,
             reasons: [
-                { name: 'Branding', desc: `Stand out with a distinct, ${content.adjectives[0]} shade.` },
-                { name: 'Attention', desc: 'Draw the eye to focal points or calls-to-action.' },
+                { name: 'Branding', desc: `Stand out with a distinct, ${saturationAdjective} ${content.adjectives[0]} shade that conveys reliability.` },
+                { name: 'Attention', desc: `The ${lightnessAdjective} properties of this color help draw the eye to focal points effectively.` },
                 ...content.usage
             ]
         },
         applications: {
-            main: `Use this color in design where ${content.adjectives[0]} energy is needed.`,
+            main: `Leverage this ${lightnessAdjective} tone in high-end design where ${content.adjectives[0]} energy and ${mood} atmosphere are required.`,
             areas: [
-                { name: 'Fashion', desc: `Dresses and accessories for a ${content.adjectives[1]} effect.` },
-                { name: 'Interiors', desc: 'Statement furniture or accent walls.' },
-                { name: 'Digital', desc: 'Buttons, alerts, or hero sections.' }
+                { name: 'Modern UI', desc: `Ideal for ${s > 0.6 ? 'hero elements' : 'unobtrusive backgrounds'} and interactive ${mood} states.` },
+                { name: 'Interiors', desc: `Creates a ${lightnessAdjective} environment when used on accent walls or statement furniture.` },
+                { name: 'Digital Branding', desc: `Conveys ${content.adjectives[1]} through ${saturationAdjective} visual cues.` }
             ]
         },
         history: content.history,

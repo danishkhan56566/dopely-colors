@@ -4,15 +4,14 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: '*',
-      allow: ['/', '/generate', '/generate/'],
+      allow: '/',
       disallow: [
-        '/api/',
         '/admin/',
         '/dashboard/',
         '/profile/',
         '/settings/',
-        // '/generate/',  <-- REMOVED BLOCK: Allow crawlers to see the noindex tag
-        '/favorites'    // Private user data
+        '/favorites',
+        '/api/auth/', // Keep auth private
       ],
     },
     sitemap: 'https://dopelycolors.com/sitemap.xml',

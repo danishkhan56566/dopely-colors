@@ -6,7 +6,7 @@ import { fetchPalettesAction } from './actions';
 export const revalidate = 3600; // Cache for 1 hour
 
 type Props = {
-    searchParams: Promise<{ q?: string; category?: string; sort?: string }>
+    searchParams: Promise<{ q?: string; category?: string; sort?: string; tag?: string }>
 }
 
 export async function generateMetadata({ searchParams }: Props) {
@@ -32,7 +32,16 @@ export async function generateMetadata({ searchParams }: Props) {
     };
 }
 
-export default async function ExplorePage() {
+export default async function ExplorePage({ searchParams }: Props) {
+    const { tag, category } = await searchParams;
+    const activeCategory = tag || category;
+
+    // SEO REDIRECT: Ensure query-param categories go to their canonical home
+    if (activeCategory && activeCategory !== 'all') {
+        const { redirect } = await import('next/navigation');
+        redirect(`/palettes/${activeCategory.toLowerCase()}`);
+    }
+
     const supabase = createPublicClient();
 
     // Fetch categories sorted by name

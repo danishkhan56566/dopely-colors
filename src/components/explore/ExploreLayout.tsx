@@ -3,6 +3,7 @@
 import { PaletteCard } from './PaletteCard';
 import { Search } from 'lucide-react';
 import { useState, Suspense, useEffect, useRef } from 'react';
+import Link from 'next/link';
 
 import { DashboardLayout } from '../layout/DashboardLayout';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -145,7 +146,7 @@ const ExploreContent = ({ categories = [], initialPalettes = [] }: { categories?
                         return (
                             <button
                                 key={cat.id}
-                                onClick={() => router.push(cat.id === 'all' ? '/explore' : `/explore?tag=${cat.id}`)}
+                                onClick={() => router.push(cat.id === 'all' ? '/explore' : `/palettes/${cat.id.toLowerCase()}`)}
                                 className={`pb-4 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${isActive ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-800'}`}
                             >
                                 {cat.label}
@@ -187,6 +188,24 @@ const ExploreContent = ({ categories = [], initialPalettes = [] }: { categories?
                         )}
                     </div>
                 )}
+                {/* SEO Hub Content */}
+                <div className="mt-32 pt-24 border-t border-gray-100 max-w-4xl mx-auto text-center px-4">
+                    <h2 className="text-3xl font-black text-gray-900 mb-6 tracking-tight">Explore the World of Color Inspiration</h2>
+                    <p className="text-lg text-gray-500 leading-relaxed font-medium mb-8">
+                        Looking for the perfect color palette for your next project? Our <strong>Trending Palettes</strong> are curated from thousands of designer-made combinations, categorized by stay-ahead-of-the-curve trends. Whether you need an <Link href="/palettes/minimalist" className="text-indigo-600 hover:underline">earthy minimalist scheme</Link> or a <Link href="/palettes/neon" className="text-indigo-600 hover:underline">vibrant neon aesthetic</Link>, Dopely Colors provides the technical depth (RGB, HEX, CMYK) and visual context needed to build professional-grade palettes.
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-4 text-sm font-bold text-gray-400 uppercase tracking-widest">
+                        <span>#UI/UX Design</span>
+                        <span className="text-indigo-200">•</span>
+                        <span>#Color Theory</span>
+                        <span className="text-indigo-200">•</span>
+                        <span>#Palette Inspiration</span>
+                        <span className="text-indigo-200">•</span>
+                        <span>#Accessibility</span>
+                    </div>
+                </div>
+
+                <div className="h-32" />
             </div>
         </>
     );
