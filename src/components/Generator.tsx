@@ -11,13 +11,13 @@ import { ExportModal } from '@/components/ExportModal';
 import { ContextPreview } from '@/components/ContextPreview';
 import { HowItWorksModal } from '@/components/HowItWorksModal';
 import { RefreshCcw } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { PaletteDetailsFAQ } from '@/components/content/PageFAQs';
 
-import clsx from 'clsx';
 import { VisualizerView } from '@/components/visualize/VisualizerView';
 import { SystemBuilder } from '@/components/system/SystemBuilder';
+import { ToolContentBlock } from '@/components/seo/ToolContentBlock';
+import { generatorSEOData } from '@/content/seo/generator';
 
 export default function Generator() {
     const { colors, generatePalette, toggleLock, undo, redo, initFromUrl, updateColor } = usePaletteStore();
@@ -47,6 +47,7 @@ export default function Generator() {
             }
         }
         initialized.current = true;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         setIsHydrated(true);
     }, [initFromUrl]);
 
@@ -248,7 +249,7 @@ export default function Generator() {
 
             {/* Content Area - Scrolls below the tool */}
             <div className="bg-white border-t border-gray-100 relative z-20">
-                <PaletteDetailsFAQ />
+                <ToolContentBlock {...generatorSEOData} />
             </div>
         </DashboardLayout>
     );

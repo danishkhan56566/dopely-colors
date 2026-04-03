@@ -4,13 +4,11 @@ import { useState, useCallback, useRef } from 'react';
 import { Upload, Image as ImageIcon, X, Download, ArrowRight, Wand2, Sparkles, Loader2 } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { extractPalette } from '@/lib/image-extraction';
-import chroma from 'chroma-js';
-import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import { usePaletteStore } from '@/store/usePaletteStore';
 import { ExportModal } from '@/components/ExportModal';
-import { ImageGuide } from '@/components/content/PageGuides';
-import { ImageFAQ, ImageHowTo } from '@/components/content/PageFAQs';
+import { ToolContentBlock } from '@/components/seo/ToolContentBlock';
+import { imageSEOData } from '@/content/seo/image';
 
 interface ExtractedColor {
     hex: string;
@@ -270,10 +268,11 @@ export default function ImageExtractorPage() {
                         </div>
                     </div>
                 </div>
-
-                <ImageGuide />
-                <ImageFAQ />
-                <ImageHowTo />
+                <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+                    <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100">
+                        <ToolContentBlock {...imageSEOData} />
+                    </div>
+                </div>
             </div>
         </DashboardLayout>
     );

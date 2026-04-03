@@ -69,11 +69,18 @@ const TOOL_CATEGORIES = [
     }
 ];
 
+const MAIN_LINKS = [
+    { icon: LayoutGrid, label: 'Home', href: '/' },
+    { icon: Palette, label: 'Tools', href: '/tools' },
+    { icon: TrendingUp, label: 'Blog', href: '/blog' },
+    { icon: Search, label: 'About Us', href: '/company' },
+    { icon: List, label: 'Contact', href: '/contact' },
+];
+
 const SIDEBAR_LINKS = [
     { icon: Clock, label: 'New', href: '/explore?sort=new' },
     { icon: Shuffle, label: 'Random', href: '/explore?sort=random' },
     { icon: Heart, label: 'Favorites', href: '/favorites' },
-    { icon: LayoutGrid, label: 'View All Tools', href: '/tools' },
 ];
 
 const TAGS = ['Pastel', 'Neon', 'Vintage', 'Retro', 'Dark', 'Light', 'Warm', 'Cold', 'Summer', 'Winter'];
@@ -83,17 +90,36 @@ const SidebarContent = () => {
     return (
         <div className="flex-1 overflow-y-auto p-4 space-y-8 no-scrollbar">
             {/* Quick Links */}
+            <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-3 opacity-80">Main Menu</h3>
+            <nav className="space-y-1 mb-6">
+                {MAIN_LINKS.map((link) => (
+                    <Link
+                        key={link.label}
+                        href={link.href}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold transition-all text-gray-700 hover:bg-blue-50 hover:text-blue-600 group"
+                    >
+                        <div className="transition-all duration-300 group-hover:scale-110">
+                            <link.icon size={18} />
+                        </div>
+                        <span className="text-sm">
+                            {link.label}
+                        </span>
+                    </Link>
+                ))}
+            </nav>
+
+            <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 px-3 opacity-80">Explore</h3>
             <nav className="space-y-1">
                 {SIDEBAR_LINKS.map((link) => (
                     <Link
                         key={link.label}
                         href={link.href}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all text-gray-600 hover:bg-purple-50/50 group"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all text-gray-600 hover:bg-purple-50/50 hover:text-purple-600 group"
                     >
-                        <div className="transition-all duration-300 group-hover:scale-125 group-hover:rotate-12 group-hover:text-purple-600">
+                        <div className="transition-all duration-300 group-hover:scale-110">
                             <link.icon size={18} />
                         </div>
-                        <span className="text-sm transition-all group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-pink-600 group-hover:font-bold">
+                        <span className="text-sm">
                             {link.label}
                         </span>
                     </Link>

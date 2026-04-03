@@ -5,8 +5,8 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import dynamic from 'next/dynamic';
 import { LockedUI } from '@/components/ai/LockedUI';
 import { supabase } from '@/lib/supabase';
-import { AIGeneratorGuide } from '@/components/content/AIGeneratorGuide';
-import { AIFaq, AIHowTo } from '@/components/content/PageFAQs';
+import { ToolContentBlock } from '@/components/seo/ToolContentBlock';
+import { aiSEOData } from '@/content/seo/ai';
 import { Loader2 } from 'lucide-react';
 
 // Dynamically import AIAssistant to reduce initial bundle size
@@ -71,9 +71,9 @@ export default function AIPaletteGeneratorPage() {
 
                     {/* Static Content (Immediate Load) */}
                     <div className="mt-20">
-                        <AIGeneratorGuide />
-                        <AIFaq />
-                        <AIHowTo />
+                        <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100">
+                            <ToolContentBlock {...aiSEOData} />
+                        </div>
                     </div>
                 </div>
             </div>

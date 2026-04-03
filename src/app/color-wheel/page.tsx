@@ -4,6 +4,8 @@ import { useState, useMemo } from 'react';
 import chroma from 'chroma-js';
 import { MousePointer2, Copy, RefreshCw } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { ToolContentBlock } from '@/components/seo/ToolContentBlock';
+import { colorWheelSEOData } from '@/content/seo/colorWheel';
 
 export default function ColorWheelPage() {
     const [rotation, setRotation] = useState(0);
@@ -112,16 +114,9 @@ export default function ColorWheelPage() {
                     </div>
                 </div>
 
-                <section className="mt-32 max-w-4xl mx-auto prose prose-slate dark:prose-invert">
-                    <h2 className="text-3xl font-black uppercase">Understanding the Color Wheel</h2>
-                    <p>The color wheel is the fundamental tool for understanding <strong>Color Theory</strong>. First created by Sir Isaac Newton in 1666, it maps out the physical spectrum of light in a circular format. This allows designers to mathematically identify harmonies—colors that look pleasing together when combined in a palette.</p>
-
-                    <h3>Primary, Secondary, and Tertiary Colors</h3>
-                    <p>Our interactive wheel simplifies the complexity of the spectrum. Red, Yellow, and Blue sit as the primary anchors. Mixing them creates secondary colors like Orange and Green, while the further nuances create <strong>Tertiary Colors</strong> like Red-Orange or Yellow-Green.</p>
-
-                    <h3>Why Color Harmony Matters</h3>
-                    <p>Using a color wheel isn't just about picking pretty colors; it's about accessibility and psychology. Complementary colors (opposites) provide the highest contrast, making them perfect for Call-to-Action buttons. Analogous colors (neighbors) create a serene and uniform feeling, ideal for background surfaces and secondary elements.</p>
-                </section>
+                <div className="mt-32 bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100">
+                    <ToolContentBlock {...colorWheelSEOData} />
+                </div>
             </div>
             </div>
         </DashboardLayout>

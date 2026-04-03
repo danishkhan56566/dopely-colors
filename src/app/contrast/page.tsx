@@ -4,8 +4,8 @@ import { useState, useMemo } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import chroma from 'chroma-js';
 import { ArrowLeftRight, Check, X, RefreshCw, Copy, Info, Sparkles, AlertTriangle } from 'lucide-react';
-import { ContrastGuide } from '@/components/content/PageGuides';
-import { ContrastFAQ } from '@/components/content/PageFAQs';
+import { ToolContentBlock } from '@/components/seo/ToolContentBlock';
+import { contrastSEOData } from '@/content/seo/contrast';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 
@@ -259,8 +259,9 @@ export default function ContrastCheckerPage() {
 
                     </div>
 
-                    <ContrastGuide />
-                    <ContrastFAQ />
+                    <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100">
+                        <ToolContentBlock {...contrastSEOData} />
+                    </div>
                 </div>
             </div>
         </DashboardLayout >
