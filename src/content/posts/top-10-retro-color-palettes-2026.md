@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Retro & Vintage Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Step back in time with these nostalgic 70s and 80s inspired palettes. Explore the best retro color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

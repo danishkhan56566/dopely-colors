@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Cyberpunk 2077 Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Glitchy pinks, cyans, and deep blacks for a futuristic aesthetic. Explore the best cyberpunk color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

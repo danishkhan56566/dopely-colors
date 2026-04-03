@@ -1,7 +1,7 @@
 ---
 title: "Mastering the Advanced Color Picker"
 excerpt: "Deep dive into the pro features of the Dopely Color Picker, from HSL adjustments to automatic harmony generation."
-date: "2026-02-18"
+date: "2026-01-18"
 category: "Product"
 coverImage: "/blog/picker-guide-cover.jpg"
 featured_image: "/blog/picker-guide-cover.jpg"

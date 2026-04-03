@@ -1,7 +1,7 @@
 ---
 title: "Tailwind CSS Color System Best Practices"
 excerpt: "Stop hardcoding hex values. Learn how to structure your Tailwind CSS configuration for scalability, dark mode support, and semantic clarity."
-date: "2026-01-12"
+date: "2026-01-18"
 category: "Tailwind CSS"
 ---
 

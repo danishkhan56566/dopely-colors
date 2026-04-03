@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Deep Ocean Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Cool blues and teals inspired by the mysteries of the sea. Explore the best ocean color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

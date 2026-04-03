@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Gold & Luxury Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Premium metallic and deep contrast palettes for high-end branding. Explore the best gold color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

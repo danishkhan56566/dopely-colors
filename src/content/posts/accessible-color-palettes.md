@@ -1,7 +1,7 @@
 ---
 title: "How to Create Accessible Color Palettes (WCAG Guide)"
 excerpt: "Accessibility is essential for modern web design. Learn how to use contrast ratios and color blindness simulators to build inclusive digital products."
-date: "2026-01-15"
+date: "2026-01-18"
 category: "Accessibility"
 ---
 

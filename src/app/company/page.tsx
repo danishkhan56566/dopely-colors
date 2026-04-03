@@ -1,5 +1,5 @@
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { Palette, Users, Globe, Award } from 'lucide-react';
+import { Palette, Users, Award } from 'lucide-react';
 
 export default function CompanyPage() {
     return (
@@ -46,13 +46,16 @@ export default function CompanyPage() {
                         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Our Story</h2>
                         <div className="mt-6 text-lg leading-8 text-gray-600 space-y-6">
                             <p>
-                                Founded in 2024, Dopely Colors began as a small internal tool for a group of frustrated digital artists in Islamabad. We noticed that existing color palette generators often relied on simple random logic, leading to palettes that looked great in a preview but failed in real-world application.
+                                Founded in 2024, Dopely Colors began as a small internal tool for a group of frustrated digital artists and UI engineers in Islamabad. We noticed that existing color palette generators often relied on simple random logic, leading to palettes that looked great in a preview but failed in real-world application once implemented in complex software interfaces.
                             </p>
                             <p>
-                                We spent the first year deep-diving into the mathematics of color space, from CIELAB to OKLAB, and studying the psychological impact of color on user behavior. Our goal was to create a platform that doesn&apos;t just &quot;pick&quot; colors, but understands them.
+                                We spent our first year deep-diving into the profound mathematics of color space, from CIELAB to the modern OKLAB standards, and studying the psychological impact of color on user engagement and conversion optimization. Our goal was to create a platform that doesn&apos;t just &quot;pick&quot; colors, but actually understands the relationship between them.
                             </p>
                             <p>
-                                Today, Dopely Colors is a comprehensive suite of generative and analytical tools used by agencies, SaaS companies, and independent creators to build cohesive brand identities and accessible user interfaces.
+                                Today, Dopely Colors is a comprehensive suite of generative and analytical tools. We are used by design agencies, SaaS companies, and independent creators to build cohesive brand identities, accessible user interfaces, and stunning visual environments. Every color in our database is metadata-enriched to help you make data-driven design decisions.
+                            </p>
+                            <p>
+                                We believe that color is the most powerful non-verbal communicator in our digital world. By providing the tools to master it, we help the world design more inclusive, effective, and beautiful experiences for everyone.
                             </p>
                         </div>
                     </div>

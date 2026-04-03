@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Nature & Earthy Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Organic, grounded color schemes inspired by the great outdoors. Explore the best nature color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

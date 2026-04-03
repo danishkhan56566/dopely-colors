@@ -1,7 +1,7 @@
 ---
 title: "Gradient Design Trends for Modern Websites (2026)"
 excerpt: "Gradients are back and bolder than ever. Explore the latest trends in mesh gradients, holographic effects, and subtle background blurs."
-date: "2026-01-10"
+date: "2026-01-18"
 category: "UI Design"
 ---
 

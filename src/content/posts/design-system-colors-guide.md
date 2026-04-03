@@ -1,7 +1,7 @@
 ---
 title: "Design System Colors: Complete Guide"
 excerpt: "A comprehensive guide to defining color tokens for your design system. From primitive scales to semantic aliases and component-specific tokens."
-date: "2026-01-08"
+date: "2026-01-18"
 category: "Design Systems"
 ---
 

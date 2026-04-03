@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Neon & Cyberpunk Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "High-contrast, glowing palettes for futuristic and digital interfaces. Explore the best neon color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

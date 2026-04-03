@@ -1,7 +1,7 @@
 ---
 title: "Understanding Color Theory for UI Design"
 excerpt: "Master the basics of color theory to create stunning, accessible, and effective user interfaces that convert."
-date: "2026-02-15"
+date: "2026-01-18"
 category: "Design"
 coverImage: "/blog/color-theory-cover.jpg"
 featured_image: "/blog/color-theory-cover.jpg"

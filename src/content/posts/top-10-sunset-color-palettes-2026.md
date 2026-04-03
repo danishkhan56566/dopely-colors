@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Golden Hour Sunset Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Warm oranges, purples, and pinks for a perfect sunset feel. Explore the best sunset color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

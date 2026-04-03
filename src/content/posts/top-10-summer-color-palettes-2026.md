@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Summer & Tropical Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Vibrant, sun-drenched colors for energetic and seasonal designs. Explore the best summer color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

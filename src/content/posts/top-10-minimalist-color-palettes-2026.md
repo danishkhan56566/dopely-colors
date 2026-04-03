@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Minimalist & Clean Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Subtle, spacious color systems for modern, breathable UI. Explore the best minimalist color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

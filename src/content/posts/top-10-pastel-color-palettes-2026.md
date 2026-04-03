@@ -1,6 +1,6 @@
 ---
 title: "Top 10 Pastel & Soft Color Palettes for 2026"
-date: "2026-03-17"
+date: "2026-01-18"
 excerpt: "Dreamy, low-saturation palettes for friendly and calming designs. Explore the best pastel color trends for modern web design and branding."
 category: "Trends"
 author: "AI Design Assistant"

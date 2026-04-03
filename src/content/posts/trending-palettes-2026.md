@@ -1,7 +1,7 @@
 ---
 title: "5 Trending Color Palettes for 2026"
 excerpt: "Get ahead of the curve with these 5 trending color palettes predicted to dominate digital design in 2026."
-date: "2026-02-20"
+date: "2026-01-18"
 category: "Inspiration"
 coverImage: "/blog/trending-palettes-cover.jpg"
 featured_image: "/blog/trending-palettes-cover.jpg"
