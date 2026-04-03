@@ -186,6 +186,47 @@ export const DashboardLayout = ({ children, showUserInfo = true }: { children: R
                 </div>
             </aside>
 
+            {/* Mobile Sidebar Overlay */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden fixed inset-0 z-[60] flex">
+                    {/* Backdrop */}
+                    <div 
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                    
+                    {/* Menu Content */}
+                    <aside className="relative w-[85%] max-w-sm bg-white h-full shadow-2xl flex flex-col animate-slide-in-left">
+                        <div className="h-16 flex items-center px-6 border-b border-gray-50 justify-between">
+                            <Link href="/" className="flex items-center">
+                                <NextImage src="/dopely-logo.png" alt="Dopely Colors" width={120} height={40} className="h-10 w-auto object-contain" priority />
+                            </Link>
+                            <button 
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="p-2 hover:bg-gray-100 rounded-lg text-gray-400"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        
+                        <div className="flex-1 overflow-y-auto no-scrollbar" onClick={() => setIsMobileMenuOpen(false)}>
+                            <SidebarContent />
+                        </div>
+
+                        <div className="p-4 border-t border-gray-50 flex flex-col gap-3">
+                            <Link
+                                href="/generate"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center justify-center gap-2 w-full py-4 bg-rainbow text-white rounded-xl font-bold"
+                            >
+                                <Plus size={20} />
+                                Create AI Palette
+                            </Link>
+                        </div>
+                    </aside>
+                </div>
+            )}
+
             {/* Mobile Header */}
             <header className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b z-50 flex items-center justify-between px-4">
                 <Link href="/" className="flex items-center">
@@ -193,8 +234,11 @@ export const DashboardLayout = ({ children, showUserInfo = true }: { children: R
                 </Link>
                 <div className="flex items-center gap-3">
                     <UserButton />
-                    <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                        {isMobileMenuOpen ? <X /> : <Menu />}
+                    <button 
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="p-2 hover:bg-gray-100 rounded-lg text-gray-500"
+                    >
+                        {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                     </button>
                 </div>
             </header>

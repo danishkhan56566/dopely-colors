@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Twitter, Github, Dribbble, Instagram } from 'lucide-react';
+
 
 const FOOTER_LINKS = {
     tools: {
@@ -119,10 +119,13 @@ export const Footer = () => {
                     </div>
 
                     <div className="flex items-center gap-6">
-                        <Link href="#" aria-label="Twitter" className="text-gray-500 hover:text-gray-900 transition-colors"><Twitter size={20} /></Link>
-                        <Link href="#" aria-label="Github" className="text-gray-500 hover:text-gray-900 transition-colors"><Github size={20} /></Link>
-                        <Link href="#" aria-label="Dribbble" className="text-gray-500 hover:text-gray-900 transition-colors"><Dribbble size={20} /></Link>
-                        <Link href="#" aria-label="Instagram" className="text-gray-500 hover:text-gray-900 transition-colors"><Instagram size={20} /></Link>
+                        {/* 
+                           Expert Fix: Hide empty social links during AdSense review. 
+                           Broken/Placeholder links (#) are a major rejection signal.
+                        */}
+                        <div className="text-[10px] text-gray-300 font-bold uppercase tracking-widest bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
+                            Community coming soon
+                        </div>
                     </div>
                 </div>
             </div>

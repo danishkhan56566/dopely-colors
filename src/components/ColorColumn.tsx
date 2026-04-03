@@ -1,5 +1,5 @@
 import { Color } from '@/store/usePaletteStore';
-import { Lock, Unlock, Copy, Check } from 'lucide-react';
+import { Lock, Unlock } from 'lucide-react';
 import chroma from 'chroma-js';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -7,11 +7,10 @@ import { useState } from 'react';
 interface ColorColumnProps {
     color: Color;
     onLock: (id: string) => void;
-    onChange: (id: string, newHex: string) => void;
     label?: string;
 }
 
-export const ColorColumn = ({ color, onLock, onChange, label }: ColorColumnProps) => {
+export const ColorColumn = ({ color, onLock, label }: ColorColumnProps) => {
     // Determine text color based on background luminance for accessibility
     const textColor = chroma(color.hex).luminance() > 0.5 ? 'black' : 'white';
     const [isCopied, setIsCopied] = useState(false);
@@ -42,8 +41,8 @@ export const ColorColumn = ({ color, onLock, onChange, label }: ColorColumnProps
                     title="Click to copy"
                 >
                     <h2 className={clsx(
-                        "text-3xl md:text-5xl font-black uppercase tracking-wider transition-transform duration-200",
-                        "hover:scale-110 active:scale-95 cursor-pointer"
+                        "text-2xl md:text-5xl font-black uppercase tracking-wider transition-transform duration-200",
+                        "hover:scale-110 active:scale-95 cursor-pointer leading-none"
                     )}>
                         {color.hex.replace('#', '')}
                     </h2>

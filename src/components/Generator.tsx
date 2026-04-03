@@ -188,7 +188,6 @@ export default function Generator() {
                                                 <ColorColumn
                                                     color={color}
                                                     onLock={toggleLock}
-                                                    onChange={updateColor}
                                                     label={labels[index]}
                                                 />
 

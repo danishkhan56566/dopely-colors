@@ -77,7 +77,14 @@ export default async function BlogIndex() {
                             <h3 className="font-bold text-gray-900 mb-4">Categories</h3>
                             <ul className="space-y-2 text-sm text-gray-600">
                                 {['UI Design', 'Color Theory', 'Accessibility', 'Tailwind CSS', 'Design Systems'].map(cat => (
-                                    <li key={cat} className="hover:text-blue-600 cursor-pointer transition-colors">• {cat}</li>
+                                    <li key={cat}>
+                                        <Link 
+                                            href={`/explore?tag=${cat.toLowerCase().replace(' ', '-')}`}
+                                            className="hover:text-blue-600 cursor-pointer transition-colors block py-0.5"
+                                        >
+                                            • {cat}
+                                        </Link>
+                                    </li>
                                 ))}
                             </ul>
                         </div>
