@@ -1,11 +1,10 @@
 'use client';
 
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
     Sparkles,
     Zap,
-    Search,
     Image as ImageIcon,
     Droplet,
     Layers,
@@ -17,29 +16,25 @@ import {
     Smartphone,
     Layout,
     BarChart3,
-    ShoppingCart,
-    CreditCard,
-    Menu,
     User,
     Bell,
     Download,
     Share2,
-    Eye,
     Type,
     RotateCcw,
     Undo,
     Redo,
-    ChevronDown,
     Heart,
     Tag,
     RefreshCw,
     LayoutGrid,
     Info,
-    Maximize2
+    Maximize2,
+    Menu
 } from 'lucide-react';
 import Link from 'next/link';
 import clsx from 'clsx';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 const HexColorPicker = dynamic(() => import('react-colorful').then(mod => mod.HexColorPicker), { ssr: false });
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -52,10 +47,10 @@ import { toast } from 'sonner';
 
 function getContrastYIQ(hexcolor: string) {
     hexcolor = hexcolor.replace("#", "");
-    var r = parseInt(hexcolor.substr(0, 2), 16);
-    var g = parseInt(hexcolor.substr(2, 2), 16);
-    var b = parseInt(hexcolor.substr(4, 2), 16);
-    var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    const r = parseInt(hexcolor.substr(0, 2), 16);
+    const g = parseInt(hexcolor.substr(2, 2), 16);
+    const b = parseInt(hexcolor.substr(4, 2), 16);
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
     return (yiq >= 128) ? 'black' : 'white';
 }
 
@@ -91,7 +86,6 @@ const TRENDING_PALETTES = [
 export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) {
     const [activePreview, setActivePreview] = useState<'dashboard' | 'mobile' | 'marketing'>('mobile');
     const [design, setDesign] = useState<DesignState>(DEFAULT_DESIGN);
-    const [activePicker, setActivePicker] = useState<keyof DesignState | null>(null);
     const [aiQuery, setAiQuery] = useState('');
     const [isAILoading, setIsAILoading] = useState(false);
     const [generatedPalette, setGeneratedPalette] = useState<AIPalette | null>(null);
@@ -158,7 +152,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
 
                         {/* Subheadline */}
                         <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-12 font-medium opacity-90">
-                            Dopely Colors is the world's most intelligent color toolkit. Stop guessing and start building production-ready palettes, gradients, and design systems in seconds.
+                            Dopely Colors is the world&apos;s most intelligent color toolkit. Stop guessing and start building production-ready palettes, gradients, and design systems in seconds.
                         </p>
 
                         {/* AI Input Box - Professional Style */}
@@ -696,7 +690,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                 </div>
                                 <h3 className="text-2xl font-bold text-gray-900 mb-3">Gallery Lens</h3>
                                 <p className="text-gray-500 font-medium leading-relaxed">
-                                    Upload any photo or masterpiece. Our AI extracts "Mood DNA" and dominant pigments using advanced clustering.
+                                    Upload any photo or masterpiece. Our AI extracts &quot;Mood DNA&quot; and dominant pigments using advanced clustering.
                                 </p>
                             </div>
                             <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 group-hover:translate-x-2 transition-transform self-end">
@@ -872,6 +866,58 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                {/* Popular Categories Hub (Internal Linking Powerhouse) */}
+                <div className="max-w-7xl mx-auto px-6 py-24 relative z-10 w-full mb-12">
+                    <div className="text-center mb-16 relative">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-widest mb-6 border border-emerald-100">
+                            <Layers size={14} className="fill-emerald-600" />
+                            Direct Discovery
+                        </div>
+                        <h2 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter mb-6">
+                            Browse by <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">Vibe</span>
+                        </h2>
+                        <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+                            Dive into our curated libraries categorized by mood, industry, and psychological impact.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        {[
+                            { name: 'Pastel', count: '1,200', slug: 'pastel', color: '#fef2f2', text: '#991b1b' },
+                            { name: 'Neon', count: '850', slug: 'neon', color: '#f0fdf4', text: '#166534' },
+                            { name: 'Vintage', count: '2,100', slug: 'vintage', color: '#fffbeb', text: '#92400e' },
+                            { name: 'Minimalist', count: '1,400', slug: 'minimalist', color: '#f8fafc', text: '#1e293b' },
+                            { name: 'Earth', count: '920', slug: 'earth', color: '#fdf4ff', text: '#86198f' },
+                            { name: 'Summer', count: '1,100', slug: 'summer', color: '#eff6ff', text: '#1e40af' },
+                            { name: 'Professional', count: '740', slug: 'professional', color: '#f9fafb', text: '#374151' },
+                            { name: 'Playful', count: '630', slug: 'playful', color: '#fff1f2', text: '#9f1239' },
+                        ].map((cat) => (
+                            <Link 
+                                key={cat.slug}
+                                href={`/palettes/${cat.slug}`}
+                                className="group relative p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                                style={{ backgroundColor: cat.color }}
+                            >
+                                <div className="absolute top-0 right-0 p-12 bg-white/40 rounded-full blur-2xl -mr-8 -mt-8 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="relative z-10">
+                                    <h3 className="text-xl font-bold mb-1" style={{ color: cat.text }}>{cat.name}</h3>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-bold opacity-60 uppercase tracking-widest">{cat.count} Palettes</span>
+                                        <div className="w-8 h-8 rounded-full bg-white/50 flex items-center justify-center group-hover:bg-white transition-colors">
+                                            <ArrowRight size={16} style={{ color: cat.text }} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+
+                    <div className="mt-12 text-center">
+                        <Link href="/explore" className="inline-flex items-center gap-2 font-bold text-gray-500 hover:text-gray-900 transition-colors py-3 px-6 rounded-full hover:bg-gray-100">
+                            View All Categories <ArrowRight size={18} />
+                        </Link>
                     </div>
                 </div>
 
@@ -1080,7 +1126,7 @@ export function LandingPage({ recentPosts = [] }: { recentPosts?: BlogPost[] }) 
                                     <span className="text-blue-400">backed by science.</span>
                                 </h2>
                                 <p className="text-lg text-slate-400 font-medium leading-relaxed mb-8">
-                                    Every tool, guide, and data point on Dopely Colors is meticulously researched and validated by our team of designers and developers. We prioritize accessibility (WCAG), biological color perception, and modern design standards to ensure you're using more than just "pretty colors."
+                                    Every tool, guide, and data point on Dopely Colors is meticulously researched and validated by our team of designers and developers. We prioritize accessibility (WCAG), biological color perception, and modern design standards to ensure you&apos;re using more than just &quot;pretty colors.&quot;
                                 </p>
                                 <div className="flex flex-col gap-4">
                                     {[

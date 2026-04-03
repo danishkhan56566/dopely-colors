@@ -2,11 +2,11 @@
 
 import { DashboardLayout } from '../layout/DashboardLayout';
 import { PaletteCard } from './PaletteCard';
-import { Heart, Image as ImageIcon, Link2, ExternalLink, X, Check, Eye, Code, FileCode, Sparkles } from 'lucide-react';
+import { Heart, Image as ImageIcon, Link2, X, Check, Eye, Code, FileCode, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import chroma from 'chroma-js';
 import { notFound } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { usePaletteStore } from '@/store/usePaletteStore';
 import { downloadPaletteAsPng } from '@/utils/download';
 import clsx from 'clsx';
@@ -14,9 +14,10 @@ import { createPortal } from 'react-dom';
 
 interface PaletteDetailProps {
     colors: string[];
+    initialRelatedPalettes?: any[];
 }
 
-export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
+export const PaletteDetail = ({ colors, initialRelatedPalettes = [] }: PaletteDetailProps) => {
     // States
     const [activeTab, setActiveTab] = useState<'preview' | 'export'>('preview');
     const [isEmbedOpen, setIsEmbedOpen] = useState(false);
@@ -37,13 +38,17 @@ export const PaletteDetail = ({ colors }: PaletteDetailProps) => {
         "keywords": `color palette, ${colors.join(', ')}, hex codes, color scheme, UI design`
     };
 
-    // Generate Related Palettes (Memoized)
-    const [relatedPalettes] = useState(() => Array.from({ length: 8 }).map((_, i) => ({
-        id: `related-${i}-${Math.random().toString(36).substr(2, 9)}`, // Unique ID
-        likes: Math.floor(Math.random() * 2000),
-        date: '1 day ago',
-        colors: chroma.scale([chroma.random(), chroma.random()]).mode('lch').colors(5),
-    })));
+    // Generate Related Palettes (Memoized or Provided by Server)
+    const [relatedPalettes] = useState(() => {
+        if (initialRelatedPalettes.length > 0) return initialRelatedPalettes;
+        
+        return Array.from({ length: 8 }).map((_, i) => ({
+            id: `related-${i}-${Math.random().toString(36).substr(2, 9)}`, // Unique ID
+            likes: Math.floor(Math.random() * 2000),
+            date: '1 day ago',
+            colors: chroma.scale([chroma.random(), chroma.random()]).mode('lch').colors(5),
+        }));
+    });
 
     // Validate colors
     if (!colors || colors.length === 0) return notFound();

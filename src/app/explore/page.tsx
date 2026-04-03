@@ -10,24 +10,34 @@ type Props = {
 }
 
 export async function generateMetadata({ searchParams }: Props) {
-    const { q, category } = await searchParams;
+    const { q, category, tag, sort } = await searchParams;
+    const activeCategory = tag || category;
     
     let title = 'Explore Color Palettes - Dopely Colors';
     let description = 'Browse thousands of beautiful color palettes created by our community. Filter by color, style, or popularity.';
+    let canonical = 'https://dopelycolors.com/explore';
 
     if (q) {
         title = `"${q}" Color Palettes - Explore - Dopely Colors`;
         description = `Discover beautiful ${q} color palettes and schemes. Browse through thousands of curated combinations for your next project.`;
-    } else if (category && category !== 'all') {
-        title = `${category} Color Palettes - Explore - Dopely Colors`;
-        description = `Browse our collection of ${category} color palettes. Find the perfect color schemes for branding, web design, and digital art.`;
+        canonical = `https://dopelycolors.com/explore?q=${encodeURIComponent(q)}`;
+    } else if (activeCategory && activeCategory !== 'all') {
+        const cat = activeCategory.toLowerCase();
+        title = `${activeCategory} Color Palettes - Explore - Dopely Colors`;
+        description = `Browse our collection of ${activeCategory} color palettes. Find the perfect color schemes for branding, web design, and digital art.`;
+        // Canonical should point to the cleaner /palettes/[category] URL
+        canonical = `https://dopelycolors.com/palettes/${cat}`;
+    } else if (sort && sort !== 'popular') {
+        title = `${sort.charAt(0).toUpperCase() + sort.slice(1)} Color Palettes - Explore - Dopely Colors`;
+        // Keep canonical to base /explore for simple sorting unless it's a unique view
+        canonical = `https://dopelycolors.com/explore?sort=${sort}`;
     }
 
     return {
         title,
         description,
         alternates: {
-            canonical: 'https://dopelycolors.com/explore',
+            canonical: canonical,
         },
     };
 }

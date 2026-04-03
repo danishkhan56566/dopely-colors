@@ -27,14 +27,23 @@ const nextConfig: NextConfig = {
       { source: '/&', destination: '/', permanent: true },
       { source: '/en-US', destination: '/', permanent: true },
       { source: '/en-US/:path*', destination: '/:path*', permanent: true },
+      { source: '/de-DE', destination: '/', permanent: true },
+      { source: '/de-DE/:path*', destination: '/:path*', permanent: true },
       // GSC 404 Fixes (Blog)
-      { source: '/blog/how-ai-is-changing-color-selection-design', destination: '/blog/2026-color-trends-the-palettes-defining-the-future-of-web-design', permanent: true }, // Fixed space in slug
+      { source: '/blog/how-ai-is-changing-color-selection-design', destination: '/blog/2026-color-trends-the-palettes-defining-the-future-of-web-design', permanent: true }, 
       { source: '/blog/safe-colors-for-data-visualization-charts', destination: '/blog/accessible-color-palettes', permanent: true },
       { source: '/blog/automating-design-system-tokens-to-code', destination: '/blog/convert-design-tokens-guide', permanent: true },
       { source: '/blog/cyberpunk-neon-gaming-ui-guide', destination: '/blog/2026-color-trends-the-palettes-defining-the-future-of-web-design', permanent: true },
+      { source: '/blog/understanding-color-harmony-color-wheel-guide', destination: '/blog/understanding-color-theory', permanent: true },
+      { source: '/blog/best-colors-for-glassmorphism-frosted-effect', destination: '/blog/gradient-design-trends', permanent: true },
+      
       // Redirect consolidated color pages
       { source: '/colors/:hex/about', destination: '/colors/:hex', permanent: true },
-      { source: '/colors/:hex/generate', destination: '/colors/:hex', permanent: true }, // 301 redirect for consolidated color pages
+      { source: '/colors/:hex/generate', destination: '/colors/:hex', permanent: true },
+      { source: '/colors/:hex/palette', destination: '/colors/:hex', permanent: true },
+      { source: '/colors/:hex/gradient', destination: '/colors/:hex', permanent: true },
+      { source: '/colors/:hex/analysis', destination: '/colors/:hex', permanent: true },
+      
       // Favicon fallback for broken/hashed links
       { source: '/favicon.ico', destination: '/favicon.ico', permanent: true, has: [{ type: 'query', key: 'favicon' }] },
     ];
