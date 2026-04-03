@@ -217,10 +217,26 @@ export default async function Page({ params }: Props) {
                                     The Psychology of {colorName}
                                 </h3>
                                 <p className="text-gray-500 font-medium leading-relaxed mb-10">
-                                    {data?.psychology || `The color ${colorName} (${hex}) is statistically associated with specific psychological and emotional responses. In digital design, it is frequently used to evoke ${chroma(hex).get('hsl.h') < 180 ? 'warmth and excitement' : 'calmness and trust'}.`}
+                                    {data?.psychology || `The color ${colorName} (${hex}) is statistically associated with specific psychological and emotional responses. In digital design, it is frequently used to evoke ${chroma(hex).get('hsl.h') < 30 || chroma(hex).get('hsl.h') > 330 ? 'energy, passion, and urgency' : chroma(hex).get('hsl.h') < 90 ? 'optimism, clarity, and warmth' : chroma(hex).get('hsl.h') < 150 ? 'growth, health, and stability' : chroma(hex).get('hsl.h') < 210 ? 'tranquility, professional integrity, and calm' : chroma(hex).get('hsl.h') < 270 ? 'trust, wisdom, and corporate strength' : 'creative luxury, ambition, and spiritual depth'}.`}
                                     Proper application of {colorName} in UI/UX can improve conversion rates by optimizing visual hierarchy 
                                     and establishing a clear brand voice.
                                 </p>
+
+                                <h3 className="text-xl font-bold text-gray-900 mb-4">Symbolism and Design Utility</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 text-gray-600 text-sm leading-relaxed">
+                                    <div>
+                                        <p className="font-bold text-gray-900 mb-2 uppercase tracking-tight">Emotional Payload</p>
+                                        <p>
+                                            {chroma(hex).get('hsl.s') < 0.2 ? `Being a muted, low-saturation tone, ${colorName} provides a sophisticated neutral base that doesn't overwhelm the user's cognitive load.` : `With high saturation levels, ${colorName} acts as a powerful attention-grabber, ideal for call-to-action elements and bold branding.`}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-gray-900 mb-2 uppercase tracking-tight">Technical Application</p>
+                                        <p>
+                                            {chroma(hex).get('hsl.l') > 0.8 ? `As a light tone, it is perfect for card backgrounds or large surfaces, providing a breath of fresh air to minimalist layouts.` : `As a dark, deep value, it provides excellent contrast for primary headers and navigational grounding in complex SaaS dashboards.`}
+                                        </p>
+                                    </div>
+                                </div>
                                 
                                 <h3 className="text-xl font-bold text-gray-900 mb-4">Circular Linkage: Featured Palettes</h3>
                                 <p className="text-gray-500 font-medium mb-6">Discover how {colorName} works in professional contexts with these curated color schemes:</p>

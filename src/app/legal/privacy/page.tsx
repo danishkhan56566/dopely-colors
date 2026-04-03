@@ -1,65 +1,70 @@
+import React from 'react';
+import { Metadata } from 'next';
 
-export default function PrivacyPage() {
-    return (
-        <div className="prose prose-gray lg:prose-lg max-w-none">
-            <p className="lead">
-                Your privacy is important to us. This policy explains how <strong>Dopely Colors</strong> collects and uses information.
-            </p>
+export const metadata: Metadata = {
+  title: 'Privacy Policy | Dopely Colors',
+  description: 'Our commitment to your privacy and data protection at Dopely Colors.',
+  robots: { index: true, follow: true },
+};
 
-            <h2>Information We Collect</h2>
-            <p>We may collect:</p>
-            <ul>
-                <li>Email address (if you create an account or join a waitlist)</li>
-                <li>Usage data (pages visited, tools used)</li>
-                <li>Technical data (browser, device, IP address)</li>
-            </ul>
+export default function PrivacyPolicy() {
+  return (
+    <div className="max-w-4xl mx-auto px-6 py-20 bg-black text-white selection:bg-purple-500/30">
+      <h1 className="text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+        Privacy Policy
+      </h1>
+      <p className="text-gray-400 mb-8 italic">Last Updated: April 3, 2026</p>
 
-            <h2>How We Use Information</h2>
-            <p>We use your information to:</p>
-            <ul>
-                <li>Provide and improve our services</li>
-                <li>Maintain user accounts</li>
-                <li>Analyze website performance</li>
-                <li>Communicate important updates</li>
-            </ul>
-
-            <h2>Data Sharing</h2>
-            <p>
-                We do <strong>not sell</strong> or rent user data.
-                We may share limited data with trusted services such as:
-            </p>
-            <ul>
-                <li>Analytics providers</li>
-                <li>Hosting services</li>
-                <li>Advertising platforms (e.g. Google AdSense)</li>
-            </ul>
-
-            <h2>Cookies & Tracking</h2>
-            <p>
-                We use cookies to analyze site traffic and enhance your experience.
-                Additionally, <strong>Third-party vendors</strong>, including Google, use cookies to serve ads based on your prior visits to our website or other websites.
-            </p>
-            <ul>
-                <li><strong>Google AdSense:</strong> Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to Dopely Colors and/or other sites on the Internet.</li>
-                <li><strong>Personalized Advertising:</strong> You may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Ads Settings</a>. (Alternatively, you can opt out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="http://www.aboutads.info" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.)</li>
-                <li><strong>Authentication & Analytics:</strong> We use internal cookies to maintain your session and analyze website performance through Vercel Analytics.</li>
-            </ul>
-
-            <h2>Data Security</h2>
-            <p>
-                We take reasonable measures to protect your data, but no system is 100% secure.
-            </p>
-
-            <h2>Your Rights</h2>
-            <p>You may:</p>
-            <ul>
-                <li>Request access to your data</li>
-                <li>Request deletion of your account</li>
-                <li>Contact us for privacy-related questions</li>
-            </ul>
-
-            <h2>Changes</h2>
-            <p>This policy may be updated periodically.</p>
+      <section className="space-y-8 text-gray-300 leading-relaxed">
+        <div>
+          <h2 className="text-2xl font-semibold text-white mb-4">1. Introduction</h2>
+          <p>
+            Welcome to Dopely Colors (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We respect your privacy and are committed to protecting the personal data we collect during your use of dopelycolors.com. This Privacy Policy explains how we collect, use, and safeguard your information to comply with global standards, including the GDPR and CCPA.
+          </p>
         </div>
-    );
+
+        <div>
+          <h2 className="text-2xl font-semibold text-white mb-4">2. Data We Collect</h2>
+          <p className="mb-4">We collect minimal information to provide a better user experience:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li><strong>Usage Data:</strong> Anonymous analytics about your browser type, IP address, and pages visited.</li>
+            <li><strong>Cookies:</strong> Small files used to store your preferences (e.g., dark mode settings, saved palettes).</li>
+            <li><strong>User Account Details:</strong> If you create an account, we store your email and nickname securely.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-semibold text-white mb-4">3. Third-Party Services (Google AdSense)</h2>
+          <p>
+            We use Google AdSense to serve advertisements on our site. Google use cookies (DART cookies) to serve ads based on your visit to this and other sites on the Internet. You may opt-out of the use of the DART cookie by visiting the <a href="https://policies.google.com/technologies/ads" className="text-purple-400 hover:underline">Google Ad and Content Network Privacy Policy</a>.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-semibold text-white mb-4">4. Data Security</h2>
+          <p>
+            We implement industry-standard security measures, including SSL encryption, to protect your data from unauthorized access, alteration, or disclosure. However, no method of transmission over the Internet is 100% secure.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-semibold text-white mb-4">5. Your Rights</h2>
+          <p>
+            Depending on your location, you have the right to access, correct, or delete your personal data. To exercise these rights, please contact us at the details provided below.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-semibold text-white mb-4">6. Contact Us</h2>
+          <p>
+            If you have any questions about this Privacy Policy, please reach out to us at:
+            <br />
+            <strong>Email:</strong> <span className="text-white">legal@dopelycolors.com</span>
+            <br />
+            <strong>Address:</strong> Islamabad, Pakistan
+          </p>
+        </div>
+      </section>
+    </div>
+  );
 }

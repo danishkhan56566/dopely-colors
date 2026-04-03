@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
       { source: '/cookie-policy', destination: '/legal/cookie-policy', permanent: true },
       { source: '/disclaimer', destination: '/legal/disclaimer', permanent: true },
       { source: '/license', destination: '/legal/license', permanent: true },
+      { source: '/privacy', destination: '/legal/privacy', permanent: true },
+      { source: '/terms', destination: '/legal/terms', permanent: true },
       { source: '/generator', destination: '/generate', permanent: true },
       { source: '/palette-generator', destination: '/generate', permanent: true },
       { source: '/palettes', destination: '/explore', permanent: true },

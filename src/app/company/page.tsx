@@ -14,15 +14,10 @@ export default function CompanyPage() {
                         <div className="mx-auto max-w-2xl lg:mx-0">
                             <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">We help the world design better.</h2>
                             <p className="mt-6 text-lg leading-8 text-gray-300">
-                                Dopley Colors was born from a simple idea: color is hard, but it doesn't have to be. We're building the intelligence layer for global design systems.
+                                Dopely Colors was born from a simple idea: color is hard, but it doesn&apos;t have to be. We&apos;re building the intelligence layer for global design systems, making high-fidelity color theory accessible to everyone.
                             </p>
                         </div>
                         <div className="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
-                            <div className="grid grid-cols-1 gap-x-8 gap-y-6 text-base font-semibold leading-7 text-white sm:grid-cols-2 md:flex lg:gap-x-10">
-                                <a href="#">Open Roles <span aria-hidden="true">&rarr;</span></a>
-                                <a href="#">Internships <span aria-hidden="true">&rarr;</span></a>
-                                <a href="#">Our Values <span aria-hidden="true">&rarr;</span></a>
-                            </div>
                             <dl className="mt-16 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
                                 <div className="flex flex-col-reverse">
                                     <dt className="text-base leading-7 text-gray-300">Palettes Generated</dt>
@@ -45,12 +40,30 @@ export default function CompanyPage() {
                     </div>
                 </div>
 
+                {/* Our Story Section */}
+                <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-40 lg:px-8">
+                    <div className="mx-auto max-w-2xl lg:mx-0">
+                        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Our Story</h2>
+                        <div className="mt-6 text-lg leading-8 text-gray-600 space-y-6">
+                            <p>
+                                Founded in 2024, Dopely Colors began as a small internal tool for a group of frustrated digital artists in Islamabad. We noticed that existing color palette generators often relied on simple random logic, leading to palettes that looked great in a preview but failed in real-world application.
+                            </p>
+                            <p>
+                                We spent the first year deep-diving into the mathematics of color space, from CIELAB to OKLAB, and studying the psychological impact of color on user behavior. Our goal was to create a platform that doesn&apos;t just &quot;pick&quot; colors, but understands them.
+                            </p>
+                            <p>
+                                Today, Dopely Colors is a comprehensive suite of generative and analytical tools used by agencies, SaaS companies, and independent creators to build cohesive brand identities and accessible user interfaces.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Values Section */}
                 <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-40 lg:px-8">
                     <div className="mx-auto max-w-2xl lg:mx-0">
-                        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Our Values</h2>
+                        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Our Core Values</h2>
                         <p className="mt-6 text-lg leading-8 text-gray-600">
-                            The principles that guide our product and people.
+                            The principles that guide every algorithm we write and every feature we launch.
                         </p>
                     </div>
                     <dl className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-base leading-7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
@@ -59,27 +72,36 @@ export default function CompanyPage() {
                                 <Palette className="text-blue-600" size={20} />
                                 Beauty is Functional
                             </dt>
-                            <dd className="mt-1 text-gray-600">Aesthetics aren't just decoration. They usability, trust, and clarity.</dd>
+                            <dd className="mt-1 text-gray-600">Aesthetics are never just decoration. In our view, a beautiful interface is one that improves usability, builds trust through clarity, and helps users focus on what matters most.</dd>
                         </div>
                         <div>
                             <dt className="font-semibold text-gray-900 flex items-center gap-2">
                                 <Users className="text-purple-600" size={20} />
-                                For Everyone
+                                Accessibility First
                             </dt>
-                            <dd className="mt-1 text-gray-600">Design tools should be accessible to pros and beginners alike.</dd>
+                            <dd className="mt-1 text-gray-600">Design tools should be accessible to everyone. We prioritize WCAG compliance and color-blindness simulation in all our generators because inclusion is not an optional feature.</dd>
                         </div>
                         <div>
                             <dt className="font-semibold text-gray-900 flex items-center gap-2">
                                 <Award className="text-yellow-500" size={20} />
-                                Craft Matters
+                                Precision Engineering
                             </dt>
-                            <dd className="mt-1 text-gray-600">We sweat the details so you don't have to.</dd>
+                            <dd className="mt-1 text-gray-600">We sweat the details. Whether it is ensuring perfectly smooth gradients or calculating dynamic contrast ratios, we provide the technical data designers need to make informed decisions.</dd>
                         </div>
                     </dl>
                 </div>
 
-                {/* Spacer */}
-                <div className="h-32"></div>
+                {/* Contact CTA */}
+                <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-40 lg:px-8 pb-32">
+                    <div className="relative isolate overflow-hidden bg-gray-900 px-6 py-24 shadow-2xl rounded-3xl sm:px-24 xl:py-32">
+                        <h2 className="mx-auto max-w-2xl text-center text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                            Have questions or feedback?
+                        </h2>
+                        <p className="mx-auto mt-2 max-w-xl text-center text-lg leading-8 text-gray-300">
+                            We are always looking to improve our tools. Reach out to our team at <span className="text-purple-400">hello@dopelycolors.com</span> and we will get back to you as soon as possible.
+                        </p>
+                    </div>
+                </div>
             </div>
         </DashboardLayout>
     );
