@@ -52,7 +52,7 @@ export default function PricingPage() {
         checkUser();
     }, []);
 
-    const handleUpgrade = async () => {
+    const handleUpgrade = async (tier: 'basic' | 'standard' | 'pro') => {
         if (!user) {
             router.push('/login');
             return;
@@ -60,31 +60,47 @@ export default function PricingPage() {
 
         setLoading(true);
         try {
-            // Simulate payment processing delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Mapping for the new tiers
+            const variantMap: Record<string, string> = {
+                'basic_monthly': 'variant_basic_monthly_id',
+                'basic_yearly': 'variant_basic_yearly_id',
+                'standard_monthly': 'variant_standard_monthly_id',
+                'standard_yearly': 'variant_standard_yearly_id',
+                'pro_monthly': 'variant_pro_monthly_id',
+                'pro_yearly': 'variant_pro_yearly_id',
+            };
 
-            const { error } = await supabase
-                .from('profiles')
-                .update({
-                    is_pro: true,
-                    subscription_tier: 'pro'
+            const key = `${tier}_${billingCycle}`;
+            const variantId = variantMap[key];
+
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user.id,
+                    productId: variantId
                 })
-                .eq('id', user.id);
-
-            if (error) throw error;
-
-            toast.success("Welcome to Pro!", {
-                description: "Your subscription has been activated successfully."
             });
-            router.push('/dashboard');
-            router.refresh();
+
+            if (!response.ok) {
+                throw new Error("Failed to initialize checkout session");
+            }
+
+            const data = await response.json();
+            
+            if (data.url) {
+                // Securely redirect to MoR Hosted Checkout
+                window.location.href = data.url;
+            } else {
+                throw new Error("No URL returned from billing provider");
+            }
+
         } catch (error: any) {
             console.error('Upgrade Error:', error);
-            toast.error("Upgrade failed", {
-                description: error.message || "Could not update subscription."
+            toast.error("Checkout failed", {
+                description: error.message || "We could not connect to our billing provider."
             });
-        } finally {
-            setLoading(false);
+            setLoading(false); // Only set loading to false on error, keep loading true during redirect
         }
     };
 
@@ -110,7 +126,7 @@ export default function PricingPage() {
                                 </span>
                             </p>
                             <p className="mt-6 text-lg leading-8 text-gray-600">
-                                Choose the perfect plan for your workflow. <br /> From solo creators to enterprise teams.
+                                Choose the perfect plan for your workflow. <br /> From solo designers to full-scale design agencies.
                             </p>
 
                             {/* Toggle */}
@@ -138,53 +154,56 @@ export default function PricingPage() {
                         {/* Pricing Cards */}
                         <div className="isolate mx-auto mt-10 grid max-w-md grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
 
-                            {/* Free Plan */}
+                            {/* Basic Plan */}
                             <div className="rounded-[2.5rem] p-8 ring-1 ring-gray-200 bg-white/60 backdrop-blur-xl hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
                                 <div className="flex items-center justify-between gap-x-4">
-                                    <h3 className="text-lg font-bold leading-8 text-gray-900">Hobby</h3>
+                                    <h3 className="text-lg font-bold leading-8 text-gray-900">Basic</h3>
                                     <div className="rounded-full bg-gray-100 p-2.5">
                                         <Rocket className="h-5 w-5 text-gray-600" />
                                     </div>
                                 </div>
-                                <p className="mt-4 text-sm leading-6 text-gray-600">Perfect for trying out Dopely Colors.</p>
+                                <p className="mt-4 text-sm leading-6 text-gray-600">Great for individual designers starting out.</p>
                                 <p className="mt-6 flex items-baseline gap-x-1">
-                                    <span className="text-4xl font-bold tracking-tight text-gray-900">$0</span>
+                                    <span className="text-4xl font-bold tracking-tight text-gray-900">
+                                        ${billingCycle === 'yearly' ? '4' : '5'}
+                                    </span>
                                     <span className="text-sm font-semibold leading-6 text-gray-600">/month</span>
                                 </p>
                                 <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
-                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> 1 Project</li>
-                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> Basic Palettes</li>
+                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> 10 Projects</li>
+                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> Standard Palettes</li>
                                     <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> CSS Export</li>
-                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> 5 Favorites</li>
+                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> Community Support</li>
                                 </ul>
-                                <Link
-                                    href="/login"
-                                    className="mt-8 block rounded-xl bg-gray-50 px-3 py-3 text-center text-sm font-bold text-gray-900 shadow-sm hover:bg-gray-100 ring-1 ring-inset ring-gray-200 transition-all"
+                                <button
+                                    onClick={() => handleUpgrade('basic')}
+                                    disabled={loading}
+                                    className="mt-8 block w-full rounded-xl bg-gray-900 px-3 py-3 text-center text-sm font-bold text-white shadow-sm hover:bg-black transition-all"
                                 >
-                                    Get Started
-                                </Link>
+                                    {loading ? <Loader2 className="animate-spin" size={18} /> : "Upgrade Now"}
+                                </button>
                             </div>
 
-                            {/* Pro Plan */}
+                            {/* Standard Plan */}
                             <div className="relative rounded-[2.5rem] p-8 ring-2 ring-blue-600 bg-white shadow-2xl shadow-blue-900/10 scale-105 z-10">
                                 <div className="absolute -top-5 left-0 right-0 mx-auto w-32 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 px-3 py-1 text-center text-xs font-bold text-white shadow-lg">
                                     MOST POPULAR
                                 </div>
                                 <div className="flex items-center justify-between gap-x-4">
-                                    <h3 className="text-lg font-bold leading-8 text-blue-600">Pro</h3>
+                                    <h3 className="text-lg font-bold leading-8 text-blue-600">Standard</h3>
                                     <div className="rounded-full bg-blue-50 p-2.5">
                                         <Zap className="h-5 w-5 text-blue-600" />
                                     </div>
                                 </div>
-                                <p className="mt-4 text-sm leading-6 text-gray-600">For serious designers & freelancers.</p>
+                                <p className="mt-4 text-sm leading-6 text-gray-600">The perfect balance for professionals.</p>
                                 <p className="mt-6 flex items-baseline gap-x-1">
                                     <span className="text-4xl font-bold tracking-tight text-gray-900">
-                                        ${billingCycle === 'yearly' ? '12' : '15'}
+                                        ${billingCycle === 'yearly' ? '8' : '10'}
                                     </span>
                                     <span className="text-sm font-semibold leading-6 text-gray-600">/month</span>
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    Billed {billingCycle === 'yearly' ? '$144 yearly' : 'monthly'}
+                                    Billed {billingCycle === 'yearly' ? '$96 yearly' : 'monthly'}
                                 </p>
 
                                 <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
@@ -192,51 +211,52 @@ export default function PricingPage() {
                                     <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> AI Palette Generator</li>
                                     <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> Advanced Export (Tailwind, JSON)</li>
                                     <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> Contrast Checker & Accessibility</li>
-                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> Priority Support</li>
+                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-blue-600" /> Email Support</li>
                                 </ul>
                                 <button
-                                    onClick={handleUpgrade}
+                                    onClick={() => handleUpgrade('standard')}
                                     disabled={loading}
                                     className="mt-8 w-full rounded-xl bg-gradient-to-r from-blue-600 via-violet-600 to-fuchsia-600 bg-[length:200%_auto] animate-gradient px-3 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.05] active:scale-95 transition-all flex items-center justify-center gap-2"
                                 >
                                     {loading ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} className="fill-white/20" />}
-                                    Start 14-Day Free Trial
+                                    Get Started
                                 </button>
                                 <p className="mt-3 text-xs text-center text-gray-400">Cancel anytime. No questions asked.</p>
                             </div>
 
-                            {/* Team Plan */}
+                            {/* Pro Plan */}
                             <div className="rounded-[2.5rem] p-8 ring-1 ring-gray-200 bg-white/60 backdrop-blur-xl hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
                                 <div className="flex items-center justify-between gap-x-4">
-                                    <h3 className="text-lg font-bold leading-8 text-gray-900">Team</h3>
+                                    <h3 className="text-lg font-bold leading-8 text-gray-900">Pro</h3>
                                     <div className="rounded-full bg-purple-50 p-2.5">
                                         <Building className="h-5 w-5 text-purple-600" />
                                     </div>
                                 </div>
-                                <p className="mt-4 text-sm leading-6 text-gray-600">For agencies scaling up design.</p>
+                                <p className="mt-4 text-sm leading-6 text-gray-600">For high-level teams and agencies.</p>
                                 <p className="mt-6 flex items-baseline gap-x-1">
                                     <span className="text-4xl font-bold tracking-tight text-gray-900">
-                                        ${billingCycle === 'yearly' ? '49' : '59'}
+                                        ${billingCycle === 'yearly' ? '40' : '50'}
                                     </span>
                                     <span className="text-sm font-semibold leading-6 text-gray-600">/month</span>
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    Billed {billingCycle === 'yearly' ? '$588 yearly' : 'monthly'}
+                                    Billed {billingCycle === 'yearly' ? '$480 yearly' : 'monthly'}
                                 </p>
 
                                 <ul role="list" className="mt-8 space-y-3 text-sm leading-6 text-gray-600">
-                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> Everything in Pro</li>
-                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> 5 Team Seats</li>
+                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> Everything in Standard</li>
+                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> Design System Tokens</li>
                                     <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> Shared Design Libraries</li>
-                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> SSO Authentication</li>
-                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> Dedicated Success Manager</li>
+                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> API Access</li>
+                                    <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-purple-600" /> Priority Support</li>
                                 </ul>
-                                <a
-                                    href="#"
-                                    className="mt-8 block rounded-xl bg-gray-50 px-3 py-3 text-center text-sm font-bold text-gray-900 shadow-sm hover:bg-gray-100 ring-1 ring-inset ring-gray-200 transition-all"
+                                <button
+                                    onClick={() => handleUpgrade('pro')}
+                                    disabled={loading}
+                                    className="mt-8 block w-full rounded-xl bg-gray-50 px-3 py-3 text-center text-sm font-bold text-gray-900 shadow-sm hover:bg-gray-100 ring-1 ring-inset ring-gray-200 transition-all"
                                 >
-                                    Contact Sales
-                                </a>
+                                    {loading ? <Loader2 className="animate-spin" size={18} /> : "Unlock Full Suite"}
+                                </button>
                             </div>
                         </div>
 

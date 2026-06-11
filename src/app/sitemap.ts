@@ -5,7 +5,8 @@ import { colorPsychologyDb } from '@/data/colorPsychology';
 import { colorTheoryDb } from '@/data/colorTheory';
 import { seoCategoriesDb } from '@/data/seoCategories';
 import { fetchPalettesAction } from '@/app/explore/actions';
-import chroma from 'chroma-js';
+import { popularColorCombos } from '@/lib/pSEO';
+
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
 
@@ -190,12 +191,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route.priority,
     }));
 
+    // 5.9. Combo Routes (pSEO)
+    const comboRoutes = popularColorCombos.map((combo) => ({
+        url: `/color-combos/${combo.slug}`,
+        priority: 0.8,
+    }));
+
     const dynamicBlogRoutes = [
         ...blogPosts,
         ...colorPsychologyPages,
         ...colorTheoryPages,
         ...vibeRoutes,
         ...paletteRoutes,
+        ...comboRoutes,
     ].map(post => ({
         url: `${baseUrl}${post.url}`,
         lastModified: new Date(),

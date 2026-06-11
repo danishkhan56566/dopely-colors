@@ -6,8 +6,14 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', 'react-colorful', 'framer-motion', 'date-fns', 'clsx', 'tailwind-merge'],
   },
   images: {
-    // Re-enabled optimization for known good domains or local. 
-    // Unoptimized: true was hurting LCP 0.01 score.
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'drive.google.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   async redirects() {
     return [
@@ -79,6 +85,21 @@ const nextConfig: NextConfig = {
       { source: '/contrast-checker', destination: '/contrast' },
       { source: '/tailwind-colors', destination: '/tailwind' },
       { source: '/design-system-builder', destination: '/design-system' },
+
+      // Backend API Proxy (FastAPI Integration)
+      // Connects Next.js Frontend to Python Backend running on port 8000
+      { 
+        source: '/api/generate/:path*', 
+        destination: process.env.NODE_ENV === 'development' 
+            ? 'http://127.0.0.1:8000/api/generate/:path*' 
+            : 'https://api.dopelycolors.com/api/generate/:path*' // Override with Prod URL
+      },
+      { 
+        source: '/api/chat/:path*', 
+        destination: process.env.NODE_ENV === 'development' 
+            ? 'http://127.0.0.1:8000/api/chat/:path*' 
+            : 'https://api.dopelycolors.com/api/chat/:path*' 
+      },
     ];
   },
 };

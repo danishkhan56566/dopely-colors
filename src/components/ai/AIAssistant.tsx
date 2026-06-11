@@ -3,13 +3,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Send, Sparkles, Wand2, ArrowRight, Loader2, Upload,
-    Palette, Check, Code, Image as ImageIcon, RotateCcw, Download, Copy, Maximize2, Minimize2,
+    Send, Sparkles, ArrowRight, Loader2, Upload,
+    Check, Palette, Code, Image as ImageIcon, RotateCcw, Download, Copy, Maximize2, Minimize2,
     Activity, Layout, Save
 } from 'lucide-react';
 import {
-    Step, Message, AssistantState, Sender,
-    analyzeText, generateDesignTokens, generateLogoConcepts, AIPalette,
+    Step, Message, AssistantState,
+    analyzeText, generateLogoConcepts,
     createInitialDesign, evolveDesignSystem, designStateToPalette, parseUserIntent
 } from '@/lib/ai-assistant';
 // import { FeaturePreview, DesignTokensPreview } from './AIPreviews';
@@ -22,9 +22,6 @@ import dynamic from 'next/dynamic';
 
 const FeaturePreview = dynamic(() => import('./AIPreviews').then(mod => mod.FeaturePreview), {
     loading: () => <div className="w-full h-full bg-gray-100/50 animate-pulse rounded-3xl" />
-});
-const DesignTokensPreview = dynamic(() => import('./AIPreviews').then(mod => mod.DesignTokensPreview), {
-    loading: () => <div className="w-full h-40 bg-gray-100/50 animate-pulse rounded-3xl" />
 });
 const AIExportCard = dynamic(() => import('./AIExportCard').then(mod => mod.AIExportCard), {
     loading: () => <div className="w-full h-64 bg-gray-100/50 animate-pulse rounded-3xl" />
@@ -148,7 +145,6 @@ export default function AIAssistant() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toggleFavorite } = usePaletteStore();
-    const router = useRouter();
     const searchParams = useSearchParams();
     const query = searchParams.get('q');
     const [hasTriggeredInitial, setHasTriggeredInitial] = useState(false);
@@ -200,8 +196,8 @@ export default function AIAssistant() {
         await new Promise(r => setTimeout(r, 1200));
 
         let nextStep: Step = currentStep;
-        let responseMsgs: Message[] = [];
-        let newContext = { ...state.context };
+        const responseMsgs: Message[] = [];
+        const newContext = { ...state.context };
         let newDesign = state.design ? { ...state.design } : null;
 
         // 1. ENTRY -> DISCOVERY
@@ -273,9 +269,6 @@ export default function AIAssistant() {
         // 4. PALETTE GEN (First Run)
         else if (currentStep === 'PALETTE_GEN') {
             // INITIAL GENERATION
-            let seedFromBackend = null;
-            let backendSystem = null;
-
             // If NO logo colors, try to use Neural Backend for Text-to-Palette
             if (!newContext.logoColors || newContext.logoColors.length === 0) {
                 // Show a temporary loading indicator
@@ -291,13 +284,11 @@ export default function AIAssistant() {
                 }));
 
                 try {
-                    // Cost Optimization: AI Disabled
-                    // const response = await fetch('/api/generate/text-to-palette', {
-                    //     method: 'POST',
-                    //     headers: { 'Content-Type': 'application/json' },
-                    //     body: JSON.stringify({ prompt: newContext.appDescription || 'Modern app', count: 5 })
-                    // });
-                    const response = { ok: false } as Response; // Mock failed response
+                    const response = await fetch('/api/generate/text-to-palette', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt: newContext.appDescription || 'Modern app', count: 5 })
+                    });
 
                     // Remove loading message
                     setState(prev => ({
@@ -308,8 +299,6 @@ export default function AIAssistant() {
                     if (response.ok) {
                         const data = await response.json();
                         if (data.status === 'success' || data.status === 'mock') {
-                            seedFromBackend = data.seed;
-
                             if (data.ai_suggestions) {
                                 newContext.logoColors = [
                                     data.ai_suggestions.primary,
@@ -390,18 +379,16 @@ export default function AIAssistant() {
                 const storedUserId = localStorage.getItem('dopely_user_id') || 'guest';
 
                 // Use relative path '/api/chat' which works in Prod (Vercel) and Dev (Next.js Rewrite)
-                // Cost Optimization: AI Disabled
-                // const chatResponse = await fetch('/api/chat', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({
-                //         message: input,
-                //         current_state: newContext,
-                //         current_design: newDesign, // Pass full design state for stateless processing
-                //         user_id: storedUserId
-                //     })
-                // });
-                const chatResponse = { ok: false } as Response;
+                const chatResponse = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: input,
+                        current_state: newContext,
+                        current_design: newDesign, // Pass full design state for stateless processing
+                        user_id: storedUserId
+                    })
+                });
 
                 if (chatResponse.ok) {
                     const data = await chatResponse.json();
@@ -573,12 +560,10 @@ export default function AIAssistant() {
                     let seedColor = '';
 
                     try {
-                        // Cost Optimization: AI Disabled
-                        // const response = await fetch('/api/generate/image-to-palette', {
-                        //     method: 'POST',
-                        //     body: formData,
-                        // });
-                        const response = { ok: false } as Response;
+                        const response = await fetch('/api/generate/image-to-palette', {
+                            method: 'POST',
+                            body: formData,
+                        });
 
                         if (response.ok) {
                             const data = await response.json();

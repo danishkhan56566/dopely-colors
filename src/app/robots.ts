@@ -16,6 +16,8 @@ export default function robots(): MetadataRoute.Robots {
         '/',
         '/generate/',
         '/api/og/', // Explicitly allow OG images for social sharing & SEO previews
+        '/color-combos/', // Programmatic SEO
+        '/p/', // Public pallete viewer
       ],
       disallow: [
         '/admin/',

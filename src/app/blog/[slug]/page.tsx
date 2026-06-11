@@ -2,10 +2,12 @@ import { getPostBySlug, getAllPosts } from '@/lib/blog';
 import { notFound } from 'next/navigation';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import Link from 'next/link';
-import { ChevronLeft, Calendar, Clock, Twitter, Copy } from 'lucide-react';
+import Image from 'next/image';
+import { ChevronLeft, Calendar, Clock } from 'lucide-react';
 import { marked } from 'marked';
 import { AdUnit } from '@/components/ads/AdUnit';
 import { ShareButtons } from '@/components/blog/ShareButtons';
+import { RelatedLinks } from '@/components/seo/RelatedLinks';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -292,9 +294,12 @@ export default async function BlogPost({ params }: PageProps) {
                     {/* Featured Image */}
                     {post.featured_image && (
                         <div className="relative w-full aspect-video rounded-3xl overflow-hidden mb-16 shadow-xl ring-1 ring-gray-900/5">
-                            <img
+                            <Image
                                 src={getPreviewUrl(post.featured_image)}
                                 alt={post.title}
+                                fill
+                                priority
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
                                 className="object-cover w-full h-full transform transition-transform duration-[2s] hover:scale-105"
                             />
                         </div>
@@ -343,6 +348,7 @@ export default async function BlogPost({ params }: PageProps) {
 
                     </div>
                 </article>
+                <RelatedLinks currentSlug={slug} />
             </div>
         </DashboardLayout>
     );

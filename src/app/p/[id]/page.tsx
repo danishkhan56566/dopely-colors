@@ -32,6 +32,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return {
         title: `${palette.name || 'Shared Palette'} - Dopely Colors`,
         description: `Check out this color palette: ${palette.colors.join(', ')}`,
+        alternates: {
+            canonical: `https://dopelycolors.com/p/${id}`,
+        },
         openGraph: {
             images: [`/api/og?colors=${palette.colors.join(',')}`], // Future optimization
         }
@@ -46,8 +49,27 @@ export default async function PublicPalettePage({ params }: { params: Promise<{ 
         return notFound();
     }
 
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": palette.name || `Color Palette ${id}`,
+        "description": `A beautiful color palette consisting of: ${palette.colors.join(', ')}`,
+        "url": `https://dopelycolors.com/p/${id}`,
+        "creator": {
+            "@type": "Organization",
+            "name": "Dopely Colors"
+        },
+        "keywords": `color palette, ${palette.colors.join(', ')}`
+    };
+
     return (
-        <PaletteDetail colors={palette.colors} />
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            />
+            <PaletteDetail colors={palette.colors} />
+        </>
     );
 }
 
